@@ -3874,7 +3874,7 @@ function pgPrefs() {
   h += num("examDayMin", "Exam-day afternoons (minutes)", st.examDayMin, 0, DAILY_MAX, 5, "For the next exam; 0 to rest");
   h += tm("weekdayStart", "School-day start time", st.weekdayStart) + tm("weekendStart", "Weekend / leave start time", st.weekendStart) + tm("examDayStart", "Exam-day afternoon start", st.examDayStart) + tm("dayEnd", "Latest finish time", st.dayEnd);
   h += '</div><p class="small muted" style="margin-top:12px">Changes apply when you regenerate. Completed sessions, sessions you added and sessions you edited are kept.</p></div>';
-  h += '<div class="card span-12"><div class="card-h"><h2>Your data</h2><span class="small muted">' + (storageOK ? "Saved automatically in this browser" : "Browser storage unavailable") + '</span></div><div class="row wrap"><button class="btn" data-act="export">' + ic("download") + 'Export progress</button><button class="btn" data-act="import">' + ic("upload") + 'Import backup</button><div class="grow"></div><button class="btn danger" data-act="reset">' + ic("trash") + 'Reset progress</button></div>' + (window.ECC_GROQ ? "" : '<div class="notice" style="margin-top:12px"><div class="grow"><b>Want to sign in with Google and sync between devices?</b> That works on the GitHub version of this site: <a href="https://plawith.github.io/exam-command-centre/" target="_blank" rel="noopener">plawith.github.io/exam-command-centre</a>. Export your progress here, import it there, then sign in with Google. This page can\'t connect to Google because claude.ai keeps pages sealed off from other websites.</div></div>') + '<p class="small muted" style="margin-top:10px">Export creates a JSON backup of your timetable, syllabus progress, notes, quiz history and flashcard reviews. Import restores it on any device.</p></div>';
+  h += '<div class="card span-12"><div class="card-h"><h2>Your data</h2><span class="small muted">' + (storageOK ? "Saved automatically in this browser" : "Browser storage unavailable") + '</span></div><div class="row wrap"><button class="btn" data-act="export">' + ic("download") + 'Export progress</button><button class="btn" data-act="import">' + ic("upload") + 'Import backup</button><div class="grow"></div><button class="btn danger" data-act="reset">' + ic("trash") + 'Reset progress</button></div>' + (window.ECC_GROQ ? "" : '<div class="notice" style="margin-top:12px"><div class="grow"><b>Want to sign in with Google and sync between devices?</b> That works on the GitHub version of this site: <a href="https://plawith.github.io/" target="_blank" rel="noopener">plawith.github.io</a>. Export your progress here, import it there, then sign in with Google. This page can\'t connect to Google because claude.ai keeps pages sealed off from other websites.</div></div>') + '<p class="small muted" style="margin-top:10px">Export creates a JSON backup of your timetable, syllabus progress, notes, quiz history and flashcard reviews. Import restores it on any device.</p></div>';
   return h + "</div>";
 }
 function exportJSON() {
@@ -4290,7 +4290,7 @@ function pipHandle(raw) {
     pipSay("I'm using <b>" + esc(groqName(gc.model)) + "</b> for answers and <b>" + esc(groqName(gc.vision)) + "</b> for photos. Change it with the menu at the top of this chat, or say <i>use the fast model</i>."); return;
   }
   if (/\b(tutorial|tour|show me around|walkthrough|how (does|do) (this|the) (site|app|website) work)\b/.test(s)) { if (typeof startTour === "function") { pipSay("Let's go! 🗺️"); setTimeout(startTour, 200); } return; }
-  if (/\b(sign ?in|log ?in|login|google)\b/.test(s) && !/\bout\b/.test(s)) { navTo("preferences"); if (window.ECC_GROQ && typeof syncSignIn === "function" && SYNC.status === "out") { syncSignIn(); pipSay("Opening Google sign-in. Your progress will sync to your Google account. ☁️"); } else pipSay(window.ECC_GROQ ? (SYNC.status === "in" ? "You're already signed in as " + esc(SYNC.user.email) + ". ✔️" : "Google sign-in isn't ready yet on this copy of the site.") : "Google sign-in works on the GitHub version of this site (plawith.github.io/exam-command-centre). Export your progress here and import it there. I opened Preferences for you."); return; }
+  if (/\b(sign ?in|log ?in|login|google)\b/.test(s) && !/\bout\b/.test(s)) { navTo("preferences"); if (window.ECC_GROQ && typeof syncSignIn === "function" && SYNC.status === "out") { syncSignIn(); pipSay("Opening Google sign-in. Your progress will sync to your Google account. ☁️"); } else pipSay(window.ECC_GROQ ? (SYNC.status === "in" ? "You're already signed in as " + esc(SYNC.user.email) + ". ✔️" : "Google sign-in isn't ready yet on this copy of the site.") : "Google sign-in works on the GitHub version of this site (plawith.github.io). Export your progress here and import it there. I opened Preferences for you."); return; }
   if (/\b(upload|import|add|use|change|new|my own)\b.*\bsyllabus\b/.test(s)) { closeFocus(); openImporter(); pipSay("Opened the syllabus uploader. Add your date sheet and syllabus PDF and I'll read it. 📄"); return; }
   if (/\b(who are you|your name)\b/.test(s)) { pipSay("I'm Pip, a sheet of paper with legs. I help you get around this site, do quick maths and look things up in your notes."); return; }
 
@@ -4738,7 +4738,7 @@ async function syncInit() {
   SYNC.fb.auth.onAuthStateChanged(function (u) {
     SYNC.user = u ? { uid: u.uid, name: u.displayName || "", email: u.email || "", photo: u.photoURL || "" } : null;
     SYNC.status = u ? "in" : "out"; syncUI();
-    if (u) syncOnSignIn();
+    if (u) syncOnSignIn(); else if (SYNC.unsub) { try { SYNC.unsub(); } catch (e) { } SYNC.unsub = null; }
   });
 }
 function syncErr(e) {
@@ -4759,64 +4759,196 @@ async function syncSignIn() {
     toast(syncErr(e), "bad");
   }
 }
-async function syncSignOut() { if (!SYNC.fb) return; await syncPush(true).catch(function () { }); await SYNC.fb.auth.signOut(); var m = syncMeta(); delete m.uid; syncSetMeta(m); toast("Signed out. Your data stays on this device and in your Google account.", "info"); }
-function userDoc() { return SYNC.fb.db.collection("users").doc(SYNC.user.uid); }
-async function cloudRead() {
-  var top = await userDoc().get(); if (!top.exists) return null;
-  var d = top.data(), profs = {};
-  var snap = await userDoc().collection("profiles").get();
-  snap.forEach(function (doc) { profs[doc.id] = doc.data(); });
-  return { reg: d.reg ? JSON.parse(d.reg) : null, updatedAt: d.updatedAt || 0, device: d.device || "", profiles: profs, top: d };
+async function syncSignOut() { if (!SYNC.fb) return; await syncPushActive().catch(function () { }); if (SYNC.unsub) { try { SYNC.unsub(); } catch (e) { } SYNC.unsub = null; } await SYNC.fb.auth.signOut(); var m = syncMeta(); delete m.uid; syncSetMeta(m); toast("Signed out. Your data stays on this device and in your Google account.", "info"); }
+/* ----- merging: two devices never overwrite each other's progress -----
+   Every profile is merged three ways: what this device last agreed with the cloud ("base"), this device, and the cloud.
+   A change made on only one side always survives; finished sessions win over unfinished ones; topic statuses keep the newest. */
+var SYNC_DEV = (function () { try { var d = localStorage.getItem("ecc.devid"); if (!d) { d = Math.random().toString(36).slice(2, 10); localStorage.setItem("ecc.devid", d); } return d; } catch (e) { return "dev"; } })();
+function stab(v) {
+  if (v === undefined) return "~";
+  if (v === null || typeof v !== "object") return JSON.stringify(v);
+  if (Array.isArray(v)) return "[" + v.map(stab).join(",") + "]";
+  return "{" + Object.keys(v).filter(function (k) { return v[k] !== undefined; }).sort().map(function (k) { return JSON.stringify(k) + ":" + stab(v[k]); }).join(",") + "}";
 }
-async function syncPush(all) {
-  if (!SYNC.user || !SYNC.fb) return;
-  var now = Date.now(), batch = SYNC.fb.db.batch(), keys = all ? syncKeys() : [{ id: RULES.id, key: STORE_KEY }];
-  for (var i = 0; i < keys.length; i++) {
-    var raw = null; try { raw = localStorage.getItem(keys[i].key); } catch (e) { }
-    if (!raw) continue;
-    if (raw.length > 900000) { toast("“" + keys[i].id + "” is too large to sync (over 900 KB).", "bad"); continue; }
-    batch.set(userDoc().collection("profiles").doc(keys[i].id), { json: raw, updatedAt: now });
+function isObj(v) { return !!v && typeof v === "object" && !Array.isArray(v); }
+function m3(b, l, r, path) {
+  var sl = stab(l), sr = stab(r); if (sl === sr) return l;
+  var sb = stab(b); if (sb === sl) return r; if (sb === sr) return l;
+  /* both sides changed this part */
+  if (path === "gen") return null; /* both devices re-planned: build one fresh plan from the merged progress */
+  if (path === "sessions" && Array.isArray(l) && Array.isArray(r)) return m3Sessions(Array.isArray(b) ? b : [], l, r);
+  if (isObj(l) && isObj(r)) {
+    if (/^topics\.[^.]+$/.test(path) && typeof l.at === "number" && typeof r.at === "number") return l.at >= r.at ? l : r;
+    var out = {}, ks = Object.keys(l).concat(Object.keys(r).filter(function (k) { return !(k in l); }));
+    ks.forEach(function (k) { var v = m3(isObj(b) ? b[k] : undefined, l[k], r[k], path ? path + "." + k : k); if (v !== undefined) out[k] = v; });
+    return out;
   }
-  batch.set(userDoc(), Object.assign({ reg: JSON.stringify(REG), updatedAt: now, device: navigator.userAgent.slice(0, 80), name: SYNC.user.name || "" }, syncGroqFields()), { merge: true });
-  await batch.commit();
-  var m = syncMeta(); m.uid = SYNC.user.uid; m.lastSync = now; m.dirty = false; syncSetMeta(m); syncUI();
+  if (Array.isArray(l) && Array.isArray(r)) return m3List(Array.isArray(b) ? b : [], l, r, path);
+  if (typeof l === "number" && typeof r === "number" && (path === "seq" || /^activity\./.test(path))) return Math.max(l, r);
+  if (l === undefined) return r; if (r === undefined) return l; /* changed on one side, deleted on the other: keep it */
+  return l;
 }
-function syncApply(cloud) {
-  try {
-    Object.keys(cloud.profiles).forEach(function (id) { localStorage.setItem(profileKey(id), cloud.profiles[id].json); });
-    if (cloud.reg) { var keepActive = cloud.reg.list.some(function (p) { return p.id === REG.active; }) || REG.active === "default"; var reg = cloud.reg; if (keepActive) reg.active = REG.active; writeReg(reg); }
-  } catch (e) { toast("Couldn't save the downloaded data on this device (storage full?).", "bad"); return false; }
-  var m = syncMeta(); m.uid = SYNC.user.uid; m.lastSync = cloud.updatedAt; m.dirty = false; syncSetMeta(m);
-  return true;
+function m3Keyed(b, l, r, idf, pick) {
+  var ib = idf(b), il = idf(l), ir = idf(r), mb = {}, ml = {}, mr = {}, order = [], out = [];
+  b.forEach(function (x, i) { mb[ib[i]] = x; });
+  l.forEach(function (x, i) { if (!(il[i] in ml)) order.push(il[i]); ml[il[i]] = x; });
+  r.forEach(function (x, i) { if (!(ir[i] in ml) && !(ir[i] in mr)) order.push(ir[i]); mr[ir[i]] = x; });
+  order.forEach(function (k) {
+    var bv = mb[k], lv = ml[k], rv = mr[k], v, sl = stab(lv), sr = stab(rv), sb = stab(bv);
+    if (sl === sr) v = lv; else if (sb === sl) v = rv; else if (sb === sr) v = lv; else if (lv && rv) v = pick(bv, lv, rv); else v = lv || rv;
+    if (v !== undefined) out.push(v);
+  });
+  return out;
+}
+function occIds(f) { return function (list) { var c = {}; return list.map(function (x) { var k = f(x), n = c[k] = (c[k] || 0) + 1; return n > 1 ? k + "#" + n : k; }); }; }
+function m3Sessions(b, l, r) {
+  var out = m3Keyed(b, l, r, occIds(function (x) { return !x.manual && x.key ? "k:" + x.key : "i:" + x.id; }), function (bv, lv, rv) {
+    if (rv.done && !lv.done) return rv; if (lv.done && !rv.done) return lv;
+    return m3(bv, lv, rv, "sessions[]");
+  });
+  var seen = {}; out = out.filter(function (x) { if (!x || seen[x.id]) return false; seen[x.id] = 1; return true; });
+  return typeof sessSort === "function" ? out.sort(sessSort) : out;
+}
+function m3List(b, l, r, path) {
+  var all = l.concat(r);
+  if (all.length && all.every(function (x) { return isObj(x) && x.id != null; })) return m3Keyed(b, l, r, occIds(function (x) { return String(x.id); }), function (bv, lv, rv) { return m3(bv, lv, rv, path + "[]"); });
+  var kb = {}, kl = {}, kr = {};
+  b.forEach(function (x) { kb[stab(x)] = 1; }); l.forEach(function (x) { kl[stab(x)] = 1; }); r.forEach(function (x) { kr[stab(x)] = 1; });
+  var out = l.filter(function (x) { var k = stab(x); return !(kb[k] && !kr[k]); });
+  r.forEach(function (x) { var k = stab(x); if (!kl[k] && !kb[k]) { out.push(x); kl[k] = 1; } });
+  return out;
+}
+
+/* ----- cloud plumbing ----- */
+function userDoc() { return SYNC.fb.db.collection("users").doc(SYNC.user.uid); }
+function profDoc(id) { return userDoc().collection("profiles").doc(id); }
+function baseKey(id) { return "ecc.syncbase." + (SYNC.user ? SYNC.user.uid : "") + "." + id; }
+function baseGet(id) { try { return localStorage.getItem(baseKey(id)); } catch (e) { return null; } }
+function baseSet(id, j) { try { if (j) localStorage.setItem(baseKey(id), j); } catch (e) { } }
+function parseJ(s) { try { return s ? JSON.parse(s) : null; } catch (e) { return null; } }
+function localJson(id) { if (id === RULES.id && S) return JSON.stringify(S); try { return localStorage.getItem(profileKey(id)); } catch (e) { return null; } }
+/* merge the cloud copy of a profile with this device's copy */
+function mergeProfile(id, cj) {
+  var lj = localJson(id), active = id === RULES.id;
+  if (!cj) return { json: lj, lj: lj, changedLocal: false, needPush: !!lj };
+  if (!lj) return { json: cj, lj: lj, changedLocal: true, needPush: false };
+  if (lj === cj) return { json: lj, lj: lj, changedLocal: false, needPush: false };
+  var bj = baseGet(id);
+  if (bj === cj) return { json: lj, lj: lj, changedLocal: false, needPush: true }; /* only this device changed */
+  var l = active ? S : parseJ(lj), r = parseJ(cj), b = parseJ(bj);
+  if (!r) return { json: lj, lj: lj, changedLocal: false, needPush: true };
+  if (active && (r.v || 0) < (l.v || 0)) { try { r = migrate(r); } catch (e) { } }
+  var mo = m3(b, l, r, ""), mj = JSON.stringify(mo);
+  return { json: mj, lj: lj, obj: active ? mo : null, changedLocal: mj !== lj, needPush: mj !== cj };
+}
+/* put a merged copy onto this device; changes made meanwhile are merged in, not lost */
+function applyLocal(id, mj, fromLj, obj) {
+  if (id !== RULES.id) { try { localStorage.setItem(profileKey(id), mj); } catch (e) { } return; }
+  /* the merged object shares this device's unchanged parts, so anything already open on screen keeps working */
+  var m = obj || parseJ(mj); if (!m) return;
+  var nowJ = JSON.stringify(S), extra = nowJ !== fromLj && nowJ !== mj;
+  if (extra) m = m3(parseJ(fromLj), S, m, "");
+  Object.keys(S).forEach(function (k) { if (!(k in m)) delete S[k]; });
+  Object.keys(m).forEach(function (k) { S[k] = m[k]; });
+  if (!S.gen) generate(); else if (extra) save(); else { try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) { } }
+  syncRender();
+}
+function syncRender() {
+  if ($("#modal") || UI.focus) { clearTimeout(SYNC.rt); SYNC.rt = setTimeout(syncRender, 1500); return; }
+  try { render(); } catch (e) { console.error(e); }
+}
+function syncDone() { var m = syncMeta(); m.uid = SYNC.user.uid; m.lastSync = Date.now(); if (localJson(RULES.id) === baseGet(RULES.id)) m.dirty = false; syncSetMeta(m); SYNC.why = ""; syncUI(); }
+/* send one profile: read the cloud copy, merge, write, all in one transaction */
+async function syncPushProfile(id) {
+  var res = null, ref = profDoc(id);
+  await SYNC.fb.db.runTransaction(function (t) {
+    return t.get(ref).then(function (snap) {
+      res = mergeProfile(id, snap.exists ? (snap.data() || {}).json : null);
+      if (res.json && res.json.length > 900000) throw { code: "too-large", message: "“" + id + "” is too large to sync (over 900 KB)." };
+      if (res.json && res.needPush) t.set(ref, { json: res.json, updatedAt: Date.now(), by: SYNC_DEV });
+    });
+  });
+  if (res && res.changedLocal) applyLocal(id, res.json, res.lj, res.obj);
+  if (res && res.json) baseSet(id, res.json);
+}
+function syncTopFields() { return Object.assign({ reg: JSON.stringify(REG), updatedAt: Date.now(), device: navigator.userAgent.slice(0, 80), name: SYNC.user.name || "" }, syncGroqFields()); }
+async function syncPushActive() {
+  if (!SYNC.user || !SYNC.fb) return;
+  if (SYNC.pushing) { SYNC.again = true; return; }
+  SYNC.pushing = true; clearTimeout(SYNC.timer);
+  try { await syncPushProfile(RULES.id); await userDoc().set(syncTopFields(), { merge: true }); syncDone(); }
+  catch (e) { SYNC.why = syncErr(e); syncUI(); }
+  finally { SYNC.pushing = false; if (SYNC.again) { SYNC.again = false; syncSoon(800); } }
+}
+function syncSoon(ms) { clearTimeout(SYNC.timer); SYNC.timer = setTimeout(syncPushActive, ms == null ? 1500 : ms); }
+/* full sync: every profile and the profile list */
+async function syncAll(cloudReg) {
+  if (cloudReg && cloudReg.list) {
+    var have = {}, changed = false; REG.list.forEach(function (p) { have[p.id] = 1; });
+    cloudReg.list.forEach(function (p) { if (!have[p.id]) { REG.list.push(p); changed = true; } });
+    if (changed) writeReg(REG);
+  }
+  var ids = syncKeys().map(function (k) { return k.id; });
+  for (var i = 0; i < ids.length; i++) await syncPushProfile(ids[i]);
+  await userDoc().set(syncTopFields(), { merge: true });
+  syncDone();
+}
+/* live updates: a change on another device shows up here within seconds */
+function syncListen() {
+  if (SYNC.unsub) { try { SYNC.unsub(); } catch (e) { } }
+  SYNC.unsub = userDoc().collection("profiles").onSnapshot(function (qs) {
+    qs.docChanges().forEach(function (ch) {
+      if (ch.type === "removed" || (ch.doc.metadata && ch.doc.metadata.hasPendingWrites)) return;
+      var d = ch.doc.data() || {}; if (d.json) syncIncoming(ch.doc.id, d.json);
+    });
+  }, function (e) { SYNC.why = syncErr(e); syncUI(); });
+}
+function syncIncoming(id, cj) {
+  if (cj === baseGet(id) || SYNC.pushing) { if (SYNC.pushing && cj !== baseGet(id)) SYNC.again = true; return; }
+  var res = mergeProfile(id, cj);
+  baseSet(id, cj);
+  if (res.changedLocal) { applyLocal(id, res.json, res.lj, res.obj); if (id === RULES.id && !res.needPush) toast("Updated with changes from your other device. ☁️", "info"); }
+  if (res.needPush) { if (id === RULES.id) syncSoon(600); else syncPushProfile(id).catch(function () { }); }
+  else syncDone();
 }
 async function syncOnSignIn() {
   if (SYNC.busy) return; SYNC.busy = true;
   try {
-    var m = syncMeta(), cloud = await cloudRead();
-    if (cloud) syncGroqPull(cloud.top);
-    if (!cloud) { await syncPush(true); toast("Signed in. Your progress is now backed up to your Google account. ☁️", "good"); return; }
-    var sameAcct = m.uid === SYNC.user.uid;
-    if (sameAcct && cloud.updatedAt <= (m.lastSync || 0)) { if (m.dirty) await syncPush(true); return; }
-    if (sameAcct && !m.dirty) { if (syncApply(cloud)) { toast("Loaded your latest progress from your Google account.", "good"); setTimeout(function () { location.reload(); }, 600); } return; }
-    if (!localHasProgress()) { if (syncApply(cloud)) { toast("Welcome back! Your progress was loaded from your Google account.", "good"); setTimeout(function () { location.reload(); }, 600); } return; }
-    syncConflict(cloud);
-  } catch (e) { toast(syncErr(e), "bad"); }
+    var m = syncMeta(), top = await userDoc().get(), d = top.exists ? top.data() : null, cloud = {}, n = 0;
+    if (d) syncGroqPull(d);
+    var snap = await userDoc().collection("profiles").get();
+    snap.forEach(function (doc) { var x = doc.data() || {}; if (x.json) { cloud[doc.id] = x.json; n++; } });
+    if (!n) { await syncAll(null); toast("Signed in. Your progress is now backed up to your Google account. ☁️", "good"); syncListen(); return; }
+    if (m.uid !== SYNC.user.uid && localHasProgress()) { syncConflict(cloud, d); return; }
+    await syncAll(d && d.reg ? parseJ(d.reg) : null);
+    syncListen();
+  } catch (e) { SYNC.why = syncErr(e); syncUI(); toast(SYNC.why, "bad"); }
   finally { SYNC.busy = false; }
 }
-function syncConflict(cloud) {
-  var when = cloud.updatedAt ? new Date(cloud.updatedAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "earlier";
-  openModal('<div class="modal-h"><h2>Which progress should we keep?</h2></div><p class="muted">Your Google account already has saved progress (last updated ' + esc(when) + "), and this device has its own progress too.</p>" +
-    '<div class="stack" style="margin-top:14px"><button class="btn primary lg" id="sc-cloud">☁️ Use my Google account\'s progress</button><button class="btn lg" id="sc-local">💻 Keep this device\'s progress and replace the cloud copy</button><p class="tiny muted">Tip: if you\'re unsure, export a backup from Preferences first.</p></div>');
-  $("#sc-cloud").onclick = function () { closeModal(); if (syncApply(cloud)) { toast("Loaded your progress from Google.", "good"); setTimeout(function () { location.reload(); }, 500); } };
-  $("#sc-local").onclick = function () { closeModal(); syncPush(true).then(function () { toast("This device's progress is now saved to your Google account.", "good"); }, function (e) { toast(syncErr(e), "bad"); }); };
+/* first sign-in on a device that already has its own progress */
+function syncConflict(cloud, d) {
+  openModal('<div class="modal-h"><h2>This device has progress too</h2></div><p class="muted">Your Google account already has saved progress, and this device has its own. What should happen?</p>' +
+    '<div class="stack" style="margin-top:14px"><button class="btn primary lg" id="sc-both">🤝 Combine both (recommended)</button><button class="btn lg" id="sc-cloud">☁️ Use only my Google account\'s progress</button><button class="btn lg" id="sc-local">💻 Use only this device\'s progress</button><p class="tiny muted">Combining keeps every finished session and the newest status of every topic from both.</p></div>');
+  var done = function (p, msg) { closeModal(); p.then(function () { syncListen(); toast(msg, "good"); }, function (e) { toast(syncErr(e), "bad"); }); };
+  $("#sc-both").onclick = function () { done(syncAll(d && d.reg ? parseJ(d.reg) : null), "Combined. Both copies are now one, on every device. ☁️"); };
+  $("#sc-cloud").onclick = function () {
+    Object.keys(cloud).forEach(function (id) { baseSet(id, cloud[id]); if (id === RULES.id) applyLocal(id, cloud[id], JSON.stringify(S)); else try { localStorage.setItem(profileKey(id), cloud[id]); } catch (e) { } });
+    done(syncAll(d && d.reg ? parseJ(d.reg) : null), "Loaded your progress from Google.");
+  };
+  $("#sc-local").onclick = function () { Object.keys(cloud).forEach(function (id) { baseSet(id, cloud[id]); }); var ids = syncKeys().map(function (k) { return k.id; });
+    done((async function () { for (var i = 0; i < ids.length; i++) { var j = localJson(ids[i]); if (j) { await profDoc(ids[i]).set({ json: j, updatedAt: Date.now(), by: SYNC_DEV }); baseSet(ids[i], j); } } await userDoc().set(syncTopFields(), { merge: true }); syncDone(); })(), "This device's progress is now saved to your Google account."); };
 }
 /* called after every local save */
 function syncTouched() {
-  if (!SYNC.user) { var m0 = syncMeta(); if (m0.uid) { m0.dirty = true; syncSetMeta(m0); } return; }
-  var m = syncMeta(); m.dirty = true; syncSetMeta(m);
-  clearTimeout(SYNC.timer); SYNC.timer = setTimeout(function () { syncPush(false).catch(function (e) { SYNC.why = syncErr(e); syncUI(); }); }, 4000);
+  var m = syncMeta(); if (!m.uid) return;
+  if (!m.dirty) { m.dirty = true; syncSetMeta(m); }
+  if (SYNC.user) syncSoon();
 }
-window.addEventListener("beforeunload", function () { if (SYNC.user && syncMeta().dirty) { try { syncPush(false); } catch (e) { } } });
+/* send right away when the page is hidden or closed (phones rarely warn before closing a tab), and when back online */
+function syncFlush() { if (SYNC.user && syncMeta().dirty) syncPushActive(); }
+document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") syncFlush(); else if (SYNC.user && !SYNC.busy) syncFlush(); });
+window.addEventListener("pagehide", syncFlush);
+window.addEventListener("online", syncFlush);
 function syncCard() {
   var st = SYNC.status, m = syncMeta(), h = '<div class="card span-12" id="sync-card"><div class="card-h"><h2>Sign in with Google</h2>' + (st === "in" ? '<span class="chip good">Syncing</span>' : "") + "</div>";
   if (st === "unconfigured") return h + '<p class="small muted">Google sign-in isn\'t set up on this copy of the site yet. (Site owner: see “Google sign-in setup” in the README.)</p></div>';
@@ -4830,7 +4962,7 @@ function syncUI() { var c = $("#sync-card"); if (c) c.outerHTML = syncCard(); va
 if (typeof ACT !== "undefined") {
   ACT.syncIn = function () { syncSignIn(); };
   ACT.syncOut = function () { confirmBox("Sign out of Google?", "Your progress stays on this device and in your Google account. Sign in again any time to keep syncing.", "Sign out", function () { syncSignOut().then(render); }); };
-  ACT.syncNow = function () { SYNC.why = ""; syncPush(true).then(function () { toast("Synced. ☁️", "good"); }, function (e) { SYNC.why = syncErr(e); syncUI(); toast(SYNC.why, "bad"); }); };
+  ACT.syncNow = function () { SYNC.why = ""; syncAll(null).then(function () { toast("Synced. ☁️", "good"); }, function (e) { SYNC.why = syncErr(e); syncUI(); toast(SYNC.why, "bad"); }); };
   ACT.syncRetry = function () { SYNC.status = "loading"; syncUI(); syncInit(); };
 }
 
