@@ -944,6 +944,143 @@ html.formal .spinner { border-style: solid; border-top-color: transparent; }
 .rest-banner.hol { background-color: var(--hi-soft); }
 .cal-cell.hol { background-image: repeating-linear-gradient(-50deg, rgba(255,210,63,.32) 0 5px, transparent 5px 11px); }
 
+/* ============ Question cards: a marked exercise book ============
+   Number in the margin, marks in square brackets at the right (as on the exam paper),
+   and once answered, a pen tick or cross in the margin with the working underneath. */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.eyebrow { font-size: 16px; letter-spacing: 0; text-transform: none; color: var(--faint); }
+.q-card, .rv-item { display: grid; grid-template-columns: 50px minmax(0, 1fr); column-gap: 16px; }
+.q-card { padding: 18px 24px 22px 10px; }
+.q-margin { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 1px 8px 0 0; border-right: 2px solid var(--margin); }
+.q-num { font-size: 29px; line-height: 1; color: var(--muted); font-variant-numeric: tabular-nums; }
+.q-main { min-width: 0; }
+.pen { fill: none; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; flex: none; overflow: visible; }
+.pen.right { stroke: var(--good); } .pen.wrong { stroke: var(--bad); } .pen.part { stroke: var(--warn); } .pen.skip { stroke: var(--faint); stroke-width: 3.5; }
+.pen path { stroke-dasharray: 70; }
+.m-ans .q-margin .pen path { animation: pen-draw .42s ease-out backwards .12s; }
+.m-ans .q-margin .pen path + path { animation-delay: .36s; }
+@keyframes pen-draw { from { stroke-dashoffset: 70; } }
+.q-meta { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px; font-size: 15.5px; line-height: 1.35; color: var(--faint); }
+.q-meta-l { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 14px; flex: 1; min-width: 0; }
+.q-card + .q-card { margin-top: 16px; }
+.q-meta .chip { min-height: 22px; }
+.q-topic { color: var(--muted); }
+.q-diff { display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; }
+.q-diff i { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid currentColor; }
+.q-diff i:nth-of-type(3) { margin-right: 3px; }
+.q-diff.d1 i:nth-of-type(1), .q-diff.d2 i:nth-of-type(-n+2), .q-diff.d3 i { background: currentColor; }
+.q-ai { color: var(--accent); white-space: nowrap; }
+.q-marks { flex: none; font-size: 17.5px; color: var(--muted); white-space: nowrap; }
+.q-text { font-size: 21px; line-height: 1.4; max-width: 68ch; }
+.ans-row { display: flex; gap: 10px; margin-top: 16px; }
+.ans-row .input { flex: 1; min-width: 0; }
+.ans-long { margin-top: 16px; min-height: 120px; }
+.opt .opt-t { flex: 1 1 auto; min-width: 0; }
+.opt-tag { display: inline-flex; align-items: center; gap: 5px; flex: none; margin-left: auto; font-family: var(--display); font-size: 15px; white-space: nowrap; }
+.opt-tag .pen { stroke-width: 6; }
+.opt.right .opt-tag { color: var(--good); } .opt.wrong .opt-tag { color: var(--bad); }
+.opts.marked .opt { cursor: default; flex-wrap: wrap; color: var(--text); }
+.opts.marked .opt:hover { transform: none; animation: none; }
+.opt.dim { opacity: .55; }
+.opt.right .k { background: var(--good); border-color: var(--good); color: var(--panel-solid); }
+.opt.wrong .k { background: var(--bad); border-color: var(--bad); color: var(--panel-solid); }
+.feedback { border: 0; border-left: 5px solid var(--line-2); border-radius: 3px 12px 10px 3px / 3px 10px 12px 3px; padding: 10px 14px 11px 14px; background: var(--panel-hi); }
+.feedback.good { border-color: var(--good); } .feedback.bad { border-color: var(--bad); } .feedback.info { border-color: var(--hi); }
+.fb-h { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; white-space: normal; }
+.fb-h .pen { stroke-width: 5.5; }
+.fb-ans { font-size: 1.1em; }
+.fb-x { margin-top: 5px; white-space: pre-wrap; max-width: 70ch; }
+.self-mark { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 12px; font-size: 16px; }
+.q-nav { margin-top: 20px; }
+/* numbered dots: progress, results and navigation in one row */
+.q-track { display: flex; align-items: center; gap: 14px; margin: 14px 0 0; padding: 7px 4px; font-size: 15.5px; color: var(--muted); border-bottom: 2px dashed var(--line); }
+.q-track + .q-card { margin-top: 14px; }
+.study-pane .q-track { position: sticky; top: var(--bar-h, 66px); z-index: 2; margin-inline: -8px; padding-inline: 12px; background-color: var(--paper); background-image: var(--grain); }
+.qt-l, .qt-score { flex: none; white-space: nowrap; }
+.qt-l b { font-weight: 400; font-size: 18px; color: var(--text); }
+.qt-score { font-size: 17.5px; color: var(--text); }
+.qt-score .qt-w { font-size: 15.5px; color: var(--muted); }
+.qt-dots { display: flex; gap: 7px; flex: 1; min-width: 0; overflow-x: auto; padding: 5px 3px; scrollbar-width: none; }
+.qt-dots::-webkit-scrollbar { display: none; }
+.qt-dot { position: relative; flex: none; width: 31px; height: 31px; padding: 0; border-radius: 50% 46% 54% 48%; border: 2px solid var(--line-2); background: var(--panel); color: var(--muted); font-family: var(--font); font-size: 16.5px; line-height: 1; cursor: pointer; transition: transform .15s; }
+.qt-dot:hover { transform: translateY(-2px); }
+.qt-dot.right { border-color: var(--good); background: var(--good-soft); color: var(--good); }
+.qt-dot.wrong { border-color: var(--bad); background: var(--bad-soft); color: var(--bad); }
+.qt-dot.part { border-color: var(--warn); background: var(--warn-soft); color: var(--warn); }
+.qt-dot.right::after, .qt-dot.wrong::after, .qt-dot.part::after { content: "✓"; position: absolute; right: -6px; top: -7px; width: 15px; height: 15px; border-radius: 50%; display: grid; place-items: center; font: 700 10px/1 system-ui, sans-serif; color: var(--panel-solid); background: var(--good); }
+.qt-dot.wrong::after { content: "✕"; background: var(--bad); }
+.qt-dot.part::after { content: "½"; background: var(--warn); }
+.qt-dot.cur { color: var(--text); border-color: var(--ink); box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--ink); }
+/* study screen: header, brief and bar */
+.study-title { margin-top: 2px; font-size: clamp(25px, 5.4vw, 34px); line-height: 1.15; }
+.st-brief { display: grid; gap: 3px; margin-top: 12px; max-width: 74ch; font-size: 17px; color: var(--muted); }
+.st-brief p { margin: 0; }
+.st-brief b { margin-right: 6px; font-family: var(--display); font-weight: 400; color: var(--text); }
+.study-bar { flex-wrap: nowrap; }
+.sb-info { flex: 1; min-width: 0; gap: 10px; overflow: hidden; }
+.sb-info .chip { flex: none; }
+.sb-info .small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.study-body { padding-bottom: 120px; }
+body.studying .pip-btn { width: 84px; height: 105px; }
+body.studying .pip-hi { right: 76px; bottom: 72px; }
+/* Quiz Centre */
+.quiz-head { align-items: flex-end; }
+.quiz-score { align-self: start; position: sticky; top: 16px; }
+.score-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; color: var(--muted); font-size: 16px; }
+.score-list b { font-family: var(--display); font-weight: 400; font-size: 18px; color: var(--text); }
+.rv-list { display: grid; }
+.rv-item { padding: 14px 0; border-top: 2px dashed var(--line); }
+.rv-item:first-child { border-top: 0; padding-top: 2px; }
+.rv-item .q-num { font-size: 23px; } .rv-item .pen { width: 26px; height: 26px; }
+.rv-q { font-size: 18px; line-height: 1.4; }
+.rv-a { display: grid; grid-template-columns: 124px minmax(0, 1fr); gap: 8px; margin-top: 5px; font-size: 16.5px; }
+.rv-l { color: var(--faint); }
+.rv-item.is-wrong .rv-a:first-of-type span + span { color: var(--bad); }
+.rv-item.is-skip .rv-a span + span { color: var(--faint); }
+.rv-x { margin-top: 6px; padding-left: 12px; border-left: 3px solid var(--line); color: var(--muted); font-size: 16px; max-width: 70ch; }
+.load-steps { list-style: none; margin: 4px 0 10px; padding: 0; display: grid; gap: 4px; text-align: left; font-size: 16.5px; color: var(--faint); }
+.load-steps li { display: flex; align-items: center; gap: 9px; }
+.load-steps li::before { content: ""; flex: none; width: 15px; height: 15px; border-radius: 50%; border: 2px solid currentColor; }
+.load-steps li.on { color: var(--text); }
+.load-steps li.on::before { border-color: var(--ink); border-top-color: transparent; animation: spin .8s linear infinite; }
+.load-steps li.done { color: var(--good); }
+.load-steps li.done::before { background: var(--good); border-color: var(--good); }
+@media (max-width: 860px) {
+  .q-card { grid-template-columns: 34px minmax(0, 1fr); column-gap: 11px; padding: 14px 14px 18px 6px; }
+  .q-margin { padding-right: 5px; }
+  .q-num { font-size: 23px; } .q-margin .pen { width: 26px; height: 26px; }
+  .q-text { font-size: 19.5px; }
+  .q-meta { font-size: 15px; gap: 1px 12px; }
+  .q-track { gap: 10px; }
+  .rv-item { grid-template-columns: 32px minmax(0, 1fr); column-gap: 10px; }
+  .rv-a { grid-template-columns: 1fr; gap: 0; }
+  .quiz-score { position: static; }
+  body.studying .pip-btn { width: 54px; height: 68px; }
+  body.studying .pip-wrap { right: 2px; bottom: 2px; }
+  body.studying .pip-hi { right: 50px; bottom: 50px; }
+  .main { padding-bottom: 150px; }
+}
+@media (max-width: 560px) {
+  .sb-info { display: none; }
+  .study-bar { justify-content: space-between; }
+  .study-bar > .row { flex: 1; justify-content: flex-end; gap: 8px; }
+  .study-time { margin-right: auto; text-align: left; }
+  .qt-w { display: none; }
+  .fc-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .fc-actions .btn { justify-content: center; }
+  .fc-actions [data-r] { order: -1; }
+  .study-body .seg { display: flex; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .study-body .seg button { flex: 1 1 auto; padding: 3px 6px; font-size: 15.5px; white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) { .m-ans .q-margin .pen path { animation: none; } }
+html.formal .q-margin { border-right: 1px solid var(--line-2); }
+html.formal .qt-dot { border-radius: 4px; border-width: 1px; }
+html.formal .feedback { border: 1px solid var(--line-2); border-left-width: 4px; border-radius: 3px; }
+html.formal .feedback.good { border-left-color: var(--good); } html.formal .feedback.bad { border-left-color: var(--bad); }
+html.formal .q-track { border-bottom-style: solid; border-bottom-width: 1px; }
+html.formal .study-pane .q-track { background-image: none; }
+html.formal .m-ans .q-margin .pen path { animation: none; }
+
 </style>
 </head>
 <body>
@@ -2892,7 +3029,8 @@ function applyAI() {
   Object.keys(S.ai.topics).forEach(function (tid) {
     var m = S.ai.topics[tid], tp = TOPIC[tid]; if (!tp || !m) return;
     tp.n = m.n || null;
-    (m.qs || []).forEach(function (q, i) { var c = {}; Object.keys(q).forEach(function (k) { c[k] = q[k]; }); c.id = tid + "q" + i; c.t = tid; c.subj = tp.subj; QUIZ.push(c); });
+    var seenQ = []; /* saved AI questions keep their numbering (stats use it); faulty or repeated ones are just not shown */
+    (m.qs || []).forEach(function (q, i) { var c = {}; Object.keys(q).forEach(function (k) { c[k] = q[k]; }); c.id = tid + "q" + i; c.t = tid; c.subj = tp.subj; if (typeof qcFilter === "function" && !qcFilter([c], seenQ).length) return; QUIZ.push(c); });
     (m.cards || []).forEach(function (c, i) { FLASH_CARDS.push({ id: tid + "c" + i, t: tid, front: c[0], back: c[1], subj: tp.subj }); });
   });
   QBY = {}; QUIZ.forEach(function (q) { QBY[q.id] = q; });
@@ -2986,7 +3124,7 @@ async function aiMakeTopic(tid) {
   AI.busy[tid] = (async function () {
     var siblings = s.units[tp.ui].topics.map(function (t) { return t.t; }).join("; ");
     var prompt = "You write accurate, exam-focused revision material for a school student.\nSubject: " + s.name + "\nUnit: " + tp.unit + " (topics in this unit: " + siblings + ")\nTopic: " + tp.t +
-      "\n\nReturn ONLY a JSON object with this exact shape:\n{\"notes\":{\"objective\":\"one sentence\",\"summary\":\"3-4 sentences\",\"definitions\":[[\"term\",\"meaning\"]],\"keyFacts\":[\"...\"],\"formulas\":[\"...\"],\"examples\":[[\"worked question\",\"step-by-step answer\"]],\"remember\":[\"...\"]},\"questions\":[{\"type\":\"mcq\",\"difficulty\":1,\"q\":\"...\",\"options\":[\"a\",\"b\",\"c\",\"d\"],\"answer\":0,\"explanation\":\"...\"},{\"type\":\"short\",\"difficulty\":2,\"q\":\"...\",\"answers\":[\"accepted answer\",\"variant\"],\"explanation\":\"...\"},{\"type\":\"structured\",\"difficulty\":3,\"marks\":3,\"q\":\"...\",\"markScheme\":\"point [1] ...\"}],\"flashcards\":[[\"front\",\"back\"]]}\n\nRules: 3-6 definitions, 4-6 key facts, formulas only if the topic has them (else []), 1-2 worked examples if useful, 3 points to remember. Exactly 6 questions: 3 mcq (answer = index of the correct option), 2 short (answers are short exact values or words), 1 structured. 5 flashcards. Pitch it at the level the syllabus implies. Be factually careful; if a fact is uncertain, leave it out. Plain text only, no markdown.";
+      "\n\nReturn ONLY a JSON object with this exact shape:\n{\"notes\":{\"objective\":\"one sentence\",\"summary\":\"3-4 sentences\",\"definitions\":[[\"term\",\"meaning\"]],\"keyFacts\":[\"...\"],\"formulas\":[\"...\"],\"examples\":[[\"worked question\",\"step-by-step answer\"]],\"remember\":[\"...\"]},\"questions\":[{\"type\":\"mcq\",\"difficulty\":1,\"q\":\"...\",\"explanation\":\"worked out step by step, ending with the answer\",\"correct\":\"the one correct answer in full\",\"wrong\":[\"wrong answer\",\"wrong answer\",\"wrong answer\"]},{\"type\":\"short\",\"difficulty\":2,\"q\":\"...\",\"answers\":[\"accepted answer\",\"variant\"],\"explanation\":\"...\"},{\"type\":\"structured\",\"difficulty\":3,\"marks\":3,\"q\":\"...\",\"markScheme\":\"point [1] ...\"}],\"flashcards\":[[\"front\",\"back\"]]}\n\nRules: 3-6 definitions, 4-6 key facts, formulas only if the topic has them (else []), 1-2 worked examples if useful, 3 points to remember. Exactly 6 questions: 3 mcq (work the answer out in the explanation first, then copy it into correct; give exactly 3 different wrong answers; no option letters, no 'all/none of the above': the app shuffles the options), 2 short (answers are short exact values or words), 1 structured. Each question appears once; never include notes to yourself, corrections or revised copies, and never mention option letters or positions in an explanation. 5 flashcards. Pitch it at the level the syllabus implies. Be factually careful; if a fact is uncertain, leave it out. Plain text only, no markdown.";
     var v = await aiJSON(prompt, { modelTier: "default" });
     var n = v.notes || {};
     var arr = function (x) { return Array.isArray(x) ? x : []; };
@@ -2995,10 +3133,14 @@ async function aiMakeTopic(tid) {
     var qs = [];
     arr(v.questions).forEach(function (q) {
       var d = Math.max(1, Math.min(3, +q.difficulty || 2));
-      if (q.type === "mcq" && Array.isArray(q.options) && q.options.length >= 2 && q.options.length <= 6 && +q.answer >= 0 && +q.answer < q.options.length) qs.push({ y: "mcq", d: d, q: String(q.q), o: q.options.map(String), a: +q.answer, x: String(q.explanation || "") });
-      else if (q.type === "short" && Array.isArray(q.answers) && q.answers.length) qs.push({ y: "short", d: d, q: String(q.q), a: q.answers.map(String), x: String(q.explanation || "") });
-      else if (q.type === "structured" && q.q) qs.push({ y: "struct", d: d, m: Math.max(1, Math.min(10, +q.marks || 3)), q: String(q.q), x: String(q.markScheme || "") });
+      if (!q || !q.q) return;
+      var item = null, mc;
+      if (q.type === "mcq" && (mc = qcBuildMcq(q))) item = { y: "mcq", d: d, q: String(q.q), o: mc.o, a: mc.a, x: String(q.explanation || "") };
+      else if (q.type === "short" && Array.isArray(q.answers) && q.answers.length) item = { y: "short", d: d, q: String(q.q), a: q.answers.map(String), x: String(q.explanation || "") };
+      else if (q.type === "structured") item = { y: "struct", d: d, m: Math.max(1, Math.min(10, +q.marks || 3)), q: String(q.q), x: String(q.markScheme || "") };
+      if (item) qs.push(item);
     });
+    qs = qcFilter(qs, []); /* drop repeats, leaked notes-to-self and answer keys that clash with their own working */
     var cards = pairs(v.flashcards);
     if (!notes.s && !qs.length) throw new Error("The AI answer was empty");
     S.ai.topics[tid] = { n: notes, qs: qs, cards: cards, at: nowMs() }; save(); applyAI();
@@ -3160,6 +3302,59 @@ function ring(p, size, color, label, stroke) {
 function chipSubj(sid) { var s = SUBJ[sid]; return '<span class="chip"><span class="dot" style="background:' + s.color + '"></span>' + esc(s.short) + "</span>"; }
 function statusChip(st) { return '<span class="chip ' + (st === "done" ? "good" : st === "preparing" ? "accent" : "") + '">' + STATUS_LABEL[st] + "</span>"; }
 function typeChip(x) { var k = x.kind === "final" ? "Final recap" : x.optional ? "Optional · holiday" : x.type; var cls = x.optional ? "good" : x.type === "Learning" ? "accent" : x.type === "Practice" ? "warn" : "rest"; return '<span class="chip ' + cls + '">' + esc(k) + "</span>"; }
+/* ---------- question parts shared by the study screen and Quiz Centre: laid out like a marked exercise book ---------- */
+var QTYPE = { mcq: "Multiple choice", short: "Short answer", struct: "Structured", exam: "Exam-style" };
+function qState(q, a) { if (!q || !a || !a.checked) return ""; if (q.y === "mcq" || q.y === "short") return a.ok ? "right" : "wrong"; return a.got >= (q.m || 1) ? "right" : a.got ? "part" : "wrong"; }
+/* a tick or cross drawn the way a teacher's pen would */
+function penMark(state, size) {
+  if (!state) return "";
+  var p = state === "wrong" ? '<path d="M8 8C14 15 24 25 33 33"/><path d="M32 7C25 15 15 25 7 34"/>' : state === "skip" ? '<path d="M9 21C16 19 25 22 32 20"/>' : '<path d="M6 22C10 25 13 29 16 34 20 22 27 12 35 6"/>';
+  return '<svg class="pen ' + state + '" viewBox="0 0 40 40" width="' + (size || 34) + '" height="' + (size || 34) + '" aria-hidden="true">' + p + "</svg>";
+}
+function marksLabel(m) { return m + (m === 1 ? " mark" : " marks"); }
+function qMeta(q, o) {
+  o = o || {};
+  var d = ["", "Easy", "Medium", "Hard"][q.d] || "", m = q.m || 1;
+  return '<div class="q-meta"><div class="q-meta-l">' + (o.subj ? chipSubj(q.subj) : "") + '<span class="q-topic">' + esc(TOPIC[q.t].t) + "</span>" +
+    (o.type ? '<span class="q-type">' + QTYPE[q.y] + "</span>" : "") +
+    (d ? '<span class="q-diff d' + q.d + '"><i></i><i></i><i></i>' + d + "</span>" : "") +
+    (q.ai ? '<span class="q-ai" title="Written by AI. Every answer was checked a second time before you saw it.">✨ AI-written</span>' : "") +
+    '</div><span class="q-marks" title="' + marksLabel(m) + '"><span class="sr">' + marksLabel(m) + '</span><span aria-hidden="true">[' + m + "]</span></span></div>";
+}
+function qMargin(n, st) { return '<div class="q-margin"><span class="q-num">' + n + "</span>" + penMark(st) + "</div>"; }
+function qOpts(q, a, act, withQ) {
+  a = a || {};
+  var done = !!a.checked;
+  return '<div class="opts' + (done ? " marked" : "") + '">' + q.o.map(function (o, j) {
+    var c = "opt", tag = "";
+    if (done) {
+      if (j === q.a) { c += " right"; tag = '<span class="opt-tag">' + penMark("right", 18) + (a.given === j ? "Your answer" : "Correct answer") + "</span>"; }
+      else if (j === a.given) { c += " wrong"; tag = '<span class="opt-tag">' + penMark("wrong", 18) + "Your answer</span>"; }
+      else c += " dim";
+    } else if (a.given === j) c += " sel";
+    return '<button class="' + c + '" data-act="' + act + '"' + (withQ ? ' data-q="' + q.id + '"' : "") + ' data-i="' + j + '"' + (done ? " disabled" : "") + '><span class="k">' + "ABCDEF"[j] + '</span><span class="opt-t">' + esc(o) + "</span>" + tag + "</button>";
+  }).join("") + "</div>";
+}
+function qFeedback(q, a) {
+  if (!a || !a.checked) return "";
+  var st = qState(q, a);
+  if (q.y === "mcq" || q.y === "short") {
+    var ans = q.y === "mcq" ? q.o[q.a] : q.a[0];
+    return '<div class="feedback ' + (a.ok ? "good" : "bad") + '" role="status"><div class="fb-h">' + penMark(st, 22) + (a.ok ? "<b>Correct.</b>" : '<b>Not quite.</b><span>The answer is <b class="fb-ans">' + esc(ans) + "</b></span>") + "</div>" + (q.x ? '<div class="fb-x">' + esc(q.x) + "</div>" : "") + "</div>";
+  }
+  return '<div class="feedback ' + (st === "right" ? "good" : st === "part" ? "info" : "bad") + '" role="status"><div class="fb-h">' + penMark(st, 22) + "<b>You gave yourself " + a.got + " out of " + q.m + ".</b></div></div>";
+}
+function qScheme(q) { return '<div class="feedback info scheme"><div class="fb-h"><b>Mark scheme</b></div><div class="fb-x">' + esc(q.x) + "</div></div>"; }
+function qSelfMark(q, act, withQ) { return '<div class="self-mark"><span>Mark it yourself. How many did you get?</span><div class="row wrap" style="gap:6px">' + Array.apply(null, Array(q.m + 1)).map(function (_, k) { return '<button class="btn sm" data-act="' + act + '"' + (withQ ? ' data-q="' + q.id + '"' : "") + ' data-m="' + k + '" aria-label="' + k + " out of " + q.m + '">' + k + "</button>"; }).join("") + '<span class="small muted">out of ' + q.m + "</span></div></div>"; }
+/* the row of numbered dots: what is answered, what was right, and a way to jump to any question */
+function qTrack(ids, ansOf, o) {
+  var done = 0, got = 0, max = 0, words = { right: "correct", wrong: "incorrect", part: "partly correct" };
+  var dots = ids.map(function (id, i) {
+    var q = QBY[id], a = ansOf(id), st = qState(q, a); if (st) { done++; got += a.got || 0; max += q.m || 1; }
+    return '<button class="qt-dot' + (st ? " " + st : "") + (o.cur === i ? " cur" : "") + '" data-act="' + o.act + '" data-i="' + i + '" data-q="' + id + '" aria-label="Question ' + (i + 1) + ", " + (st ? words[st] : "not answered yet") + '"' + (o.cur === i ? ' aria-current="true"' : "") + ">" + (i + 1) + "</button>";
+  }).join("");
+  return '<div class="q-track"><span class="qt-l"><b>' + done + "</b> of " + ids.length + '<span class="qt-w"> answered</span></span><div class="qt-dots">' + dots + '</div><span class="qt-score">' + (max ? "Score " + got + "/" + max : '<span class="qt-w">Marked as you go</span>') + "</span></div>";
+}
 function empty(title, text, btn) { return '<div class="empty">' + doodle("pencil", 46) + '<b>' + esc(title) + "</b>" + esc(text) + (btn ? '<div style="margin-top:12px">' + btn + "</div>" : "") + "</div>"; }
 function daysTo(d) { return diffDays(today(), d); }
 function relDay(d) { var n = daysTo(d); return n === 0 ? "Today" : n === 1 ? "Tomorrow" : n === -1 ? "Yesterday" : n > 0 ? "in " + n + " days" : Math.abs(n) + " days ago"; }
@@ -3516,9 +3711,9 @@ function pickCards(x, topics) {
   return cards.map(function (c) { return c.id; });
 }
 function studyTabs(x) {
-  if (x.kind === "practice") return [["questions", "Practice questions"], ["notes", "Notes"], ["cards", "Flashcards"]];
+  if (x.kind === "practice") return [["questions", "Questions"], ["notes", "Notes"], ["cards", "Flashcards"]];
   if (x.kind === "revise") return [["cards", "Flashcards"], ["questions", "Revision quiz"], ["notes", "Notes"]];
-  if (x.kind === "final") return [["cards", "Flashcards"], ["facts", "Key facts sheet"], ["check", "Exam checklist"]];
+  if (x.kind === "final") return [["cards", "Flashcards"], ["facts", "Key facts"], ["check", "Checklist"]];
   return [["notes", "Notes"], ["questions", "Quick check"], ["cards", "Flashcards"]];
 }
 function openFocus(id) {
@@ -3540,12 +3735,13 @@ function drawFocus(top) {
   if (!w) { w = document.createElement("div"); w.id = "focus"; w.className = "focus-wrap study-wrap"; document.body.appendChild(w); }
   else sc = w.scrollTop;
   var tps = studyTopics(x), tabs = studyTabs(x), isToday = x.date === today(), offToday = dayInfo(today()).off;
-  var h = '<div class="study-bar"><div class="row wrap" style="gap:10px;flex:1;min-width:0">' + chipSubj(x.subj) + typeChip(x) + '<span class="small muted">' + fmtD(x.date) + " · " + fmt12(x.start) + "</span></div>";
+  var h = '<div class="study-bar"><div class="row sb-info">' + chipSubj(x.subj) + typeChip(x) + '<span class="small muted">' + fmtD(x.date) + ", " + fmt12(x.start) + "</span></div>";
   h += '<div class="row" style="gap:10px"><span class="study-time" id="focus-time">' + mmss(f.left) + '</span><button class="btn sm' + (f.running ? "" : " primary") + '" data-act="focusToggle">' + (f.running ? "Pause" : f.elapsed ? "Resume" : "Start timer") + '</button><button class="btn sm" data-act="focusDone">' + ic("check") + 'Done</button><button class="btn sm ghost icon-btn" data-act="focusClose" aria-label="Close study screen">' + ic("x") + '</button></div><div class="study-prog"><i id="focus-bar" style="width:' + pct(x.dur * 60 - f.left, x.dur * 60) + "%;background:" + s.color + '"></i></div></div>';
   h += '<div class="study-body">';
-  h += '<div class="row top" style="gap:16px"><div class="grow"><div class="eyebrow">' + esc(s.name) + " · " + esc(x.topic) + '</div><h1 style="margin-top:4px;font-size:34px">' + esc(x.sub) + "</h1></div>" + doodle(PAGE_DOODLE[{ learn: "resources", practice: "quiz", revise: "flashcards", final: "syllabus" }[x.kind] || "resources"], 70, "wiggle") + "</div>";
+  h += '<div class="row top" style="gap:16px"><div class="grow"><div class="eyebrow">' + esc(s.name) + ", " + esc(x.topic) + '</div><h1 class="study-title">' + esc(x.sub) + "</h1></div>" + doodle(PAGE_DOODLE[{ learn: "resources", practice: "quiz", revise: "flashcards", final: "syllabus" }[x.kind] || "resources"], 70, "wiggle") + "</div>";
   if (!isToday) h += '<div class="notice" style="margin-top:12px">' + (offToday ? "Today is your day off, so this is a preview. " : "") + "This session is planned for " + fmtD(x.date, true) + ". You can look through the materials now; mark it done on the day.</div>";
-  h += '<div class="card flat" style="margin-top:14px"><div class="small"><b>Goal:</b> <span class="muted">' + esc(x.obj) + '</span></div><div class="small" style="margin-top:4px"><b>What to do:</b> <span class="muted">' + esc(x.task) + "</span></div></div>";
+  /* practice sessions show their steps in the exercise card, so "what to do" would only repeat it */
+  h += '<div class="st-brief"><p><b>Goal</b> ' + esc(x.obj) + "</p>" + (x.kind === "practice" ? "" : "<p><b>What to do</b> " + esc(x.task) + "</p>") + "</div>";
   if (!tps.length) {
     h += '<label class="f" style="margin-top:14px;max-width:420px">Choose a topic to study<select class="input" id="st-pick" data-on="stPick"><option value="">Select…</option>' + SUBJ[x.subj].units.map(function (u) { return '<optgroup label="' + esc(u.name) + '">' + u.topics.map(function (t) { return '<option value="' + t.id + '">' + esc(t.t) + "</option>"; }).join("") + "</optgroup>"; }).join("") + "</select></label>";
   }
@@ -3553,6 +3749,8 @@ function drawFocus(top) {
   h += '<div class="study-pane">' + studyPane(x, tps) + "</div>";
   h += '<div class="row wrap" style="justify-content:center;margin:26px 0 10px"><button class="btn lg primary" data-act="focusDone">' + ic("check") + 'I\'ve finished this session</button><button class="btn lg" data-act="focusSkip">Next session</button></div></div>';
   w.innerHTML = h; w.scrollTop = top ? 0 : sc;
+  document.body.classList.add("studying");
+  var sb = w.querySelector(".study-bar"); if (sb) w.style.setProperty("--bar-h", sb.offsetHeight + "px");
 }
 function studyPane(x, tps) {
   var f = UI.focus, tab = f.tab, s = SUBJ[x.subj];
@@ -3562,18 +3760,16 @@ function studyPane(x, tps) {
   }
   if (tab === "questions") {
     var exH = "";
-    if (x.kind === "practice") { var pe = practiceEx(x.subj, x.ex); exH = '<div class="card flat ex-card" style="margin-top:14px;--c:' + s.color + '"><div class="eyebrow">This session\'s exercise</div><h3 style="margin:2px 0 6px">' + esc(pe.name) + '</h3><ol class="ex-steps">' + pe.steps.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ol>" + (typeof freshOn === "function" && freshOn() ? '<button class="btn sm" data-act="stFresh" style="margin-top:8px"' + (f.freshBusy ? " disabled" : "") + ">" + (f.freshBusy ? "Writing new questions…" : "✨ New AI questions for this exercise") + "</button>" : "") + "</div>"; }
+    if (x.kind === "practice") { var pe = practiceEx(x.subj, x.ex); exH = '<div class="card flat ex-card" style="margin-top:14px;--c:' + s.color + '"><div class="eyebrow">This session\'s exercise</div><h3 style="margin:2px 0 6px">' + esc(pe.name) + '</h3><ol class="ex-steps">' + pe.steps.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ol>" + (typeof freshOn === "function" && freshOn() ? '<button class="btn sm" data-act="stFresh" style="margin-top:8px"' + (f.freshBusy ? " disabled" : "") + ">" + (f.freshBusy ? (f.freshStage === "check" ? "Double-checking the answers…" : "Writing new questions…") : "✨ New AI questions for this exercise") + "</button>" : "") + "</div>"; }
     if (!f.qs.length) return exH + empty("No questions here", tps.length ? "Use the flashcards for this session." : "Choose a topic above first.");
-    var done = f.qs.filter(function (id) { return f.ans[id] && f.ans[id].checked; }), got = 0, max = 0;
-    f.qs.forEach(function (id) { var q = QBY[id], a = f.ans[id]; if (a && a.checked) { got += a.got; max += q.m || 1; } });
-    var h = '<div class="row between small muted" style="margin-top:14px"><span>' + done.length + " of " + f.qs.length + " answered</span><span>" + (max ? "Score so far: <b style=\"color:var(--text)\">" + got + "/" + max + "</b>" : "Marked instantly") + "</span></div>";
+    var h = qTrack(f.qs, function (id) { return f.ans[id]; }, { act: "sqJump" });
     return exH + h + f.qs.map(function (id, i) { return studyQ(QBY[id], i); }).join("");
   }
   if (tab === "cards") {
     if (!f.cards.length) return empty("No flashcards", "Choose a topic above first.");
     if (f.ci >= f.cards.length) return '<div class="card" style="margin-top:14px;text-align:center"><div class="stack" style="justify-items:center"><h2>All ' + f.cards.length + ' cards done</h2><p class="muted">' + f.known + " known · " + f.revise + ' need revision. Cards marked Needs Revision will come back soon.</p><button class="btn" data-act="stCardsAgain">Go through them again</button></div></div>';
     var c = FLASH_CARDS.filter(function (z) { return z.id === f.cards[f.ci]; })[0];
-    return '<div class="fc-stage" style="margin-top:16px"><div class="row between small muted" style="margin-bottom:8px"><span>Card ' + (f.ci + 1) + " of " + f.cards.length + "</span><span>" + esc(TOPIC[c.t].t) + '</span></div><div class="fc' + (f.flip ? " flip" : "") + '" data-act="stFlip" id="sfc-card" style="--c:' + s.color + '" role="button" tabindex="0" aria-label="Flip card"><div class="fc-face"><span class="fc-tag"><span class="chip">Question</span></span><div class="fc-main">' + esc(c.front) + '</div><span class="fc-hint">Tap to flip</span></div><div class="fc-face back"><span class="fc-tag"><span class="chip">Answer</span></span><div class="fc-back">' + esc(c.back) + '</div></div></div><div class="row wrap" style="justify-content:center;margin-top:16px"><button class="btn" data-act="stCardNav" data-n="-1"' + (f.ci ? "" : " disabled") + '>Previous</button><button class="btn" data-act="stRate" data-r="revise" style="color:var(--warn)">Needs Revision</button><button class="btn primary" data-act="stRate" data-r="known">' + ic("check") + 'Known</button><button class="btn" data-act="stCardNav" data-n="1">Skip</button></div></div>';
+    return '<div class="fc-stage" style="margin-top:16px"><div class="row between small muted" style="margin-bottom:8px"><span>Card ' + (f.ci + 1) + " of " + f.cards.length + "</span><span>" + esc(TOPIC[c.t].t) + '</span></div><div class="fc' + (f.flip ? " flip" : "") + '" data-act="stFlip" id="sfc-card" style="--c:' + s.color + '" role="button" tabindex="0" aria-label="Flip card"><div class="fc-face"><span class="fc-tag"><span class="chip">Question</span></span><div class="fc-main">' + esc(c.front) + '</div><span class="fc-hint">Tap to flip</span></div><div class="fc-face back"><span class="fc-tag"><span class="chip">Answer</span></span><div class="fc-back">' + esc(c.back) + '</div></div></div><div class="row wrap fc-actions" style="justify-content:center;margin-top:16px"><button class="btn" data-act="stCardNav" data-n="-1"' + (f.ci ? "" : " disabled") + '>Previous</button><button class="btn" data-act="stRate" data-r="revise" style="color:var(--warn)">Needs Revision</button><button class="btn primary" data-act="stRate" data-r="known">' + ic("check") + 'Known</button><button class="btn" data-act="stCardNav" data-n="1">Skip</button></div></div>';
   }
   if (tab === "facts") {
     return tps.map(function (t) { var n = t.n || {}, items = (n.f || []).map(function (z) { return '<div class="formula">' + esc(z) + "</div>"; }).join("") + "<ul>" + (n.r || []).concat((n.k || []).slice(0, 2)).map(function (k) { return "<li>" + esc(k) + "</li>"; }).join("") + "</ul>"; return '<div class="card" style="margin-top:12px"><h3>' + esc(t.t) + '</h3><div class="note-sec stack-sm" style="margin-top:6px">' + items + "</div></div>"; }).join("");
@@ -3588,19 +3784,16 @@ function studyPane(x, tps) {
   return "";
 }
 function studyQ(q, i) {
-  var a = UI.focus.ans[q.id] || {}, h = '<div class="card q-card" style="margin-top:14px"><div class="row wrap" style="gap:8px;margin-bottom:8px"><span class="chip">Q' + (i + 1) + '</span><span class="chip">' + esc(TOPIC[q.t].t) + '</span><span class="chip">' + ["", "Easy", "Medium", "Hard"][q.d] + "</span>" + (q.m ? '<span class="chip">' + q.m + " marks</span>" : "") + '</div><div class="q-text' + (q.subj === "dl" && /\n/.test(q.q) ? " code-like" : "") + '">' + esc(q.q) + "</div>";
-  if (q.y === "mcq") h += '<div class="opts">' + q.o.map(function (o, j) { var c = "opt"; if (a.checked) { if (j === q.a) c += " right"; else if (j === a.given) c += " wrong"; } return '<button class="' + c + '" data-act="sqPick" data-q="' + q.id + '" data-i="' + j + '"' + (a.checked ? " disabled" : "") + '><span class="k">' + "ABCD"[j] + "</span><span>" + esc(o) + "</span></button>"; }).join("") + "</div>";
-  else if (q.y === "short") h += '<div class="row" style="margin-top:14px"><input class="input" id="sq-' + q.id + '" placeholder="Type your answer" value="' + esc(a.given || "") + '"' + (a.checked ? " disabled" : "") + ' autocomplete="off" aria-label="Your answer"><button class="btn primary" data-act="sqCheck" data-q="' + q.id + '"' + (a.checked ? " disabled" : "") + ">Check</button></div>";
+  var a = UI.focus.ans[q.id] || {}, st = qState(q, a);
+  var h = '<div class="card q-card' + (st ? " is-" + st : "") + '" id="q-' + q.id + '">' + qMargin(i + 1, st) + '<div class="q-main">' + qMeta(q) + '<div class="q-text' + (q.subj === "dl" && /\n/.test(q.q) ? " code-like" : "") + '">' + esc(q.q) + "</div>";
+  if (q.y === "mcq") h += qOpts(q, a, "sqPick", true);
+  else if (q.y === "short") h += '<div class="ans-row"><input class="input" id="sq-' + q.id + '" placeholder="Type your answer" value="' + esc(a.given || "") + '"' + (a.checked ? " disabled" : "") + ' autocomplete="off" aria-label="Your answer to question ' + (i + 1) + '"><button class="btn primary" data-act="sqCheck" data-q="' + q.id + '"' + (a.checked ? " disabled" : "") + ">Check</button></div>";
   else {
-    h += '<textarea class="input" id="sq-' + q.id + '" style="margin-top:14px;min-height:110px" placeholder="Write your answer, then show the mark scheme"' + (a.revealed ? " disabled" : "") + ">" + esc(a.given || "") + "</textarea>";
+    h += '<textarea class="input ans-long" id="sq-' + q.id + '" placeholder="Write your answer, then show the mark scheme" aria-label="Your answer to question ' + (i + 1) + '"' + (a.revealed ? " disabled" : "") + ">" + esc(a.given || "") + "</textarea>";
     if (!a.revealed) h += '<div class="row" style="margin-top:10px"><button class="btn primary" data-act="sqReveal" data-q="' + q.id + '">Show mark scheme</button></div>';
-    else { h += '<div class="feedback info"><b>Mark scheme</b>\n' + esc(q.x) + "</div>"; if (!a.checked) h += '<div class="row wrap" style="margin-top:10px"><span class="small muted">Your marks:</span>' + Array.apply(null, Array(q.m + 1)).map(function (_, k) { return '<button class="btn sm" data-act="sqSelf" data-q="' + q.id + '" data-m="' + k + '">' + k + "</button>"; }).join("") + "</div>"; }
+    else { h += qScheme(q); if (!a.checked) h += qSelfMark(q, "sqSelf", true); }
   }
-  if (a.checked) {
-    if (q.y === "mcq" || q.y === "short") h += '<div class="feedback ' + (a.ok ? "good" : "bad") + '"><b>' + (a.ok ? "Correct!" : "Not quite.") + "</b>" + (!a.ok ? " Answer: " + esc(q.y === "mcq" ? q.o[q.a] : q.a[0]) + "." : "") + "\n" + esc(q.x) + "</div>";
-    else h += '<div class="feedback ' + (a.got === q.m ? "good" : a.got ? "info" : "bad") + '"><b>You gave yourself ' + a.got + "/" + q.m + ".</b></div>";
-  }
-  return h + "</div>";
+  return h + qFeedback(q, a) + "</div></div>";
 }
 function studyMark(q, a) { a.checked = true; markQuizQ(q, a.ok); UI.focus.ans[q.id] = a; logActivity(1); save(); drawFocus(); }
 function completeFocus() {
@@ -3625,7 +3818,7 @@ function nextFocus() {
   if (cur) pool = pool.filter(function (x) { return x.date > cur.date || (x.date === cur.date && x.start > cur.start); }).concat(pool.filter(function (x) { return !(x.date > cur.date || (x.date === cur.date && x.start > cur.start)); }));
   if (pool.length) openFocus(pool[0].id); else { closeFocus(); toast("No more sessions waiting.", "good"); render(); }
 }
-function closeFocus() { if (UI.focus) saveStudyQuiz(); UI.focus = null; var w = $("#focus"); if (w) w.remove(); }
+function closeFocus() { if (UI.focus) saveStudyQuiz(); UI.focus = null; var w = $("#focus"); if (w) w.remove(); document.body.classList.remove("studying"); }
 
 /* ===== Pages: syllabus, resources, quiz, flashcards, analytics, preferences + events ===== */
 var ST_LABEL = { not: "Not Started", learning: "Learning", completed: "Completed", revision: "Needs Revision" };
@@ -3717,35 +3910,26 @@ function pgQuiz() {
   h += '<div class="card span-5"><div class="card-h"><h2>Quiz history</h2><span class="small muted">' + hist.length + " saved</span></div>" + (hist.length ? '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>When</th><th>Subject</th><th>Score</th><th>Accuracy</th></tr></thead><tbody>' + hist.slice(0, 12).map(function (x) { return "<tr><td>" + new Date(x.at).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short" }) + "</td><td>" + (x.subj === "all" ? "Mixed" : esc(SUBJ[x.subj].short)) + (x.retry ? ' <span class="chip">Retry</span>' : "") + "</td><td>" + x.got + "/" + x.max + " · " + x.pct + "%</td><td>" + x.acc + "%</td></tr>"; }).join("") + "</tbody></table></div>" : empty("No quizzes yet", "Your scores and accuracy will be saved here.")) + "</div></div>";
   return h;
 }
-function startQuiz(ids, retry) {
+function startQuiz(ids, retry, fresh) {
   if (!ids.length) { toast("No questions to show.", "bad"); return; }
-  UI.quiz = { phase: "run", cfg: UI.quiz.cfg, qs: ids, i: 0, ans: {}, start: nowMs(), retry: !!retry };
+  UI.quiz = { phase: "run", cfg: UI.quiz.cfg, qs: ids, i: 0, ans: {}, start: nowMs(), retry: !!retry, fresh: !!fresh };
   render();
 }
 function quizRun() {
-  var Q = UI.quiz, q = QBY[Q.qs[Q.i]], a = Q.ans[q.id] || {}, s = SUBJ[q.subj];
-  var answered = Object.keys(Q.ans).filter(function (k) { return Q.ans[k].checked; }).length;
-  var h = '<div class="page-head"><div><div class="eyebrow">Question ' + (Q.i + 1) + " of " + Q.qs.length + '</div><h1 style="margin-top:4px">Quiz Centre</h1></div><div class="row"><button class="btn" data-act="quizQuit">End quiz</button></div></div>';
-  h += '<div style="margin-bottom:14px">' + bar(pct(answered, Q.qs.length), s.color) + "</div>";
-  h += '<div class="card q-card"><div class="row wrap" style="gap:8px;margin-bottom:12px">' + chipSubj(q.subj) + '<span class="chip">' + esc(TOPIC[q.t].t) + '</span><span class="chip">' + { mcq: "Multiple choice", short: "Short answer", struct: "Structured", exam: "Exam-style" }[q.y] + '</span><span class="chip">' + ["", "Easy", "Medium", "Hard"][q.d] + "</span>" + (q.m ? '<span class="chip">' + q.m + " marks</span>" : "") + "</div>";
+  var Q = UI.quiz, q = QBY[Q.qs[Q.i]], a = Q.ans[q.id] || {}, st = qState(q, a), n = Q.i + 1;
+  var h = '<div class="page-head quiz-head"><div><h1>' + (Q.cfg.subj === "all" ? "Mixed quiz" : esc(SUBJ[Q.cfg.subj].short) + " quiz") + '</h1><p class="sub">Question ' + n + " of " + Q.qs.length + (Q.retry ? ", second try at the ones you missed" : Q.fresh ? ", brand-new questions" : "") + '</p></div><div class="row"><button class="btn" data-act="quizQuit">End quiz</button></div></div>';
+  h += qTrack(Q.qs, function (id) { return Q.ans[id]; }, { act: "qzGo", cur: Q.i });
+  h += '<div class="card q-card' + (st ? " is-" + st : "") + '">' + qMargin(n, st) + '<div class="q-main">' + qMeta(q, { subj: Q.cfg.subj === "all", type: true });
   h += '<div class="q-text' + (/\n/.test(q.q) && q.subj === "dl" ? " code-like" : "") + '">' + esc(q.q) + "</div>";
-  if (q.y === "mcq") {
-    h += '<div class="opts">' + q.o.map(function (o, i) { var cls = "opt"; if (a.checked) { if (i === q.a) cls += " right"; else if (i === a.given) cls += " wrong"; } else if (a.given === i) cls += " sel"; return '<button class="' + cls + '" data-act="qzPick" data-i="' + i + '"' + (a.checked ? " disabled" : "") + '><span class="k">' + "ABCD"[i] + "</span><span>" + esc(o) + "</span></button>"; }).join("") + "</div>";
-  } else if (q.y === "short") {
-    h += '<div class="row" style="margin-top:16px"><input class="input" id="qz-in" placeholder="Type your answer" value="' + esc(a.given || "") + '"' + (a.checked ? " disabled" : "") + ' autocomplete="off" aria-label="Your answer"><button class="btn primary" data-act="qzCheck"' + (a.checked ? " disabled" : "") + ">Check</button></div>";
-  } else {
-    h += '<textarea class="input" id="qz-in" style="margin-top:16px;min-height:130px" placeholder="Write your answer here (optional), then reveal the mark scheme"' + (a.revealed ? " disabled" : "") + ">" + esc(a.given || "") + "</textarea>";
+  if (q.y === "mcq") h += qOpts(q, a, "qzPick");
+  else if (q.y === "short") h += '<div class="ans-row"><input class="input" id="qz-in" placeholder="Type your answer" value="' + esc(a.given || "") + '"' + (a.checked ? " disabled" : "") + ' autocomplete="off" aria-label="Your answer"><button class="btn primary" data-act="qzCheck"' + (a.checked ? " disabled" : "") + ">Check</button></div>";
+  else {
+    h += '<textarea class="input ans-long" id="qz-in" placeholder="Write your answer here (optional), then show the mark scheme" aria-label="Your answer"' + (a.revealed ? " disabled" : "") + ">" + esc(a.given || "") + "</textarea>";
     if (!a.revealed) h += '<div class="row" style="margin-top:10px"><button class="btn primary" data-act="qzReveal">Show mark scheme</button></div>';
-    else {
-      h += '<div class="feedback info"><b>Mark scheme</b>\n' + esc(q.x) + "</div>";
-      if (!a.checked) h += '<div class="row wrap" style="margin-top:12px"><span class="small muted">Award yourself marks:</span>' + Array.apply(null, Array(q.m + 1)).map(function (_, i) { return '<button class="btn sm" data-act="qzSelf" data-m="' + i + '">' + i + "</button>"; }).join("") + "</div>";
-    }
+    else { h += qScheme(q); if (!a.checked) h += qSelfMark(q, "qzSelf"); }
   }
-  if (a.checked) {
-    if (q.y === "mcq" || q.y === "short") h += '<div class="feedback ' + (a.ok ? "good" : "bad") + '"><b>' + (a.ok ? "Correct." : "Not quite.") + "</b>" + (q.y === "short" && !a.ok ? " Correct answer: " + esc(q.a[0]) + "." : q.y === "mcq" && !a.ok ? " Correct answer: " + esc(q.o[q.a]) + "." : "") + "\n" + esc(q.x) + "</div>";
-    else h += '<div class="feedback ' + (a.got === q.m ? "good" : a.got ? "info" : "bad") + '"><b>You awarded ' + a.got + "/" + q.m + ".</b></div>";
-  }
-  h += '<div class="row between" style="margin-top:18px"><button class="btn" data-act="qzNav" data-n="-1"' + (Q.i ? "" : " disabled") + ">Previous</button>" + (Q.i < Q.qs.length - 1 ? '<button class="btn ' + (a.checked ? "primary" : "") + '" data-act="qzNav" data-n="1">Next</button>' : '<button class="btn primary" data-act="quizFinish">Finish and see score</button>') + "</div></div>";
+  h += qFeedback(q, a);
+  h += '<div class="row between q-nav"><button class="btn" data-act="qzNav" data-n="-1"' + (Q.i ? "" : " disabled") + ">Previous</button>" + (Q.i < Q.qs.length - 1 ? '<button class="btn ' + (a.checked ? "primary" : "") + '" data-act="qzNav" data-n="1">' + (a.checked ? "Next question" : "Skip for now") + "</button>" : '<button class="btn primary" data-act="quizFinish">Finish and see score</button>') + "</div></div></div>";
   return h;
 }
 function markQuizQ(q, ok, got, max) {
@@ -3760,13 +3944,17 @@ function finishQuiz() {
   Q.phase = "done"; Q.result = rec; render();
 }
 function quizDone() {
-  var Q = UI.quiz, r = Q.result, wrong = r.items.filter(function (x) { return x.done && !x.ok; });
+  var Q = UI.quiz, r = Q.result, wrong = r.items.filter(function (x) { return x.done && !x.ok; }), skipped = r.items.filter(function (x) { return !x.done; }).length;
   var h = head("Quiz complete", r.answered ? "Saved to your quiz history" : "No questions were answered, so nothing was saved");
-  h += '<div class="grid g-dash"><div class="card span-4"><div class="stack" style="justify-items:center;text-align:center">' + ring(r.pct, 140, r.pct >= 70 ? "var(--good)" : r.pct >= 50 ? "var(--warn)" : "var(--bad)") + '<div class="stat"><span class="v">' + r.got + " / " + r.max + '</span><span class="l">marks scored</span></div><div class="row wrap" style="justify-content:center"><span class="chip">Accuracy ' + r.acc + '%</span><span class="chip">' + r.correct + " of " + r.answered + " fully correct</span><span class=\"chip\">" + fmtDur(Math.round(r.dur / 60)) + '</span></div><div class="row wrap" style="justify-content:center"><button class="btn primary" data-act="quizRetry"' + (wrong.length ? "" : " disabled") + ">Retry incorrect (" + wrong.length + ')</button><button class="btn" data-act="quizNew">New quiz</button></div></div></div>';
-  h += '<div class="card span-8"><div class="card-h"><h2>Answer review</h2></div><div class="stack">' + r.items.map(function (it, i) {
-    var q = QBY[it.q], a = Q.ans[it.q] || {}, right = q.y === "mcq" ? q.o[q.a] : q.y === "short" ? q.a[0] : "See mark scheme";
-    var your = q.y === "mcq" ? (a.given !== undefined ? q.o[a.given] : "—") : (a.given || "—");
-    return '<div class="session-row" style="align-items:flex-start"><span class="stripe" style="background:' + (it.ok ? "var(--good)" : it.done ? "var(--bad)" : "var(--line-2)") + '"></span><div class="grow stack-sm" style="gap:4px"><div class="small faint">Q' + (i + 1) + " · " + esc(TOPIC[q.t].t) + " · " + it.got + "/" + it.max + '</div><div class="pre" style="font-weight:550">' + esc(q.q) + '</div><div class="small"><b>Your answer:</b> <span class="muted pre">' + esc(your) + "</span></div>" + (q.y === "mcq" || q.y === "short" ? '<div class="small"><b>Correct answer:</b> <span class="muted">' + esc(right) + "</span></div>" : "") + '<div class="small muted pre">' + esc(q.x) + "</div></div></div>";
+  h += '<div class="grid g-dash"><div class="card span-4 quiz-score"><div class="stack" style="justify-items:center;text-align:center">' + ring(r.pct, 140, r.pct >= 70 ? "var(--good)" : r.pct >= 50 ? "var(--warn)" : "var(--bad)") + '<div class="stat"><span class="v">' + r.got + " / " + r.max + '</span><span class="l">marks scored</span></div><ul class="score-list"><li><b>' + r.correct + "</b> of " + r.answered + " answered fully correct</li>" + (skipped ? "<li><b>" + skipped + "</b> skipped</li>" : "") + "<li>Time taken: <b>" + fmtDur(Math.round(r.dur / 60)) + '</b></li></ul><div class="row wrap" style="justify-content:center"><button class="btn primary" data-act="quizRetry"' + (wrong.length ? "" : " disabled") + ">" + (wrong.length ? "Try the " + wrong.length + " you missed again" : "Nothing to retry") + '</button><button class="btn" data-act="quizNew">New quiz</button></div></div></div>';
+  h += '<div class="card span-8"><div class="card-h"><h2>Answer review</h2></div><div class="rv-list">' + r.items.map(function (it, i) {
+    var q = QBY[it.q], a = Q.ans[it.q] || {}, right = q.y === "mcq" ? q.o[q.a] : q.y === "short" ? q.a[0] : "";
+    var your = q.y === "mcq" ? (a.given !== undefined ? q.o[a.given] : "") : (a.given || "");
+    var st = it.done ? (it.ok ? "right" : it.got ? "part" : "wrong") : "skip";
+    return '<div class="rv-item is-' + st + '">' + qMargin(i + 1, st) + '<div class="q-main"><div class="q-meta"><div class="q-meta-l"><span class="q-topic">' + esc(TOPIC[q.t].t) + '</span></div><span class="q-marks">' + (it.done ? it.got + "/" + it.max : "skipped") + '</span></div><div class="rv-q pre">' + esc(q.q) + "</div>" +
+      (it.done || your ? '<div class="rv-a"><span class="rv-l">Your answer</span><span class="pre">' + (your ? esc(your) : "left blank") + "</span></div>" : "") +
+      (right && !it.ok ? '<div class="rv-a"><span class="rv-l">Correct answer</span><span class="pre">' + esc(right) + "</span></div>" : "") +
+      (q.x ? '<div class="rv-x pre">' + esc(q.x) + "</div>" : "") + "</div></div>";
   }).join("") + "</div></div></div>";
   return h;
 }
@@ -3795,7 +3983,7 @@ function pgFlash() {
   var c = fcCard(F.order[F.i]), st = c.ai ? null : S.flash[c.id];
   h += '<div class="fc-stage"><div class="row between small muted" style="margin-bottom:8px"><span>Card ' + (F.i + 1) + " of " + F.order.length + "</span><span>" + (st && st.due ? "Next review: " + fmtD(st.due) : "New card") + "</span></div>" + bar(pct(F.i, F.order.length), s.color) + '<div style="height:14px"></div>';
   h += '<div class="fc' + (F.flip ? " flip" : "") + '" data-act="fcFlip" style="--c:' + s.color + '" tabindex="0" role="button" aria-label="Flip card" id="fc-card"><div class="fc-face"><span class="fc-tag">' + chipSubj(c.subj) + '</span><div class="tiny faint">' + esc(TOPIC[c.t].t) + '</div><div class="fc-main">' + esc(c.front) + '</div><span class="fc-hint">Tap or press Space to flip</span></div><div class="fc-face back"><span class="fc-tag"><span class="chip">Answer</span></span><div class="fc-back">' + esc(c.back) + "</div></div></div>";
-  h += '<div class="row wrap" style="justify-content:center;margin-top:18px"><button class="btn" data-act="fcNav" data-n="-1"' + (F.i ? "" : " disabled") + ">Previous</button><button class=\"btn\" data-act=\"fcRate\" data-r=\"revise\" style=\"color:var(--warn)\">Needs Revision</button><button class=\"btn primary\" data-act=\"fcRate\" data-r=\"known\">" + ic("check") + 'Known</button><button class="btn" data-act="fcNav" data-n="1">Next</button></div><p class="tiny faint" style="text-align:center;margin-top:10px">Keys: Space flip · ← → move · K known · R needs revision</p></div>';
+  h += '<div class="row wrap fc-actions" style="justify-content:center;margin-top:18px"><button class="btn" data-act="fcNav" data-n="-1"' + (F.i ? "" : " disabled") + ">Previous</button><button class=\"btn\" data-act=\"fcRate\" data-r=\"revise\" style=\"color:var(--warn)\">Needs Revision</button><button class=\"btn primary\" data-act=\"fcRate\" data-r=\"known\">" + ic("check") + 'Known</button><button class="btn" data-act="fcNav" data-n="1">Next</button></div><p class="tiny faint" style="text-align:center;margin-top:10px">Keys: Space flip · ← → move · K known · R needs revision</p></div>';
   return h;
 }
 
@@ -3943,6 +4131,7 @@ var ACT = {
   qzReveal: function () { var Q = UI.quiz, q = QBY[Q.qs[Q.i]]; Q.ans[q.id] = { given: $("#qz-in").value, revealed: true }; render(); },
   qzSelf: function (el) { var Q = UI.quiz, q = QBY[Q.qs[Q.i]], m = +el.getAttribute("data-m"), a = Q.ans[q.id]; a.checked = true; a.got = m; a.ok = m === q.m; markQuizQ(q, a.ok); save(); render(); },
   qzNav: function (el) { var Q = UI.quiz, inp = $("#qz-in"), q = QBY[Q.qs[Q.i]]; if (inp && !(Q.ans[q.id] && (Q.ans[q.id].checked || Q.ans[q.id].revealed))) Q.ans[q.id] = { given: inp.value }; Q.i = Math.max(0, Math.min(Q.qs.length - 1, Q.i + +el.getAttribute("data-n"))); render(); },
+  qzGo: function (el) { var Q = UI.quiz, inp = $("#qz-in"), q = QBY[Q.qs[Q.i]]; if (inp && !(Q.ans[q.id] && (Q.ans[q.id].checked || Q.ans[q.id].revealed))) Q.ans[q.id] = { given: inp.value }; Q.i = Math.max(0, Math.min(Q.qs.length - 1, +el.getAttribute("data-i"))); render(); },
   quizFinish: function () { finishQuiz(); },
   quizQuit: function () { var Q = UI.quiz, n = Object.keys(Q.ans).filter(function (k) { return Q.ans[k].checked; }).length; if (!n) { UI.quiz = { phase: "setup", cfg: Q.cfg }; render(); return; } confirmBox("End this quiz?", "Your " + n + " answered question" + (n > 1 ? "s" : "") + " will be scored and saved.", "End and score", finishQuiz); },
   quizRetry: function () { var r = UI.quiz.result; startQuiz(r.items.filter(function (x) { return x.done && !x.ok; }).map(function (x) { return x.q; }), true); },
@@ -3984,6 +4173,7 @@ var ACT = {
   stCardNav: function (el) { var f = UI.focus; f.ci = Math.max(0, Math.min(f.cards.length, f.ci + +el.getAttribute("data-n"))); f.flip = false; drawFocus(); },
   stRate: function (el) { var f = UI.focus, r = el.getAttribute("data-r"); reviewCard(f.cards[f.ci], r); save(); if (r === "known") f.known++; else f.revise++; f.ci++; f.flip = false; drawFocus(); },
   stCardsAgain: function () { var f = UI.focus; f.ci = 0; f.known = 0; f.revise = 0; f.flip = false; drawFocus(); },
+  sqJump: function (el) { var w = $("#focus"), c = document.getElementById("q-" + el.getAttribute("data-q")); if (!w || !c) return; var bar = w.querySelector(".study-bar"), tr = w.querySelector(".q-track"); w.scrollTo({ top: w.scrollTop + c.getBoundingClientRect().top - w.getBoundingClientRect().top - (bar ? bar.offsetHeight : 0) - (tr ? tr.offsetHeight : 0) - 12, behavior: typeof motionOK === "function" && motionOK() ? "smooth" : "auto" }); },
   sqPick: function (el) { var q = QBY[el.getAttribute("data-q")], i = +el.getAttribute("data-i"), ok = i === q.a; studyMark(q, { given: i, ok: ok, got: ok ? 1 : 0 }); },
   sqCheck: function (el) { var q = QBY[el.getAttribute("data-q")], v = $("#sq-" + q.id).value; if (!v.trim()) { toast("Type an answer first.", "info"); return; } var ok = checkShort(v, q.a); studyMark(q, { given: v, ok: ok, got: ok ? 1 : 0 }); },
   sqReveal: function (el) { var q = QBY[el.getAttribute("data-q")]; UI.focus.ans[q.id] = { given: $("#sq-" + q.id).value, revealed: true }; drawFocus(); },
@@ -5171,6 +5361,154 @@ ACT.notesPdf = async function (el) {
   if (btn) btn.disabled = false;
 };
 
+/* ===== Checking AI-written questions before a student ever sees them =====
+   An AI can mark the wrong option as correct, "think aloud" inside an explanation, or send the same question twice.
+   Three safety nets:
+   1. The AI writes its working first and then names the correct answer in words (never by position); the app builds and shuffles the options.
+   2. Every question passes the local checks below (leaked notes-to-self, clashing numbers, repeated or broken options, duplicates).
+   3. The AI then solves every question again without being told the answers; any disagreement drops the question (qcVerify). */
+var QC = { dropped: [], unverified: false };
+function qcDrop(q, why) { QC.dropped.push({ q: String((q && q.q) || q || "").slice(0, 120), why: why }); if (QC.dropped.length > 60) QC.dropped.shift(); }
+function qcText(v) { return String(v == null ? "" : v).replace(/[ \t\u00a0]+/g, " ").replace(/\s*\n\s*/g, "\n").trim(); }
+var QC_NONWORD = (function () { try { return new RegExp("[^\\p{L}\\p{N}\\p{M}]+", "gu"); } catch (e) { return /[\s!-\/:-@\[-`{-~]+/g; } })();
+/* a question reduced to its words, for spotting repeats */
+function qcFlat(s) {
+  var t = String(s == null ? "" : s).toLowerCase(); try { t = t.normalize("NFKC"); } catch (e) { }
+  return t.replace(/[-−–](?=\d)/g, " neg").replace(/[+*\/%^=<>×÷√!&|]/g, function (c) { return " op" + c.charCodeAt(0) + " "; }).replace(QC_NONWORD, " ").trim();
+}
+/* an option reduced to what makes it different from the others */
+function qcOptKey(s) {
+  var t = String(s == null ? "" : s).toLowerCase(); try { t = t.normalize("NFKC"); } catch (e) { }
+  return t.replace(/[−–—]/g, "-").replace(/["'“”‘’`]+/g, "").replace(/[\s\u00a0]+/g, " ").replace(/ ?(°|%|º) ?/g, "$1").replace(/[.,;:!?]+$/, "").trim();
+}
+function qcNums(s) { return (String(s == null ? "" : s).replace(/[−–]/g, "-").replace(/(\d),(?=\d{3}(\D|$))/g, "$1").match(/-?\d+(?:\.\d+)?/g) || []).map(Number); }
+function qcSameQ(a, b) {
+  if (a === b) return true;
+  var A = a.split(" "), B = b.split(" "); if (A.length < 5 || B.length < 5) return false;
+  var num = function (L) { return L.filter(function (w) { return /^\d/.test(w) || w.indexOf("neg") === 0; }).sort().join(","); };
+  if (num(A) !== num(B)) return false;
+  var set = {}, inter = 0, uni = 0;
+  A.forEach(function (w) { set[w] = 1; });
+  B.forEach(function (w) { if (set[w] === 1) { inter++; set[w] = 2; } else if (!set[w]) set[w] = 3; });
+  Object.keys(set).forEach(function () { uni++; });
+  return inter / uni >= 0.85;
+}
+/* notes-to-self, second thoughts and references to the answer key that should never reach a student */
+/* in the explanation only: first-person second thoughts */
+var QC_LEAK_X = [
+  /(^|[.!?:]\s+|\n)\s*wait\b/i, /\bwait[,:]?\s+(correction|no\b|actually|that)/i,
+  /\b(oops|my mistake|my error|i made an? (mistake|error)|let me (re-?)?(check|calculate|compute|think|verify|redo|try)|let'?s re-?(check|calculate|do))\b/i,
+  /\bshould (actually )?be\b[^.\n]{0,60}\bbut the (option|answer|key|list|question)/i
+];
+/* anywhere: talk about the answer key itself */
+var QC_LEAK = [
+  /\b(correction|adjusting|adjusted|revised (entry|question|answer|version))\s*:/i,
+  /\banswer index\b|\boptions?\b[^.\n]{0,40}\bindex\b|\bindex\b[^.\n]{0,40}\boptions?\b|\boption list\b|\bthe options? (list )?(has|have|do not|don't|does not|doesn't) /i,
+  /\b(none|neither) of the (given |listed )?(options|choices) (is|are|match)|\bnot (listed|among|one of|in) the (options|choices)\b|\bno (correct|matching) (option|choice)\b|\bclosest (option|answer|choice)\b|\bas an ai\b/i
+];
+var QC_LETTER = /\b[Oo]ption\s*\(?[A-F]\)?(?![A-Za-z])|\b[Cc]hoice\s*\(?[A-F]\)?(?![A-Za-z])|\b[Aa]nswer(\s+is|:)\s*\(?[A-F]\)?(?![A-Za-z'’])|\(\s*[A-Fa-f]\s*\)\s+is (correct|right|wrong|incorrect)/;
+var QC_ALLNONE = /\b(all|none|both|neither|any) of (the|these) (above|options|answers|choices)\b|\bboth [A-D] and [A-D]\b|\b[A-D] and [A-D] only\b|\ball the above\b/i;
+function qcLeak(q) {
+  var parts = [q.q, q.x].concat(q.y === "mcq" ? q.o : q.y === "short" ? q.a : []);
+  for (var i = 0; i < parts.length; i++) for (var j = 0; j < QC_LEAK.length; j++) if (QC_LEAK[j].test(String(parts[i] || ""))) return "note-to-self in the text";
+  for (var k = 0; k < QC_LEAK_X.length; k++) if (QC_LEAK_X[k].test(String(q.x || ""))) return "note-to-self in the explanation";
+  if (q.y === "mcq" && QC_LETTER.test(String(q.x || ""))) return "explanation points at an option letter";
+  return "";
+}
+/* when every option is a single number and the explanation ends "... = N", N must be the marked answer */
+function qcNumClash(q) {
+  if (q.y !== "mcq" || !q.x) return "";
+  var nums = q.o.map(function (o) { var n = qcNums(o); return n.length === 1 ? n[0] : null; });
+  if (nums.some(function (n) { return n === null; })) return "";
+  var x = String(q.x), cut = x.lastIndexOf("="); if (cut < 0) return "";
+  var fin = qcNums(x.slice(cut + 1))[0]; if (fin === undefined) return "";
+  var right = nums[q.a]; if (Math.abs(fin - right) < 1e-9) return "";
+  return nums.some(function (n, i) { return i !== q.a && Math.abs(n - fin) < 1e-9; }) ? "the working ends on a different option" : "";
+}
+/* all local checks for one finished question; "" means fine */
+function qcLocal(q) {
+  if (!q || qcText(q.q).length < 8) return "no question text";
+  if (q.y === "mcq") {
+    if (!Array.isArray(q.o) || q.o.length < 3 || q.o.length > 6 || !(q.a >= 0 && q.a < q.o.length)) return "broken options";
+    var keys = q.o.map(qcOptKey);
+    if (keys.some(function (k) { return !k; })) return "empty option";
+    if (keys.some(function (k, i) { return keys.indexOf(k) !== i; })) return "two options are the same";
+    if (q.o.some(function (o) { return QC_ALLNONE.test(o); })) return "'all/none of the above' option";
+  } else if (q.y === "short") {
+    if (!Array.isArray(q.a) || !q.a.length || q.a.some(function (a) { return !qcText(a) || qcText(a).length > 90; })) return "broken answer list";
+  }
+  return qcLeak(q) || qcNumClash(q);
+}
+/* turn what the AI sent for a multiple-choice question into shuffled options + the index of the right one */
+function qcBuildMcq(raw) {
+  var correct = null, wrong = [];
+  var opts = Array.isArray(raw.options) ? raw.options.map(qcText) : null;
+  if (raw.correct != null && typeof raw.correct !== "object" && qcText(raw.correct)) {
+    correct = qcText(raw.correct);
+    wrong = (Array.isArray(raw.wrong) ? raw.wrong : opts || []).map(qcText);
+  } else if (opts) {
+    var ans = raw.answer, idx = -1;
+    if (typeof ans === "number" || (typeof ans === "string" && /^\d+$/.test(ans.trim()))) idx = +ans;
+    else if (typeof ans === "string") { var k = qcOptKey(ans); idx = opts.map(qcOptKey).indexOf(k); }
+    if (!(idx >= 0 && idx < opts.length)) return null;
+    correct = opts[idx]; wrong = opts.filter(function (o, i) { return i !== idx; });
+  } else return null;
+  var ck = qcOptKey(correct), seen = {}; seen[ck] = 1;
+  wrong = wrong.filter(function (w) { var k = qcOptKey(w); if (!k || seen[k]) return false; seen[k] = 1; return true; }).slice(0, 3);
+  if (!ck || wrong.length < 2) return null;
+  var sh = shuffle([correct].concat(wrong));
+  return { o: sh, a: sh.indexOf(correct) };
+}
+/* keep only questions that pass the local checks and are not repeats (of each other or of `seenFlats`) */
+function qcFilter(list, seenFlats) {
+  var seen = seenFlats || [], out = [];
+  list.forEach(function (q) {
+    var why = qcLocal(q); if (why) { qcDrop(q, why); return; }
+    var f = qcFlat(q.q);
+    if (seen.some(function (s) { return qcSameQ(s, f); })) { qcDrop(q, "repeat"); return; }
+    seen.push(f); out.push(q);
+  });
+  return out;
+}
+function qcShortAgree(ans, accepted) {
+  if (checkShort(ans, accepted)) return true;
+  var g = qcFlat(ans), gn = qcNums(ans); if (!g) return false;
+  for (var i = 0; i < accepted.length; i++) {
+    var f = qcFlat(accepted[i]); if (!f) continue;
+    if (f === g) return true;
+    if (f.length >= 3 && g.length >= 3 && ((" " + g + " ").indexOf(" " + f + " ") >= 0 || (" " + f + " ").indexOf(" " + g + " ") >= 0)) return true;
+    var an = qcNums(accepted[i]); if (gn.length === 1 && an.length === 1 && Math.abs(gn[0] - an[0]) < 1e-9) return true;
+  }
+  return false;
+}
+/* second opinion: the AI answers every multiple-choice and short question without seeing the key */
+async function qcVerify(list) {
+  var items = list.filter(function (q) { return q.y === "mcq" || q.y === "short"; });
+  QC.unverified = false;
+  if (!items.length) return list;
+  var L = "ABCDEF";
+  var prompt = "You are checking a practice quiz for a Grade 8 student before it is shown. Solve every question yourself, carefully and independently. You are not told the intended answers.\n" +
+    "- Multiple choice: reply with the letter of the correct option. Reply FAULTY if no option is correct, if more than one option is correct, or if the question is unclear or cannot be answered from what is given.\n" +
+    "- Short answer: reply with the answer only (a word, a number or a brief phrase). Reply FAULTY if the question is unclear or has several different valid answers.\n\n" +
+    items.map(function (q, i) { return "Q" + (i + 1) + (q.y === "mcq" ? " (multiple choice)\n" : " (short answer)\n") + q.q + (q.y === "mcq" ? "\n" + q.o.map(function (o, j) { return L[j] + ") " + o; }).join("\n") : ""); }).join("\n\n") +
+    "\n\nReturn ONLY JSON with one entry per question, in order: {\"answers\":[{\"n\":1,\"working\":\"brief working\",\"answer\":\"B\"}]}";
+  var v;
+  try { v = await aiJSON(prompt, { modelTier: "default" }); } catch (e) { QC.unverified = true; return list; }
+  var by = {}; (Array.isArray(v) ? v : Array.isArray(v && v.answers) ? v.answers : []).forEach(function (a, i) { if (a == null) return; if (typeof a !== "object") a = { answer: a }; if (a.answer == null) a.answer = a.ans != null ? a.ans : a.letter; by[+a.n || i + 1] = a; });
+  var bad = {};
+  items.forEach(function (q, i) {
+    var a = by[i + 1]; if (!a || a.answer == null) return;
+    var ans = qcText(a.answer); if (!ans) return;
+    if (/^faulty\b/i.test(ans)) { bad[q.id] = "the checker found the question faulty"; return; }
+    if (q.y === "mcq") {
+      var m = ans.match(/^\(?([A-Fa-f])\)?(?:[).:\s]|$)/), idx = m ? L.indexOf(m[1].toUpperCase()) : -1;
+      if (idx < 0 || idx >= q.o.length) idx = q.o.map(qcOptKey).indexOf(qcOptKey(ans));
+      if (idx >= 0 && idx !== q.a) bad[q.id] = "the checker got a different answer";
+    } else if (!qcShortAgree(ans, q.a)) bad[q.id] = "the checker got a different answer";
+  });
+  return list.filter(function (q) { if (bad[q.id]) { qcDrop(q, bad[q.id]); return false; } return true; });
+}
+
 /* ===== Fresh AI questions for Quiz Centre and Flashcards (only when AI is on; otherwise the built-in sets are used).
    AI items live only for the current quiz/deck. Results still count towards each topic's analytics. ===== */
 var FRESH = { seq: 0, recent: null };
@@ -5200,53 +5538,79 @@ function freshSubjName(subj) { return subj === "all" ? "several school subjects"
 function freshLangNote(topics) { return topics.some(function (t) { return t.subj === "hin"; }) ? "\nFor Hindi topics, write the questions and answers in Hindi (Devanagari), as in a Grade 8 Hindi exam." : ""; }
 
 /* ----- quiz ----- */
-async function aiFreshQuiz(cfg) {
-  var n = Math.max(3, Math.min(cfg.len || 10, 20)), topics = freshTopics(cfg.subj, cfg.topic, n, cfg.tids);
-  var types = Object.keys(cfg.types).filter(function (k) { return cfg.types[k]; }); if (!types.length) types = ["mcq", "short"];
-  var tname = { mcq: "mcq (multiple choice, 4 options)", short: "short (one-word or short exact answer)", struct: "structured (2–4 marks, written answer)", exam: "exam (exam-style, 4–8 marks, written answer)" };
+function freshQuizPrompt(cfg, topics, n, types, avoid) {
+  var tname = { mcq: "mcq (multiple choice)", short: "short (one-word or short exact answer)", struct: "structured (2–4 marks, written answer)", exam: "exam (exam-style, 4–8 marks, written answer)" };
   var weak = cfg.weak ? (function () { var tp = topicPerf(); return topics.filter(function (t) { var x = tp[t.id]; return x && x.score !== null && x.score < 0.7; }).map(function (t) { return t.t; }); })() : [];
-  var avoid = (freshRecent()["q:" + (cfg.topic !== "all" ? cfg.topic : cfg.subj)] || []).slice(0, 25);
-  var prompt = "Write " + n + " NEW practice questions for a Grade 8 student revising " + freshSubjName(cfg.subj) + " for a school exam in November 2026 (Cambridge-style, India).\n" +
+  return "Write " + n + " NEW practice questions for a Grade 8 student revising " + freshSubjName(cfg.subj) + " for a school exam in November 2026 (Cambridge-style, India).\n" +
     "Use ONLY these syllabus topics (use the topic id exactly):\n" + topics.map(freshTopicBrief).join("\n") +
     "\n\nQuestion types to use (mix them): " + types.map(function (k) { return tname[k]; }).join("; ") + "." +
     (cfg.diff !== "any" ? "\nDifficulty: " + ["", "easy", "medium", "hard"][+cfg.diff] + " only." : "\nMix easy, medium and hard.") +
     (weak.length ? "\nThe student is weak at: " + weak.join("; ") + ". Give these topics more questions." : "") +
-    (avoid.length ? "\nDo NOT repeat or closely copy these recent questions:\n" + avoid.map(function (q) { return "• " + q.slice(0, 120); }).join("\n") : "") +
+    (avoid.length ? "\nDo NOT repeat or closely copy these recent questions:\n" + avoid.map(function (q) { return "• " + q.slice(0, 110); }).join("\n") : "") +
     freshLangNote(topics) +
     "\nEvery question must be accurate and answerable from the topic. Vary the wording, numbers and contexts (random seed " + Math.floor(Math.random() * 1e6) + ")." +
-    "\n\nReturn ONLY JSON: {\"questions\":[{\"topic\":\"topic id\",\"type\":\"mcq|short|structured|exam\",\"difficulty\":1,\"q\":\"question text\",\"options\":[\"...\"],\"answer\":0,\"answers\":[\"accepted answer\",\"other accepted form\"],\"marks\":3,\"markScheme\":\"marking points\",\"explanation\":\"why the answer is right\"}]}" +
-    "\nmcq: options (4) + answer (index). short: answers (list of accepted answers, short). structured/exam: marks + markScheme.";
-  var v = await aiJSON(prompt, { modelTier: "default" });
+    "\n\nReturn ONLY JSON: {\"questions\":[{\"topic\":\"topic id\",\"type\":\"mcq|short|structured|exam\",\"difficulty\":1,\"q\":\"question text\",\"explanation\":\"the answer worked out step by step, ending with the final answer\",\"correct\":\"the one correct answer, written out in full\",\"wrong\":[\"a wrong answer\",\"a wrong answer\",\"a wrong answer\"],\"answers\":[\"accepted answer\",\"other accepted form\"],\"marks\":3,\"markScheme\":\"marking points\"}]}" +
+    "\nRules:" +
+    "\n- mcq: q, explanation, correct, wrong (exactly 3 answers that are definitely wrong and all different). Do NOT label the answers (no A, B, C or 1, 2, 3 in front of them), and never use 'all of the above' or 'none of the above': the app adds the letters and shuffles the options itself." +
+    "\n- short: q, explanation, answers (short accepted answers; the question must have one definite answer)." +
+    "\n- structured / exam: q, marks, markScheme." +
+    "\n- Work the answer out in \"explanation\" FIRST, then copy its final result into \"correct\" (or \"answers\"). They must agree exactly." +
+    "\n- The explanation is shown to the student: write it as a clear, finished explanation. Never mention options, letters or positions in it." +
+    "\n- Every question appears once. Never include notes to yourself, second thoughts, corrections or a revised copy of a question. If you notice a mistake, fix the fields silently so the JSON you return is clean and final.";
+}
+function freshParse(v, cfg, topics) {
   var ok = topics.map(function (t) { return t.id; }), out = [];
-  (Array.isArray(v.questions) ? v.questions : []).forEach(function (q) {
+  (Array.isArray(v && v.questions) ? v.questions : []).forEach(function (q) {
     if (!q || !q.q) return;
-    var t = ok.indexOf(String(q.topic)) >= 0 ? String(q.topic) : ok[0], d = Math.max(1, Math.min(3, +q.difficulty || 2)), base = { id: "ai" + (++FRESH.seq) + "_" + Date.now().toString(36), ai: true, t: t, subj: TOPIC[t].subj, d: d, q: String(q.q), x: String(q.explanation || q.markScheme || "") };
-    if (q.type === "mcq" && Array.isArray(q.options) && q.options.length >= 2 && q.options.length <= 6 && +q.answer >= 0 && +q.answer < q.options.length && cfg.types.mcq) {
-      var opts = q.options.map(String), right = opts[+q.answer], sh = shuffle(opts);
-      out.push(Object.assign(base, { y: "mcq", m: 1, o: sh, a: sh.indexOf(right) }));
-    } else if (q.type === "short" && Array.isArray(q.answers) && q.answers.length && cfg.types.short) out.push(Object.assign(base, { y: "short", m: 1, a: q.answers.map(String) }));
-    else if ((q.type === "structured" || q.type === "exam") && (cfg.types.struct || cfg.types.exam)) {
-      var y = q.type === "exam" && cfg.types.exam ? "exam" : cfg.types.struct ? "struct" : "exam";
-      out.push(Object.assign(base, { y: y, m: Math.max(1, Math.min(10, +q.marks || (y === "exam" ? 5 : 3))), x: String(q.markScheme || q.explanation || "") }));
+    var t = ok.indexOf(String(q.topic)) >= 0 ? String(q.topic) : ok[0], d = Math.max(1, Math.min(3, +q.difficulty || 2)), type = String(q.type || "").toLowerCase();
+    var base = { id: "ai" + (++FRESH.seq) + "_" + Date.now().toString(36), ai: true, t: t, subj: TOPIC[t].subj, d: d, q: String(q.q).trim(), x: qcText(q.explanation || q.working || q.markScheme || "") };
+    if (type === "mcq" && cfg.types.mcq) {
+      var m = qcBuildMcq(q); if (!m) { qcDrop(q, "broken options"); return; }
+      out.push(Object.assign(base, { y: "mcq", m: 1, o: m.o, a: m.a }));
+    } else if (type === "short" && Array.isArray(q.answers) && q.answers.length && cfg.types.short) out.push(Object.assign(base, { y: "short", m: 1, a: q.answers.map(qcText).filter(Boolean).slice(0, 6) }));
+    else if ((type === "structured" || type === "exam" || type === "struct") && (cfg.types.struct || cfg.types.exam)) {
+      var y = type === "exam" && cfg.types.exam ? "exam" : cfg.types.struct ? "struct" : "exam";
+      out.push(Object.assign(base, { y: y, m: Math.max(1, Math.min(10, +q.marks || (y === "exam" ? 5 : 3))), x: qcText(q.markScheme || q.explanation || "") }));
     }
   });
-  if (!out.length) throw new Error("The AI didn't send any usable questions");
-  out.forEach(function (q) { QBY[q.id] = q; });
-  freshRemember("q", cfg.topic !== "all" ? cfg.topic : cfg.subj, out.map(function (q) { return q.q; }));
-  return out.slice(0, n);
+  return out;
+}
+/* Writes the questions, checks them locally, then has every answer checked again. onStage("write" | "check") reports progress. */
+async function aiFreshQuiz(cfg, onStage) {
+  var n = Math.max(3, Math.min(cfg.len || 10, 20)), topics = freshTopics(cfg.subj, cfg.topic, n, cfg.tids);
+  var types = Object.keys(cfg.types).filter(function (k) { return cfg.types[k]; }); if (!types.length) types = ["mcq", "short"];
+  var rkey = cfg.topic !== "all" ? cfg.topic : cfg.subj, recent = freshRecent()["q:" + rkey] || [];
+  var kept = [], seen = recent.map(qcFlat), round = 0;
+  QC.dropped = [];
+  while (kept.length < n && round < 2) {
+    round++;
+    if (round > 1 && kept.length >= Math.max(3, Math.ceil(n * 0.7))) break; /* close enough: don't spend another request */
+    var need = n - kept.length, cand;
+    try {
+      if (onStage) onStage("write");
+      var v = await aiJSON(freshQuizPrompt(cfg, topics, need + Math.max(1, Math.min(3, Math.ceil(need / 4))), types, recent.slice(0, 15).concat(kept.map(function (q) { return q.q; }))), { modelTier: "default" });
+      cand = qcFilter(freshParse(v, cfg, topics), seen);
+      if (cand.length) { if (onStage) onStage("check"); cand = await qcVerify(cand); }
+    } catch (e) { if (!kept.length) throw e; break; }
+    kept = kept.concat(cand);
+  }
+  if (!kept.length) throw new Error("The AI didn't send any usable questions");
+  kept = kept.slice(0, n);
+  kept.forEach(function (q) { QBY[q.id] = q; });
+  freshRemember("q", rkey, kept.map(function (q) { return q.q; }));
+  return kept;
 }
 function quizLoadingView() {
   var Q = UI.quiz;
-  return head("Quiz Centre", "Fresh questions are being written for you") + '<div class="card" style="max-width:620px;margin:0 auto;text-align:center"><div class="stack" style="justify-items:center">' + doodle("bulb", 80, "wiggle") + "<h2>Pip is writing new questions…</h2><p class=\"muted\">" + esc(freshSubjName(Q.cfg.subj)) + (Q.cfg.topic !== "all" ? " · " + esc(TOPIC[Q.cfg.topic].t) : "") + " · with " + esc(AI_NAME) + '. This usually takes 5–20 seconds.</p><div class="row"><button class="btn" data-act="freshQuizBuiltIn">Use built-in questions instead</button></div></div></div>';
+  return head("Quiz Centre", "Fresh questions are being written for you") + '<div class="card" style="max-width:620px;margin:0 auto;text-align:center"><div class="stack" style="justify-items:center">' + doodle("bulb", 80, "wiggle") + "<h2>" + (Q.stage === "check" ? "Pip is double-checking every answer…" : "Pip is writing new questions…") + "</h2><p class=\"muted\">" + esc(freshSubjName(Q.cfg.subj)) + (Q.cfg.topic !== "all" ? " · " + esc(TOPIC[Q.cfg.topic].t) : "") + " · with " + esc(AI_NAME) + '. This usually takes 10–30 seconds.</p><ol class="load-steps"><li class="' + (Q.stage === "check" ? "done" : "on") + '">Write the questions</li><li class="' + (Q.stage === "check" ? "on" : "") + '">Solve each one again to check the answer</li></ol><div class="row"><button class="btn" data-act="freshQuizBuiltIn">Use built-in questions instead</button></div></div></div>';
 }
 async function freshStartQuiz() {
   var cfg = UI.quiz.cfg, tok = ++FRESH.seq;
   UI.quiz = { phase: "loading", cfg: cfg, tok: tok }; render();
   try {
-    var qs = await aiFreshQuiz(cfg);
+    var qs = await aiFreshQuiz(cfg, function (stage) { if (UI.quiz && UI.quiz.tok === tok && UI.quiz.phase === "loading" && UI.quiz.stage !== stage) { UI.quiz.stage = stage; if (UI.page === "quiz") render(); } });
     if (!UI.quiz || UI.quiz.tok !== tok) return;
-    UI.quiz = { phase: "setup", cfg: cfg }; startQuiz(qs.map(function (q) { return q.id; }));
-    UI.quiz.fresh = true;
+    UI.quiz = { phase: "setup", cfg: cfg }; startQuiz(qs.map(function (q) { return q.id; }), false, true);
   } catch (e) {
     if (!UI.quiz || UI.quiz.tok !== tok) return;
     toast((e && e.message ? e.message + ". " : "") + "Using the built-in questions instead.", "bad");
@@ -5275,13 +5639,16 @@ async function aiFreshCards(subj, n) {
     (weak.length ? "\nGive more cards to these weaker topics: " + weak.map(function (t) { return t.t; }).join("; ") + "." : "") +
     (avoid.length ? "\nDo NOT repeat these recent card fronts:\n" + avoid.map(function (q) { return "• " + q.slice(0, 100); }).join("\n") : "") +
     freshLangNote(topics) +
-    "\nFront: a short question, term or prompt. Back: a short, accurate answer (1–2 sentences, or a formula/definition). Mix definitions, facts, examples and quick calculations. Random seed " + Math.floor(Math.random() * 1e6) + "." +
+    "\nFront: a short question, term or prompt. Back: a short, accurate answer (1–2 sentences, or a formula/definition). Each card appears once; never include notes to yourself or corrections. Mix definitions, facts, examples and quick calculations. Random seed " + Math.floor(Math.random() * 1e6) + "." +
     "\n\nReturn ONLY JSON: {\"cards\":[{\"topic\":\"topic id\",\"front\":\"...\",\"back\":\"...\"}]}";
-  var v = await aiJSON(prompt, { modelTier: "default" }), ok = topics.map(function (t) { return t.id; }), out = [];
-  (Array.isArray(v.cards) ? v.cards : []).forEach(function (c) {
+  var v = await aiJSON(prompt, { modelTier: "default" }), ok = topics.map(function (t) { return t.id; }), out = [], seenC = [];
+  (Array.isArray(v && v.cards) ? v.cards : []).forEach(function (c) {
     if (!c || !c.front || !c.back) return;
     var t = ok.indexOf(String(c.topic)) >= 0 ? String(c.topic) : ok[0];
-    out.push({ id: "aic" + (++FRESH.seq) + "_" + Date.now().toString(36), ai: true, t: t, subj: subj, front: String(c.front), back: String(c.back) });
+    var front = qcText(c.front), back = qcText(c.back), f = qcFlat(front);
+    if (!f || !qcFlat(back) || qcLeak({ q: front, x: back, y: "card" }) || seenC.some(function (s) { return qcSameQ(s, f); })) { qcDrop(front, "flashcard dropped"); return; }
+    seenC.push(f);
+    out.push({ id: "aic" + (++FRESH.seq) + "_" + Date.now().toString(36), ai: true, t: t, subj: subj, front: front, back: back });
   });
   if (!out.length) throw new Error("The AI didn't send any usable flashcards");
   freshRemember("c", subj, out.map(function (c) { return c.front; }));
@@ -5307,9 +5674,9 @@ ACT.stFresh = function () {
   var f = UI.focus, x = f && findSess(f.id); if (!x || f.freshBusy) return;
   var ex = practiceEx(x.subj, x.ex), types = {}; ex.types.forEach(function (t) { types[t] = 1; });
   f.freshBusy = true; drawFocus();
-  aiFreshQuiz({ subj: x.subj, topic: "all", tids: x.tids, types: types, diff: "any", len: ex.n || 8, weak: false }).then(function (qs) {
-    if (UI.focus !== f) return; f.freshBusy = false; f.qs = qs.map(function (q) { return q.id; }); f.ans = {}; drawFocus(); toast("New " + ex.name.toLowerCase() + " questions ready. ✨", "good");
-  }, function (e) { if (UI.focus !== f) return; f.freshBusy = false; drawFocus(); toast((e && e.message) || "Couldn't make new questions.", "bad"); });
+  aiFreshQuiz({ subj: x.subj, topic: "all", tids: x.tids, types: types, diff: "any", len: ex.n || 8, weak: false }, function (stage) { if (UI.focus === f && f.freshBusy && f.freshStage !== stage) { f.freshStage = stage; drawFocus(); } }).then(function (qs) {
+    if (UI.focus !== f) return; f.freshBusy = false; f.freshStage = null; f.qs = qs.map(function (q) { return q.id; }); f.ans = {}; drawFocus(); toast("New " + ex.name.toLowerCase() + " questions ready. ✨", "good");
+  }, function (e) { if (UI.focus !== f) return; f.freshBusy = false; f.freshStage = null; drawFocus(); toast((e && e.message) || "Couldn't make new questions.", "bad"); });
 };
 ACT.freshQuizBuiltIn = function () { var c = UI.quiz.cfg; FRESH.seq++; UI.quiz = { phase: "setup", cfg: c }; builtInQuizStart(); };
 ON.freshToggle = function (el) { S.settings.freshAI = el.checked; save(); render(); };
