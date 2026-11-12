@@ -877,7 +877,8 @@ html.formal .stat .v { font-size: 26px; } html.formal .cd-unit b { font-size: 30
 html.formal *::before { filter: none !important; }
 html.formal :is(.card, .btn, .session-row, .opt, .cal-cell, .acc, .week-col, .modal, .fc-face, .rest-banner, .cd-unit, .date-tile)::before { border-width: 1px !important; border-color: var(--ink); }
 html.formal svg [filter], html.formal svg[filter], html.formal .nav-btn svg { filter: none !important; }
-html.formal :is(.btn, .btn:nth-child(even), .btn:hover, .btn:active, .grid > .card, .cd-unit, .date-tile, .cal-cell:hover, .wk-card, .opt:hover, .pal.cur, .modal, .toast, .an-badge, .an-ex, .an-jump .chip:hover, .nav-btn:hover, .cal-cell.today .cn, .check) { transform: none !important; }
+html.formal #app .grid > .card, html.formal .modal-wrap .modal, html.formal #toasts .toast { transform: none; }
+html.formal :is(.btn, .btn:nth-child(even), .btn:hover, .btn:active, .cd-unit, .date-tile, .cal-cell:hover, .wk-card, .opt:hover, .pal.cur, .an-badge, .an-ex, .an-jump .chip:hover, .nav-btn:hover, .cal-cell.today .cn, .check) { transform: none !important; }
 html.formal * { rotate: none !important; scale: none !important; translate: none !important; }
 html.formal .btn { box-shadow: none; font-size: 14px; height: 34px; font-weight: 500; }
 html.formal .btn.sm { height: 28px; font-size: 13px; box-shadow: none; } html.formal .btn.lg { height: 42px; font-size: 16px; }
@@ -1214,9 +1215,208 @@ html.formal .app.nav-open .sidebar { box-shadow: 0 0 40px rgba(0, 0, 0, .22); }
 html.formal .btn.icon-btn { padding-inline: 0; }
 @media (max-width: 860px) { html.formal .cd-unit { min-width: 0; padding: 6px 4px 5px; } html.formal .cd-unit b { font-size: 25px; } }
 
+/* =====================================================================
+   Formal mode, third pass: the school report.
+   Navy and brass like a school crest: a navy side panel, serif headings, brass rules,
+   a clock-style countdown, and quiet motion (fades, short rises, lines that draw themselves).
+   ===================================================================== */
+html.formal {
+  --paper: #f3f4f7; --paper-2: #e9ecf1; --panel: #ffffff; --panel-solid: #ffffff; --panel-hi: #f5f6f9;
+  --ink: #dde1e7; --text: #141a22; --muted: #4f5864; --faint: #7b8490;
+  --line: #e8ebef; --line-2: #c9cfd8;
+  --accent: #17304f; --accent-ink: #ffffff; --accent-soft: rgba(23, 48, 79, 0.07);
+  --navy: #132a45; --navy-2: #0e2037; --on-navy: #d5deea; --on-navy-dim: #94a6bd; --brass: #a8873f;
+  --shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 1px 3px rgba(16, 24, 40, .04); --shadow-soft: var(--shadow);
+  --wob: 8px; --wob-2: 6px; --wob-pill: 6px; --r: 8px; --r-sm: 6px;
+  --f-ease: cubic-bezier(.2, .7, .2, 1);
+}
+html.formal[data-app-theme="dark"] {
+  --paper: #0f1318; --paper-2: #0b0e12; --panel: #181d24; --panel-solid: #181d24; --panel-hi: #1e242c;
+  --ink: #2b323b; --line: #242a32; --line-2: #3d4651;
+  --accent: #a9c2e6; --accent-ink: #0d1622; --accent-soft: rgba(169, 194, 230, 0.1);
+  --navy: #0c1826; --navy-2: #08111c; --brass: #c7a559;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4);
+}
+html.formal .card, html.formal .acc { box-shadow: var(--shadow); }
+html.formal :is(.card, .acc, .session-row, .opt, .cal-cell, .week-col, .cd-unit, .date-tile, .rest-banner)::before { border-color: var(--ink); }
+/* navy side panel */
+html.formal .sidebar { background: var(--navy); background-image: linear-gradient(180deg, var(--navy), var(--navy-2)); border-right: 0; color: var(--on-navy); }
+html.formal .brand { padding-bottom: 16px; margin-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, .12); position: relative; }
+html.formal .brand::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 44px; height: 2px; background: var(--brass); }
+html.formal .brand-t { color: #fff; font-size: 21px; }
+html.formal .brand-s { color: var(--on-navy-dim); }
+html.formal .nav-btn { color: var(--on-navy); }
+html.formal .nav-btn svg { color: var(--on-navy-dim); }
+html.formal .nav-btn:hover { background: rgba(255, 255, 255, .07); color: #fff; }
+html.formal .nav-btn.active { background: rgba(255, 255, 255, .11); color: #fff; }
+html.formal .nav-btn.active svg { color: #fff; }
+html.formal .nav-btn.active::after { background: var(--brass); }
+html.formal .side-foot { border-top-color: rgba(255, 255, 255, .12); color: var(--on-navy); }
+html.formal .sidebar :is(.muted, .small, .tiny, .faint) { color: var(--on-navy-dim); }
+html.formal .sidebar b, html.formal .side-next b { color: #fff; }
+html.formal .sidebar .btn { background: transparent; color: var(--on-navy); }
+html.formal .sidebar .btn::before { border-color: rgba(255, 255, 255, .22) !important; }
+html.formal .sidebar .btn:hover { background: rgba(255, 255, 255, .08); }
+html.formal .topbar { background: var(--navy); border-bottom: 0; color: #fff; }
+html.formal .topbar .t { color: #fff; } html.formal .topbar .btn { color: #fff; }
+/* page title: brass tab over a hairline that draws itself */
+html.formal .page-head { position: relative; border-bottom: 0; }
+html.formal .page-head::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line-2); transform-origin: left; }
+html.formal .page-head::before { content: ""; position: absolute; left: 0; bottom: 0; width: 56px; height: 3px; background: var(--brass); z-index: 1; transform-origin: left; }
+html.formal h1 { font-size: 31px; }
+/* the next-exam card leads the page */
+html.formal .hero { border-top: 3px solid var(--brass); border-radius: 0 0 8px 8px; padding: 26px 28px; }
+html.formal .hero::before { border-top: 0; border-radius: 0 0 8px 8px; }
+html.formal .hero h1.big { font-size: 40px; letter-spacing: -0.015em; }
+html.formal .cd-unit { background: var(--navy); min-width: 78px; padding: 10px 12px 8px; border-radius: 6px; }
+html.formal .cd-unit::before { display: none; }
+html.formal .cd-unit b { color: #fff; font-size: 31px; font-variant-numeric: tabular-nums; }
+html.formal .cd-unit span { color: var(--on-navy-dim); }
+html.formal .stat .v { font-size: 29px; }
+html.formal .btn { border-radius: 6px; transition: background-color .16s ease, color .16s ease, box-shadow .16s ease; }
+html.formal .btn.primary { box-shadow: 0 1px 2px rgba(16, 24, 40, .18); }
+html.formal .btn.primary:hover { box-shadow: 0 3px 10px rgba(23, 48, 79, .28); }
+html.formal .chip { border-radius: 999px; padding: 0 9px; }
+html.formal .session-row { transition: box-shadow .18s ease, background-color .18s ease; }
+html.formal .session-row:hover { box-shadow: 0 2px 10px rgba(16, 24, 40, .08); }
+html.formal .nav-btn { transition: background-color .16s ease, color .16s ease; }
+html.formal .opt { transition: background-color .15s ease, box-shadow .15s ease; }
+html.formal .opts:not(.marked) .opt:hover { background: var(--panel-hi); box-shadow: inset 3px 0 0 var(--accent); }
+html.formal .cal-cell { transition: box-shadow .15s ease; } html.formal .cal-cell:hover { box-shadow: 0 0 0 2px var(--accent-soft), 0 2px 8px rgba(16, 24, 40, .08); }
+html.formal .an-badge { background: var(--navy); }
+html.formal .an-lv-tag { background: color-mix(in srgb, var(--navy) calc((1 - var(--k)) * 12%), var(--panel-hi)); }
+html.formal .pip-btn { background: var(--navy); border: 2px solid var(--brass); }
+html.formal .formal-switch { border-radius: 999px; padding-left: 14px; }
+html.formal .toggle { border-radius: 999px; } html.formal .toggle::after { border-radius: 50%; }
+html.formal .study-bar { border-bottom: 2px solid var(--brass); }
+html.formal .qt-dot { border-radius: 6px; }
+html.formal .qt-dot.cur { box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--accent); border-color: var(--accent); }
+@media (max-width: 860px) { html.formal .hero { padding: 20px 18px; } html.formal .hero h1.big { font-size: 31px; } html.formal h1 { font-size: 25px; } html.formal .cd-unit { padding: 8px 4px 6px; } html.formal .cd-unit b { font-size: 25px; } }
+
+/* ----- formal motion: everything playful stays off, these few are allowed back ----- */
+@keyframes f-rise { from { opacity: 0; transform: translateY(12px); } }
+@keyframes f-fade { from { opacity: 0; } }
+@keyframes f-out { to { opacity: 0; } }
+@keyframes f-line { from { transform: scaleX(0); } }
+@keyframes f-tall { from { transform: scaleY(0); } }
+@keyframes f-side { from { opacity: 0; transform: translateX(-10px); } }
+@keyframes f-toast { from { opacity: 0; transform: translateX(18px); } }
+html.formal #view.enter .page-head { animation: f-fade .5s ease-out backwards !important; }
+html.formal #view.enter .page-head::after { animation: f-line .8s var(--f-ease) backwards !important; }
+html.formal #view.enter .page-head::before { animation: f-line .5s var(--f-ease) .25s backwards !important; }
+html.formal #view.enter :is(.card, .acc, .an-subjs), html.formal #view.enter > :is(.seg, .notice, .rest-banner, .q-track) { animation: f-rise .55s var(--f-ease) backwards !important; animation-delay: calc(var(--i, 0) * 50ms + 80ms) !important; }
+html.formal #view.enter :is(.card, .acc) :is(.card, .acc) { animation: none !important; }
+html.formal #view.enter .bar > i { animation: m-bar .9s var(--f-ease) backwards !important; animation-delay: calc(var(--i, 0) * 50ms + 300ms) !important; }
+html.formal #view.enter .ring .ring-arc { animation: m-ring 1.1s var(--f-ease) backwards !important; animation-delay: calc(var(--i, 0) * 50ms + 300ms) !important; }
+html.formal #view.enter .hero .cd-unit { animation: f-rise .5s var(--f-ease) backwards !important; }
+html.formal #view.enter .hero .cd-unit:nth-child(1) { animation-delay: .28s !important; } html.formal #view.enter .hero .cd-unit:nth-child(2) { animation-delay: .34s !important; }
+html.formal #view.enter .hero .cd-unit:nth-child(3) { animation-delay: .40s !important; } html.formal #view.enter .hero .cd-unit:nth-child(4) { animation-delay: .46s !important; }
+html.formal .nav-btn.active::after { transform-origin: center; animation: f-tall .28s var(--f-ease) !important; }
+html.formal .modal-wrap { animation: f-fade .2s ease-out !important; }
+html.formal .modal-wrap .modal { animation: f-rise .32s var(--f-ease) !important; }
+html.formal .modal-wrap.closing { animation: f-out .18s ease-in forwards !important; }
+html.formal #toasts .toast { animation: f-toast .3s var(--f-ease) !important; }
+html.formal #toasts .toast.out { animation: f-out .28s ease-in forwards !important; }
+html.formal .pip-panel { animation: f-rise .25s var(--f-ease) !important; }
+html.formal .m-ans .feedback { animation: f-rise .3s var(--f-ease) !important; }
+html.formal .m-ans .q-margin .pen path { animation: pen-draw .4s ease-out backwards .1s !important; }
+html.formal .load-steps li.on::before { animation: spin .9s linear infinite !important; }
+html.formal .seg button { transition: background-color .16s ease, color .16s ease, box-shadow .16s ease; }
+html.formal .toggle::after { transition: transform .18s ease, background-color .18s ease; }
+html.formal.theme-anim, html.formal.theme-anim * { transition: background-color .4s ease, color .4s ease, border-color .4s ease !important; }
+
+/* =====================================================================
+   Opening animation (#intro): plays when the site opens, in either look.
+   Crayon: a star pops in, a pencil writes the name, a highlighter swipes it, and the sheet is lifted off the desk.
+   Formal: a brass rule draws, the name rises from behind it, and the cover fades to the page.
+   Pure CSS timing, so it always clears itself; a tap or key skips it.
+   ===================================================================== */
+#intro { position: fixed; inset: 0; z-index: 5000; display: grid; place-items: center; overflow: hidden; background-color: var(--paper); background-image: var(--grain), repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px); color: var(--text); cursor: pointer; transform-origin: 0 0; box-shadow: 0 30px 60px rgba(45, 42, 50, .35); animation: in-lift .62s cubic-bezier(.6, 0, .8, .3) 1.65s forwards; }
+html.no-intro #intro { display: none; }
+.in-c { display: grid; justify-items: center; gap: 10px; padding: 24px; text-align: center; }
+.in-star { width: 84px; height: 84px; overflow: visible; animation: in-star .7s cubic-bezier(.34, 1.56, .64, 1) backwards; }
+.in-title { position: relative; font-family: var(--display); font-size: clamp(30px, 8.2vw, 54px); line-height: 1.25; white-space: nowrap; }
+.in-t { display: inline-block; padding: 0 .22em; background: linear-gradient(transparent 52%, var(--hi) 52% 90%, transparent 90%) no-repeat left / 0% 100%; clip-path: inset(-20% 100% -20% 0); animation: in-write .85s linear .3s forwards, in-swipe .34s ease-out 1.12s forwards; }
+.in-pencil { position: absolute; left: 0; top: 50%; width: .95em; height: .95em; margin: -.9em 0 0 -.1em; opacity: 0; animation: in-pencil .85s linear .3s, in-scribble .17s ease-in-out .3s 5; }
+.in-rule { display: none; }
+.in-sub { font-size: clamp(16px, 4vw, 20px); color: var(--muted); animation: f-fade .4s ease-out 1.15s backwards; }
+.in-sub::after { content: "Sharpening the crayons…"; }
+@keyframes in-star { from { opacity: 0; transform: scale(0) rotate(-200deg); } }
+@keyframes in-write { to { clip-path: inset(-20% 0 -20% 0); } }
+@keyframes in-swipe { to { background-size: 100% 100%; } }
+@keyframes in-pencil { 0% { left: 0; opacity: 1; } 96% { left: 100%; opacity: 1; } 100% { left: 100%; opacity: 0; } }
+@keyframes in-scribble { 50% { transform: translateY(-.22em) rotate(-7deg); } }
+@keyframes in-lift { 0% { transform: none; } 100% { transform: translate(-6%, -112%) rotate(-7deg); visibility: hidden; } }
+@keyframes in-fade { to { opacity: 0; visibility: hidden; } }
+#intro.skip, html.formal #intro.skip { animation: in-fade .22s ease-out forwards !important; }
+/* a reload in the same tab gets the short version: the cover is already written and just lifts */
+html.intro-quick #intro { animation-delay: .15s; animation-duration: .5s; }
+html.intro-quick #intro * { animation: none !important; }
+html.intro-quick .in-t { clip-path: none; background-size: 100% 100%; }
+/* formal cover */
+html.formal #intro { background: var(--panel); box-shadow: none; animation: in-fade .55s ease-in-out 1.25s forwards !important; }
+html.formal .in-c { gap: 0; }
+html.formal .in-star, html.formal .in-pencil { display: none; }
+html.formal .in-title { overflow: hidden; padding: 0 4px 12px; font-family: var(--serif); font-weight: 600; font-size: clamp(26px, 6.4vw, 42px); letter-spacing: -0.01em; }
+html.formal .in-t { clip-path: none; background: none; padding: 0; animation: in-up .7s var(--f-ease) .25s backwards !important; }
+html.formal .in-rule { display: block; width: min(320px, 70vw); height: 2px; background: var(--brass); transform-origin: center; animation: f-line .6s var(--f-ease) .1s backwards !important; }
+html.formal .in-sub { margin-top: 14px; font-size: 14px; letter-spacing: .16em; color: var(--muted); animation: in-track .6s ease-out .65s backwards !important; }
+html.formal .in-sub::after { content: "Examination preparation"; }
+@keyframes in-up { from { transform: translateY(115%); } }
+@keyframes in-track { from { opacity: 0; letter-spacing: .34em; } }
+html.formal.intro-quick #intro { animation-delay: .1s !important; animation-duration: .4s !important; }
+html.formal.intro-quick #intro * { animation: none !important; }
+/* once the cover is gone, the frame of the app arrives in order */
+html.app-in .sidebar .brand { animation: in-side .5s var(--ease-out) backwards; }
+html.app-in .sidebar .nav-btn { animation: in-side .5s var(--spring) backwards; animation-delay: calc(var(--n, 0) * 45ms + 80ms); }
+html.app-in .side-foot { animation: f-fade .6s ease-out .55s backwards; }
+html.app-in .formal-switch, html.app-in .pip-wrap { animation: in-drop .55s var(--spring) .5s backwards; }
+html.app-in .topbar { animation: f-fade .4s ease-out backwards; }
+@keyframes in-side { from { opacity: 0; transform: translateX(-26px) rotate(-2deg); } }
+@keyframes in-drop { from { opacity: 0; transform: translateY(-14px) scale(.9); } }
+.sidebar .nav-btn:nth-child(1) { --n: 0; } .sidebar .nav-btn:nth-child(2) { --n: 1; } .sidebar .nav-btn:nth-child(3) { --n: 2; } .sidebar .nav-btn:nth-child(4) { --n: 3; } .sidebar .nav-btn:nth-child(5) { --n: 4; }
+.sidebar .nav-btn:nth-child(6) { --n: 5; } .sidebar .nav-btn:nth-child(7) { --n: 6; } .sidebar .nav-btn:nth-child(8) { --n: 7; } .sidebar .nav-btn:nth-child(9) { --n: 8; } .sidebar .nav-btn:nth-child(10) { --n: 9; }
+html.formal.app-in .sidebar .brand { animation: f-fade .5s ease-out backwards !important; }
+html.formal.app-in .sidebar .nav-btn { animation: f-side .45s var(--f-ease) backwards !important; animation-delay: calc(var(--n, 0) * 40ms + 60ms) !important; }
+html.formal.app-in .side-foot, html.formal.app-in .formal-switch, html.formal.app-in .pip-wrap, html.formal.app-in .topbar { animation: f-fade .6s ease-out .4s backwards !important; }
+html.formal.app-in .brand::after { animation: f-line .6s var(--f-ease) .2s backwards !important; transform-origin: left; }
+@media (prefers-reduced-motion: reduce) { #intro { display: none; } }
+html.formal .hero .hero-body { padding-right: 0; }
+html.formal .countdown { gap: 8px; margin: 18px 0 20px; }
+@media (max-width: 860px) { html.formal .cd-unit { min-width: 0; flex: 1; max-width: 86px; } }
+
+.an-tbl-wrap { overflow-x: auto; }
+.an-tbl { width: 100%; border-collapse: collapse; font-size: 15.5px; line-height: 1.35; }
+.an-tbl th, .an-tbl td { padding: 8px 10px; text-align: left; vertical-align: top; border-bottom: 2px dashed var(--line); }
+.an-tbl thead th { font-family: var(--display); font-weight: 400; font-size: 17px; border-bottom: 2px solid var(--ink); white-space: nowrap; }
+.an-tbl tbody th { font-family: var(--display); font-weight: 400; font-size: 17px; min-width: 120px; }
+.an-tbl td:nth-child(4) { color: var(--good); } .an-tbl td:nth-child(5) { color: var(--bad); }
+html.formal .an-tbl { font-size: 14px; } html.formal .an-tbl th, html.formal .an-tbl td { border-bottom: 1px solid var(--line); }
+html.formal .an-tbl thead th { font: 600 13px var(--font); color: var(--muted); border-bottom: 1px solid var(--line-2); } html.formal .an-tbl tbody th { font: 600 14px var(--font); }
+@media (max-width: 760px) {
+  .an-tbl thead { display: none; } .an-tbl, .an-tbl tbody, .an-tbl tr, .an-tbl th, .an-tbl td { display: block; }
+  .an-tbl tr { padding: 8px 0; border-bottom: 2px solid var(--ink); } .an-tbl th, .an-tbl td { border: 0; padding: 3px 0; }
+  .an-tbl td::before { content: attr(data-l) ": "; color: var(--faint); }
+}
+
 </style>
+<script>
+/* before the first paint: pick the look for the opening animation (device settings only) */
+try { (function () { var d = document.documentElement, L = localStorage;
+  if (L.getItem("ecc.formal") === "1") d.classList.add("formal");
+  if (L.getItem("ecc.theme") === "dark") d.setAttribute("data-app-theme", "dark");
+  if ((navigator.webdriver && !window.__ECC_INTRO) || matchMedia("(prefers-reduced-motion: reduce)").matches) d.classList.add("no-intro");
+  try { if (sessionStorage.getItem("ecc.intro")) d.classList.add("intro-quick"); sessionStorage.setItem("ecc.intro", "1"); } catch (e) { }
+})(); } catch (e) { }
+</script>
 </head>
 <body>
+<div id="intro" aria-hidden="true"><div class="in-c">
+<svg class="in-star" viewBox="0 0 100 100"><path d="M50 9 L61 37 L92 38 L67 57 L76 88 L50 71 L24 88 L33 57 L8 38 L39 37 Z" fill="#ffd23f" stroke="#2d2a32" stroke-width="5" stroke-linejoin="round"/><path d="M40 50 q2 -4 4 0 M56 50 q2 -4 4 0" fill="none" stroke="#2d2a32" stroke-width="3" stroke-linecap="round"/><path d="M43 59 q7 7 14 0" fill="none" stroke="#2d2a32" stroke-width="3" stroke-linecap="round"/></svg>
+<div class="in-title"><span class="in-t">Exam Command Centre</span><svg class="in-pencil" viewBox="0 0 64 64"><g transform="rotate(38 32 32)"><rect x="26" y="2" width="12" height="42" rx="2" fill="#ffd23f" stroke="#2d2a32" stroke-width="3"/><rect x="26" y="2" width="12" height="9" rx="2" fill="#ff8fab" stroke="#2d2a32" stroke-width="3"/><path d="M26 44 L32 60 L38 44 Z" fill="#f3d9b1" stroke="#2d2a32" stroke-width="3" stroke-linejoin="round"/><path d="M30 54 L32 60 L34 54 Z" fill="#2d2a32"/></g></svg></div>
+<div class="in-rule"></div>
+<div class="in-sub"></div>
+</div></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <filter id="rough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="4" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="3.4" xChannelSelector="R" yChannelSelector="G"/></filter>
 <filter id="crayon" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="2" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="3" xChannelSelector="R" yChannelSelector="G" result="d"/><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="9" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.75" result="gm"/><feComposite in="d" in2="gm" operator="in"/></filter>
@@ -2335,6 +2535,26 @@ var FLASH = [
 
 /* Answer-writing notes: question types and how to write them. Humanities comes from the student's class guidance;
    the other subjects are starter notes to be changed as we go. */
+/* GP "most significant cause" and "most significant consequence" are written and marked the same way */
+function gpMost(code, one, many) {
+  return { code: code, name: "Most significant " + one, marks: "8", src: "ms",
+    q: "Sources 1 and 2 suggest " + many + " of [the issue]. Which " + one + " of [the issue] do you think is the most significant? Explain why. [8]",
+    steps: [
+      { h: "Give your opinion", pts: ["Choose ONE " + one + " from the sources and say clearly that it is the most significant.", "Use the wording of the question so the marker sees your opinion straight away."],
+        ex: ["I think the most significant " + one + " of [the issue] is _____."] },
+      { h: "Explain why, using three of these reasons", pts: ["Short term / long term", "Depth of impact", "Scale of impact", "Creates a vicious circle", "Reflects expert opinion", "Large-scale domino effect or cyclical impact", "Any other valid reason"] },
+      { h: "Back up your three reasons", pts: ["Support TWO of your reasons with evidence from the sources, and say which source it comes from.", "Support ONE reason with good reasoning: explain step by step why it makes this " + one + " matter most."],
+        ex: ["This has the largest scale of impact because _____. Source 1 shows this when it says “_____”."] },
+      { h: "Finish with a clear judgement", pts: ["Sum up in one sentence why your " + one + " is more significant than the others."],
+        ex: ["Overall, _____ is the most significant " + one + " because _____."] }],
+    note: "Use 3 reasons: 2 supported with evidence and 1 with good reasoning. The marker labels your answer with J, R and EXP, so make your judgement, your reasons and your explanation easy to find.",
+    levels: [
+      { l: "Level 4", m: "7–8", pts: ["Clear justification of an opinion.", "The opinion is clearly explained and supported.", "The explanation is credible and clearly related to the issue."] },
+      { l: "Level 3", m: "5–6", pts: ["Some justification of an opinion.", "The opinion is explained with some support.", "The explanation is mainly credible and related to the issue."] },
+      { l: "Level 2", m: "3–4", pts: ["Partial justification of an opinion.", "The opinion is partly explained and has minimal support.", "The explanation is partly related to the issue."] },
+      { l: "Level 1", m: "1–2", pts: ["A limited opinion.", "The opinion is stated with little explanation.", "Any explanation may be general, off the point or not credible."] },
+      { l: "Level 0", m: "0", pts: ["Nothing that can be given credit."] }] };
+}
 var ANSWER_NOTES = [
 { subj: "hum", from: "class", intro: "Source-based questions. The source letters change in every paper, so read which sources each question names.",
 types: [
@@ -2511,28 +2731,43 @@ types: [
 { code: "1", name: "Fact and opinion", marks: "1 + 2",
 q: "(i) Identify one opinion in the sources. [1]  (ii) Explain why it is an opinion. [2]",
 steps: [{ h: "How to answer", pts: ["Quote the exact words.", "Opinion: a personal view or judgement that can't be proven; look for words like “I think”, “not fair”, “best”.", "Fact: can be checked and proven with evidence, often a number or statistic.", "Explain in two parts: what it is + how you can tell."], ex: ["“In my view this is not fair.” It is an opinion because it is the writer's personal judgement, and fairness can't be proven or checked."] }] },
-{ code: "2", name: "Most significant cause", marks: "8", src: "ms",
-q: "Sources 1 and 2 suggest causes of [the issue]. Which cause of [the issue] do you think is the most significant? Explain why. [8]",
+{ code: "2", name: "Elements of perspective", marks: "6", src: "ms",
+q: "A question that asks you to analyse the perspective of the speaker or writer in one source. [6]",
 steps: [
-{ h: "Give your opinion", pts: ["Choose ONE cause from the sources and say clearly that it is the most significant.", "Use the wording of the question so the marker sees your opinion straight away."],
-ex: ["I think the most significant cause of [the issue] is _____."] },
-{ h: "Justify it with reasons and support", pts: ["Give reasons why this cause matters most.", "Support each reason with evidence from Source 1 or Source 2, and say which source it comes from."],
-ex: ["This is because _____. Source 1 shows this when it says “_____”."] },
-{ h: "Explain, and keep it about the issue", pts: ["Explain how your cause leads to the issue in the question. Every point must link back to that issue.", "Keep it credible: say things that are believable and that the sources or real life back up."],
-ex: ["This means that _____, which leads to more [issue]."] },
-{ h: "Finish with a clear judgement", pts: ["Sum up in one sentence why your cause is more significant than the others."],
-ex: ["Overall, _____ is the most significant cause because _____."] }],
-note: "The marker labels your answer with J, R and EXP. Make sure all three are easy to find: your judgement (the opinion you justify), your reasons, and your explanation.",
+{ h: "The issue and the speaker's view", pts: ["Identify the issue being discussed.", "Determine the nature of the issue: is it local, national or global?", "Identify the speaker's perspective on the issue."] },
+{ h: "Causes, consequences and solutions", pts: ["Analyse the causes of the issue identified by the speaker.", "Examine the consequences highlighted by the speaker.", "Identify the actions or solutions suggested by the speaker."] },
+{ h: "Values, evidence and reasoning", pts: ["Identify the values that influence or shape the speaker's perspective.", "Examine the evidence used by the speaker to support their viewpoint.", "Analyse the reasoning used to connect the evidence."] }],
+note: "All nine elements have to be explained, each one with relevant evidence from the source.",
 levels: [
-{ l: "Level 4", m: "7–8", pts: ["Clear justification of an opinion.", "The opinion is clearly explained and supported.", "The explanation is credible and clearly related to the issue."] },
-{ l: "Level 3", m: "5–6", pts: ["Some justification of an opinion.", "The opinion is explained with some support.", "The explanation is mainly credible and related to the issue."] },
-{ l: "Level 2", m: "3–4", pts: ["Partial justification of an opinion.", "The opinion is partly explained and has minimal support.", "The explanation is partly related to the issue."] },
-{ l: "Level 1", m: "1–2", pts: ["A limited opinion.", "The opinion is stated with little explanation.", "Any explanation may be general, off the point or not credible."] },
+{ l: "Level 3", m: "5–6", pts: ["Clear analysis of the source.", "Describes a wide range of elements of the perspective.", "Frequent use of relevant material and examples taken from the source."] },
+{ l: "Level 2", m: "3–4", pts: ["Some analysis of the source.", "Describes a range of elements of the perspective.", "Some use of relevant material and examples taken from the source."] },
+{ l: "Level 1", m: "1–2", pts: ["Limited analysis of the source.", "Describes a limited range of elements of the perspective.", "Little or no use of material and examples taken from the source."] },
 { l: "Level 0", m: "0", pts: ["Nothing that can be given credit."] }] },
-{ code: "3", name: "Testing a claim", marks: "8",
+gpMost("3", "cause", "causes"),
+gpMost("4", "consequence", "consequences"),
+{ code: "5", name: "Testing a claim", marks: "8", src: "ms",
 q: "“…” Explain how this claim could be tested. Consider the research methods and evidence that could be used. [8]",
-steps: [{ h: "How to answer", pts: ["Primary research: survey or interview (who, how many, what you'd ask).", "Secondary research: reliable sources such as government statistics, UN reports, recent studies.", "Say what evidence would support or disprove the claim.", "Reliability: large, varied sample; up-to-date, unbiased sources; compare several sources (corroboration)."] }] },
-{ code: "4", name: "Evaluating research", marks: "8",
+steps: [
+{ h: "For each method you choose, cover all five things", pts: ["The research method", "The source of the evidence (who or where it comes from)", "The type of evidence it gives", "Its strengths", "Its weaknesses"] },
+{ h: "Use a range of methods and explain each one", pts: ["Choose several different methods from the table, not just one.", "Give a reason for each choice: say why this method and this evidence would help to test the claim.", "Keep linking back to the claim in the question."],
+ex: ["I would use a survey of all the teachers at school because it gives statistical evidence that can be measured, which would show whether the claim is true for most people."] }],
+table: { title: "Research methods, evidence, strengths and weaknesses",
+head: ["Research method", "Source of the evidence", "Type of evidence", "Strengths", "Weaknesses"],
+rows: [
+["Interviews", "Teachers, parents, local businesspeople", "Individual testimony; qualitative data", "In-depth information. People explain in their own words. Good for understanding opinions and experiences.", "Time-consuming. Answers may be biased. Hard to generalise to a large group."],
+["Observing others (e.g. teachers)", "Teachers, learners", "Primary research data", "Shows real behaviour in natural settings. Useful when people do not want to talk. Can discover things people may not report.", "Behaviour may change if people know they are being watched. Time-consuming. Open to the researcher's bias."],
+["Secondary research (journals, books, websites)", "Recent and international studies", "Case studies; large-scale studies; information from organisations interested in the topic", "Saves time and resources. Uses existing, reliable information. Gives a wide range of perspectives.", "May be outdated. May not be directly relevant to your question. Quality depends on the source."],
+["Questionnaires", "Teachers, learners", "Primary research data", "Can reach many people. Answers can be anonymous. Easy to compare answers.", "Low response rate is possible. Questions may be misunderstood. Limited depth of answers."],
+["Surveys", "All teachers at school", "Statistical evidence; quantitative data", "Gives a lot of information. Results can be measured and analysed. Helps identify patterns and trends.", "May miss the reasons behind answers. Poor survey design affects results. Numbers don't show the whole story."],
+["Case studies", "Teachers; journals", "Qualitative data", "Detailed, in-depth understanding. Real-life examples. Useful for complex issues.", "Not easy to generalise. Time-consuming. May be influenced by the researcher."]] },
+note: "The sources in the table are examples from a claim about teaching. Change them to fit the claim in your question.",
+levels: [
+{ l: "Level 4", m: "7–8", pts: ["An appropriate and fully justified research design.", "Reasoned explanation of a wide range of methods and evidence.", "Explanations are credible and clearly related to testing the claim."] },
+{ l: "Level 3", m: "5–6", pts: ["An appropriate and justified research design.", "Reasoned explanation of a range of methods and evidence.", "Explanations are credible and mostly related to testing the claim."] },
+{ l: "Level 2", m: "3–4", pts: ["A partly justified research design.", "A range of methods and/or evidence, mostly described with little explanation.", "Explanations may lack some credibility or are only partly related to testing the claim."] },
+{ l: "Level 1", m: "1–2", pts: ["Limited research design.", "A limited range of methods and/or evidence with no explanation; the research or topic is only described.", "Methods and evidence are not credible or not related to testing the claim."] },
+{ l: "Level 0", m: "0", pts: ["Nothing that can be given credit."] }] },
+{ code: "6", name: "Evaluating research", marks: "8",
 q: "Explain the strengths and weaknesses of the research outlined in Source 3. [8]",
 steps: [{ h: "How to answer", pts: ["Strengths: mix of primary and secondary research, expert or official sources, real experiences.", "Weaknesses: small sample (only parents and neighbours), biased sources (e.g. a magazine promoting one side), one country only, conclusion too general (“around the world”).", "Give an improvement for each weakness.", "End with an overall judgement of how reliable the research is."] }] }
 ] }
@@ -2573,7 +2808,7 @@ hum: [
 { id: "facts", name: "Dates, people and events drill", types: ["mcq", "short", "exam"], n: 8, task: "Facts drill on {t}: dates, leaders, places and causes. You need these as 'own knowledge' in source answers.", steps: ["Answer the questions quickly.", "Make a mini timeline of the key dates in your notebook.", "Add any fact you got wrong to your flashcards."] }],
 gp: [
 { id: "fact", name: "Fact or opinion?", types: ["mcq", "exam"], n: 6, task: "Fact-or-opinion practice on {t}: identify each type of statement and explain how you can tell.", steps: ["For each statement, decide: fact, opinion, prediction or value judgement.", "Explain how you can tell (can it be checked? does it use 'should' or 'I think'?).", "Then answer the questions below."] },
-{ id: "cause", name: "Most significant cause or consequence", types: ["exam", "mcq"], n: 5, task: "Most-significant practice on {t}: pick 2–3 causes or consequences and justify which matters most.", steps: ["Choose ONE cause (or consequence) and state it as your opinion.", "Justify it: give reasons, each one supported from the sources.", "Explain how it leads to the issue, then finish with a judgement sentence: 'Overall, … is the most significant because …'.", "Mark yourself with the levels in Answer Notes: 7–8 marks needs an opinion that is clearly explained, supported and credible."] },
+{ id: "cause", name: "Most significant cause or consequence", types: ["exam", "mcq"], n: 5, task: "Most-significant practice on {t}: pick 2–3 causes or consequences and justify which matters most.", steps: ["Choose ONE cause (or consequence) and state it as your opinion.", "Explain why with three reasons, such as scale of impact, depth of impact, short term or long term, a vicious circle, expert opinion or a domino effect.", "Support two of the reasons with evidence from the sources and one with good reasoning.", "Finish with a judgement sentence, then mark yourself with the levels in Answer Notes."] },
 { id: "claim", name: "Testing a claim", types: ["exam", "mcq"], n: 5, task: "Claim-testing practice on {t}: plan how you would test a claim using primary and secondary research.", steps: ["Write one claim about this topic.", "Plan primary research (survey or interview: who, how many) and secondary research (reliable sources).", "Say what evidence would support or disprove it, then answer the questions below."] },
 { id: "research", name: "Evaluating research", types: ["exam", "mcq"], n: 5, task: "Research evaluation practice on {t}: list strengths, weaknesses and improvements for a piece of research.", steps: ["Imagine a student's research project on this topic.", "List 2 strengths and 2 weaknesses (sample, bias, sources, conclusion).", "Give an improvement for each weakness, then answer the questions below."] }],
 dl: [
@@ -5402,6 +5637,7 @@ function anTypeCard(t, s) {
     h += "</li>";
   });
   h += "</ol>";
+  if (t.table) h += '<h3 class="an-h"><span class="emo">📋 </span>' + esc(t.table.title) + '</h3><div class="an-tbl-wrap"><table class="an-tbl"><thead><tr>' + t.table.head.map(function (c) { return "<th>" + esc(c) + "</th>"; }).join("") + "</tr></thead><tbody>" + t.table.rows.map(function (r) { return "<tr>" + r.map(function (c, i) { return (i ? "<td" : "<th scope=\"row\"") + ' data-l="' + esc(t.table.head[i]) + '">' + esc(c) + (i ? "</td>" : "</th>"); }).join("") + "</tr>"; }).join("") + "</tbody></table></div>";
   if (t.note) h += '<div class="an-note"><b>Remember:</b> ' + anText(t.note) + "</div>";
   if (t.levels && t.levels.length) {
     h += '<h3 class="an-h"><span class="emo">🏆 </span>How the marks are given</h3><div class="an-levels">';
@@ -5443,6 +5679,7 @@ function anBlocks(sid) {
       var b = '<div class="pa-step"><b>' + esc(st.h) + '</b><ul class="pa-pts">' + st.pts.map(function (p) { return "<li>" + anText(p) + "</li>"; }).join("") + "</ul>" + (st.ex || []).map(function (e) { return '<div class="pa-ex"><em>e.g.</em>' + anText(e) + "</div>"; }).join("") + "</div>";
       B.push(i === 0 ? "\u0001" + head + b : b);
     });
+    if (t.table) { B.push('<div class="pa-h">' + esc(t.table.title) + "</div>"); t.table.rows.forEach(function (r) { B.push('<div class="pa-step"><b>' + esc(r[0]) + '</b><ul class="pa-pts">' + r.slice(1).map(function (c, i) { return "<li><i>" + esc(t.table.head[i + 1]) + ":</i> " + esc(c) + "</li>"; }).join("") + "</ul></div>"); }); }
     if (t.note) B.push('<div class="pa-note"><b>Remember:</b> ' + anText(t.note) + "</div>");
     if (t.levels && t.levels.length) t.levels.forEach(function (lv, i) {
       var k = t.levels.length > 1 ? i / (t.levels.length - 1) : 0, last = i === t.levels.length - 1 && i > 0;
@@ -5917,7 +6154,9 @@ function tourMaybe() { if (!tourSeen()) setTimeout(function () { if (!TOUR.on &&
    for reduced motion. Animations never replay on ordinary re-renders. ===== */
 var MOTION = { last: null, enterT: null, pipSeen: 0 };
 UI.enter = true; /* the first page animates in too */
-function motionOK() { if (document.documentElement.classList.contains("formal")) return false; try { return !window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return true; } }
+function motionOK() { try { return !window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return true; } }
+/* playful extras (confetti, silly animations, Pip's dancing, the chalk-and-eraser theme change) stay out of formal mode */
+function funOK() { return motionOK() && !document.documentElement.classList.contains("formal"); }
 function mAnim(el, frames, opts) { if (!el || !el.animate || !motionOK()) return null; try { return el.animate(frames, opts); } catch (e) { return null; } }
 var M_EASE = "cubic-bezier(.22,1,.36,1)", M_SPRING = "cubic-bezier(.34,1.56,.64,1)";
 
@@ -6023,7 +6262,7 @@ applyTheme = function () {
 /* ---------- crayon confetti ---------- */
 var CONFETTI_COLORS = ["#e23b3b", "#2f6fdb", "#0f8f6e", "#e8761a", "#8b48dc", "#ffd23f", "#139ccd", "#ff5c9a"];
 function confetti(x, y, n, power) {
-  if (!motionOK() || !document.body.animate) return;
+  if (!funOK() || !document.body.animate) return;
   n = n || 28; power = power || 1;
   var host = document.createElement("div"); host.className = "confetti-host"; document.body.appendChild(host);
   for (var i = 0; i < n; i++) {
@@ -6111,7 +6350,7 @@ if (typeof tourShow === "function") {
 /* ===== Extra silly animations (completely unnecessary, on by default; switch off in Preferences).
    Off automatically when the device asks for reduced motion. Nothing here touches saved progress. ===== */
 var SILLY = { trailN: 0, lastTrail: 0, lastType: 0, idleT: null, trickT: null, planeT: null, snailT: null, asleep: false, tilt: null, konami: [], booted: false };
-function sillyOn() { return !!(typeof S !== "undefined" && S && S.settings && S.settings.silly !== false && motionOK()); }
+function sillyOn() { return !!(typeof S !== "undefined" && S && S.settings && S.settings.silly !== false && funOK()); }
 function sillyFine() { try { return window.matchMedia("(pointer: fine)").matches; } catch (e) { return false; } }
 function sRand(a, b) { return a + Math.random() * (b - a); }
 function sPick(a) { return a[Math.floor(Math.random() * a.length)]; }
@@ -6229,7 +6468,7 @@ document.addEventListener("click", function (e) {
   if (d) { d.animate([{ rotate: "0deg", translate: "0 0", scale: "1" }, { rotate: "200deg", translate: "0 -18px", scale: "1.25", offset: 0.5 }, { rotate: "360deg", translate: "0 0", scale: "1" }], { duration: 750, easing: "cubic-bezier(.34,1.56,.64,1)" }); var r = d.getBoundingClientRect(); confetti(r.left + r.width / 2, r.top + r.height / 2, 14, 0.7); }
 }, true);
 function confettiRain(n) {
-  if (!motionOK()) return; n = n || 60;
+  if (!funOK()) return; n = n || 60;
   for (var i = 0; i < n; i++) (function (i) { setTimeout(function () { confetti(sRand(0, window.innerWidth), -10, 1, 0.35); }, i * 25); })(i);
 }
 
@@ -6289,7 +6528,7 @@ function sillyEyes(mx, my) {
   eyes.style.translate = (dx / d * 3.2 * k).toFixed(2) + "px " + (dy / d * 2.6 * k).toFixed(2) + "px";
 }
 function sillyTrick(kind) {
-  var body = $("#pip-btn .pip-body"); if (!body || !body.animate || !motionOK()) return;
+  var body = $("#pip-btn .pip-body"); if (!body || !body.animate || !funOK()) return;
   kind = kind || sPick(["spin", "jump", "wiggle", "flip", "peek", "wave", "dance"]);
   var E = "cubic-bezier(.34,1.56,.64,1)";
   if (kind === "spin") body.animate([{ rotate: "0deg" }, { rotate: "360deg" }], { duration: 800, easing: E });
@@ -6316,7 +6555,7 @@ function sillyGiant() { var b = $("#pip-btn"); if (!b) return; b.animate([{ scal
 
 /* ---------- paper aeroplanes and a very slow snail ---------- */
 function launchPlane() {
-  if (!motionOK()) return;
+  if (!funOK()) return;
   var w = window.innerWidth, h = window.innerHeight, y0 = sRand(h * 0.12, h * 0.6), ltr = Math.random() < 0.6, p = document.createElement("div");
   p.className = "s-plane"; p.setAttribute("aria-hidden", "true");
   p.innerHTML = '<svg viewBox="0 0 60 40" width="58" height="40"><g stroke="#2d2a32" stroke-width="2.4" stroke-linejoin="round" fill="#fffdf6"><path d="M2 20 L58 4 L24 26 Z"/><path d="M24 26 L58 4 L30 36 Z" fill="#e6eefc"/><path d="M24 26 L26 34 L30 36"/></g></svg>';
@@ -6327,7 +6566,7 @@ function launchPlane() {
 }
 function sillySchedulePlane() { clearTimeout(SILLY.planeT); SILLY.planeT = setTimeout(function () { if (sillyOn() && !document.hidden) launchPlane(); if (sillyOn()) sillySchedulePlane(); }, sRand(30000, 65000)); }
 function launchSnail() {
-  if (!motionOK()) return;
+  if (!funOK()) return;
   var s = document.createElement("div"); s.className = "s-snail"; s.setAttribute("aria-hidden", "true");
   s.innerHTML = '<svg viewBox="0 0 60 36" width="54" height="32"><g stroke="#2d2a32" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 30 H44 Q54 30 52 22 L50 18" fill="#ffd9a8"/><circle cx="26" cy="19" r="11" fill="#ff9fc4"/><path d="M26 19 m-5 0 a5 5 0 1 0 5 -5" fill="none"/><path d="M50 18 L48 8 M52 18 L56 9" fill="none"/><circle cx="48" cy="7" r="1.6" fill="#2d2a32"/><circle cx="56" cy="8" r="1.6" fill="#2d2a32"/></g></svg>';
   document.body.appendChild(s);
@@ -6337,7 +6576,7 @@ function sillyScheduleSnail() { clearTimeout(SILLY.snailT); SILLY.snailT = setTi
 
 /* ---------- party mode ---------- */
 function sillyParty() {
-  if (!motionOK()) return;
+  if (!funOK()) return;
   confettiRain(90); sillyTrick("dance");
   var v = $("#view"); if (v) v.animate([{ filter: "hue-rotate(0deg) saturate(1)" }, { filter: "hue-rotate(360deg) saturate(1.7)" }], { duration: 1500, iterations: 2 });
   $all("#view .card").slice(0, 16).forEach(function (c, i) { c.animate([{ rotate: "0deg" }, { rotate: (i % 2 ? 3 : -3) + "deg" }, { rotate: (i % 2 ? -3 : 3) + "deg" }, { rotate: "0deg" }], { duration: 600, delay: i * 40, iterations: 3, easing: "ease-in-out" }); });
@@ -6349,7 +6588,7 @@ if (typeof pipHandle === "function") {
   pipHandle = function (text) {
     var s = String(text || "").toLowerCase();
     if (/\b(silly|animations?)\b.*\b(off|stop|calm|less|disable)\b|\bcalm mode\b|\bstop (the )?(silly|animations)\b/.test(s)) { S.settings.silly = false; save(); applyTheme(); return pipSay("Okay, calm mode. 😌 The extra silly animations are off. Say <b>silly on</b> to bring them back."); }
-    if (/\b(silly|animations?)\b.*\b(on|back|more|enable)\b|\bsilly mode\b/.test(s)) { S.settings.silly = true; save(); applyTheme(); setTimeout(sillyParty, 300); return pipSay(motionOK() ? "Silly mode ON! 🎉" : "Silly mode is on, but your device asks for reduced motion, so I'll keep still."); }
+    if (/\b(silly|animations?)\b.*\b(on|back|more|enable)\b|\bsilly mode\b/.test(s)) { S.settings.silly = true; save(); applyTheme(); setTimeout(sillyParty, 300); return pipSay(funOK() ? "Silly mode ON! 🎉" : "Silly mode is on, but your device asks for reduced motion, so I'll keep still."); }
     if (sillyOn()) {
       if (/\b(dance|party|disco|celebrate)\b/.test(s)) { setTimeout(sillyParty, 150); return pipSay(sPick(["Let's PARTY! 🎉🕺", "Dance time! 💃", "Woo! 🎊"])); }
       if (/\b(back ?flip|flip|somersault)\b/.test(s)) { setTimeout(function () { sillyTrick("flip"); }, 150); return pipSay("Hup! 🤸"); }
@@ -6482,13 +6721,13 @@ applyTheme = function () {
   if (CHALK.busy) CHALK.busy.finish();
   cur = root.getAttribute("data-app-theme");
   var first = !CHALK.started; CHALK.started = true; /* the first call is page start-up: no drawing then */
-  if (first || !cur || cur === want || !motionOK() || !document.body) return _applyThemeC.apply(self, args);
+  if (first || !cur || cur === want || !funOK() || !document.body) return _applyThemeC.apply(self, args);
   if (want === "dark") { chalkColorIn(function () { CHALK.applying = true; try { _applyThemeC.apply(self, args); } finally { CHALK.applying = false; } }); return; }
   chalkEraseOut(); CHALK.applying = true; try { return _applyThemeC.apply(self, args); } finally { CHALK.applying = false; }
 };
 
 /* ===== Pip dances, low-key: a relaxed groove while idle; a full routine when you ask him to dance. ===== */
-function pipDanceOn() { return !!(S && S.settings && S.settings.pipDance !== false && motionOK()); }
+function pipDanceOn() { return !!(S && S.settings && S.settings.pipDance !== false && funOK()); }
 var _applyThemeD = applyTheme;
 applyTheme = function () { var r = _applyThemeD.apply(this, arguments); document.documentElement.classList.toggle("pip-groove", pipDanceOn()); return r; };
 function pipNotes() {
@@ -6496,7 +6735,7 @@ function pipNotes() {
   b.insertAdjacentHTML("beforeend", '<span class="pip-notes" aria-hidden="true"><i>♪</i><i>♫</i><i>♪</i></span>');
 }
 function pipBigDance() {
-  var b = $("#pip-btn"); if (!b || !motionOK()) return;
+  var b = $("#pip-btn"); if (!b || !funOK()) return;
   pipNotes(); b.classList.remove("pip-party"); void b.offsetWidth; b.classList.add("pip-party");
   clearTimeout(pipBigDance.t); pipBigDance.t = setTimeout(function () { b.classList.remove("pip-party"); }, 3600);
 }
@@ -6510,7 +6749,7 @@ if (typeof pipHandle === "function") {
   pipHandle = function (text) {
     var s = String(text || "").toLowerCase();
     if (/\b(stop|no|quit|don'?t)\b.*\bdanc(e|ing)\b|\bstand still\b/.test(s)) { S.settings.pipDance = false; save(); applyTheme(); return pipSay("Fine, I'll stand still. 🧍 (Say <b>groove</b> or <b>keep dancing</b> if you miss it.)"); }
-    if (/\b(groove|keep dancing|start dancing|vibe|vibing)\b/.test(s)) { S.settings.pipDance = true; save(); applyTheme(); setTimeout(pipBigDance, 150); return pipSay(motionOK() ? "Back to grooving! 🎶" : "I'd love to, but your device asks for reduced motion, so I'll groove on the inside."); }
+    if (/\b(groove|keep dancing|start dancing|vibe|vibing)\b/.test(s)) { S.settings.pipDance = true; save(); applyTheme(); setTimeout(pipBigDance, 150); return pipSay(funOK() ? "Back to grooving! 🎶" : "I'd love to, but your device asks for reduced motion, so I'll groove on the inside."); }
     if (/\bdance\b/.test(s) && !(typeof sillyOn === "function" && sillyOn())) { setTimeout(pipBigDance, 150); return pipSay("Watch this! 🕺"); }
     return _pipHandleD.apply(this, arguments);
   };
@@ -6525,6 +6764,7 @@ var _applyThemeF = applyTheme;
 applyTheme = function () {
   document.documentElement.classList.toggle("formal", formalOn()); /* set first, so animations and extras see it */
   var r = _applyThemeF.apply(this, arguments);
+  try { localStorage.setItem("ecc.theme", document.documentElement.getAttribute("data-app-theme") || "light"); } catch (e) { }
   formalSwitch();
   return r;
 };
@@ -6554,6 +6794,27 @@ if (typeof pipHandle === "function") {
     return _pipHandleF.apply(this, arguments);
   };
 }
+
+/* ===== Opening animation: the cover (#intro, in the page itself) plays on pure CSS timing.
+   This part hands over to the app: when the cover starts to leave, the sidebar and the page animate in. A tap or key skips it. ===== */
+var INTRO = { done: false };
+function introReveal() {
+  if (INTRO.done) return; INTRO.done = true;
+  var d = document.documentElement; d.classList.add("app-in"); setTimeout(function () { d.classList.remove("app-in"); }, 1800);
+  try { if (!$("#modal") && !UI.focus && !$("#tour-card")) { UI.enter = true; render(); } } catch (e) { }
+}
+(function () {
+  var el = document.getElementById("intro"), d = document.documentElement;
+  if (!el) return;
+  if (d.classList.contains("no-intro") || getComputedStyle(el).display === "none") { el.remove(); return; }
+  var quick = d.classList.contains("intro-quick"), formal = d.classList.contains("formal");
+  var t = quick ? (formal ? [100, 520] : [150, 680]) : formal ? [1250, 1830] : [1650, 2300], now = performance.now();
+  var gone = function () { if (el.parentNode) el.remove(); };
+  setTimeout(introReveal, Math.max(0, t[0] - now));
+  setTimeout(gone, Math.max(0, t[1] - now) + 60);
+  var skip = function () { if (INTRO.done) return; el.classList.add("skip"); introReveal(); setTimeout(gone, 240); window.removeEventListener("keydown", skip); };
+  el.addEventListener("click", skip); window.addEventListener("keydown", skip);
+})();
 
 try { boot(); } catch (e) { console.error(e); document.getElementById("view").innerHTML = "<div class=\"notice bad\">The app could not start: " + String(e.message).replace(/</g,"&lt;") + "</div>"; }
 
