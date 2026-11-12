@@ -1446,6 +1446,10 @@ html.formal .countdown { flex-wrap: nowrap; } html.formal .cd-unit { min-width: 
 .in-list span { gap: 14px; }
 @media (max-width: 640px) { .in-d.d4 { top: 24%; left: 2%; } .in-d.d3 { top: 68%; right: 3%; } .in-d.d6 { left: 8%; bottom: 2%; } .in-d.d5 { right: 22%; bottom: 0; } }
 
+.note-sec.rubric { margin-top: 18px; padding-top: 12px; border-top: 2px dashed var(--line-2); }
+.rb-steps { margin: 6px 0 10px; padding-left: 22px; display: grid; gap: 6px; } .rb-steps b { font-weight: 400; font-family: var(--display); font-size: 1.05em; } .rb-steps ul { margin: 2px 0 0; padding-left: 18px; }
+html.formal .note-sec.rubric { border-top: 1px solid var(--line-2); } html.formal .rb-steps b { font: 600 15px var(--font); }
+
 </style>
 <script>
 /* before the first paint: pick the look for the opening animation (device settings only) */
@@ -4133,7 +4137,21 @@ function notesHTML(t) {
   if (n.f && n.f.length) h += '<div class="note-sec"><h4>Formulas and patterns</h4><div class="stack-sm">' + n.f.map(function (f) { return '<div class="formula">' + esc(f) + "</div>"; }).join("") + "</div></div>";
   if (n.e && n.e.length) h += '<div class="note-sec"><h4>Worked examples</h4><div class="stack-sm">' + n.e.map(function (e) { return '<div class="example"><div class="eq pre">' + esc(e[0]) + '</div><div class="ea">' + esc(e[1]) + "</div></div>"; }).join("") + "</div></div>";
   if (n.r && n.r.length) h += '<div class="note-sec"><h4>Points to remember</h4><ul>' + n.r.map(function (k) { return "<li>" + esc(k) + "</li>"; }).join("") + "</ul></div>";
-  return h;
+  return h + rubricHTML(t);
+}
+/* GP topics also show how the matching question is written and marked (the same rubric as in Answer Notes) */
+var TOPIC_RUBRIC = { gp2: ["2"], gp3: ["3", "4"], gp4: ["5"], gp5: ["6"] };
+function rubricHTML(t) {
+  if (RULES.custom || !TOPIC_RUBRIC[t.id] || typeof anGet !== "function") return "";
+  var N = anGet("gp"), h = "";
+  TOPIC_RUBRIC[t.id].forEach(function (code, k) {
+    var ty = N.types.filter(function (x) { return x.code === code; })[0]; if (!ty || !ty.levels) return;
+    var same = k > 0; /* cause and consequence share their method, so the second one only needs its mark table */
+    h += '<div class="note-sec rubric"><h4>' + esc(ty.name) + " (" + esc(anMarks(ty.marks)) + "): how it is marked</h4>";
+    if (!same) h += '<ol class="rb-steps">' + ty.steps.map(function (st) { return "<li><b>" + esc(st.h) + "</b><ul>" + st.pts.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ul></li>"; }).join("") + "</ol>" + (ty.note ? '<p class="small"><b>Remember:</b> ' + esc(ty.note) + "</p>" : "");
+    h += '<div class="an-levels">' + ty.levels.map(function (lv, i) { return '<div class="an-lv" style="--k:' + (i / Math.max(1, ty.levels.length - 1)).toFixed(2) + '"><div class="an-lv-tag"><b>' + esc(lv.l) + "</b><span>" + esc(lv.m) + (lv.m === "1" ? " mark" : " marks") + '</span></div><ul class="an-pts">' + lv.pts.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ul></div>"; }).join("") + "</div></div>";
+  });
+  return h ? h + '<div class="row" style="margin-top:10px"><button class="btn sm" data-act="rubricOpen" data-id="an-gp-' + TOPIC_RUBRIC[t.id][0] + '">Open the full answer notes</button></div>' : "";
 }
 var CHECKLIST = ["Admit card / ID and school diary", "Two blue pens, pencil, eraser, sharpener, ruler", "Geometry box (Maths) / calculator only if allowed", "Clear water bottle", "Watch (not a smartwatch)", "Sleep by 10 PM; leave home so you report by 7:35 AM"];
 
@@ -5816,6 +5834,8 @@ ACT.notesPdf = async function (el) {
   } catch (e) { toast((e && e.message) || "Couldn't make the PDF.", "bad"); }
   if (btn) btn.disabled = false;
 };
+
+ACT.rubricOpen = function (el) { var id = el.getAttribute("data-id"); if (UI.focus) closeFocus(); UI.notesSubj = "gp"; go("notes"); setTimeout(function () { var t = document.getElementById(id); if (t) t.scrollIntoView({ block: "start" }); }, 450); };
 
 /* ===== Checking AI-written questions before a student ever sees them =====
    An AI can mark the wrong option as correct, "think aloud" inside an explanation, or send the same question twice.
