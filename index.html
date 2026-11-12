@@ -4325,11 +4325,12 @@ function pgSyllabus() {
 
 /* ---------- resources ---------- */
 function pgResources() {
-  var lock = restLock("Revision and notes"); if (lock) return lock;
+  /* open on rest days too: reading notes is allowed, sessions, quizzes and flashcards stay paused */
+  var restNote = dayInfo(today()).rest ? '<div class="notice rest" style="margin-bottom:14px">Today is a rest day. Nothing is planned, but your notes are here if you want to look something up.</div>' : "";
   if (!UI.resSubj) UI.resSubj = (upcomingExams()[0] || SUBJECTS[0]).id;
   var s = SUBJ[UI.resSubj], q = UI.resQ.trim().toLowerCase();
   var revCount = TOPICS.filter(function (t) { return t.subj === s.id && S.revised[t.id]; }).length, tot = TOPICS.filter(function (t) { return t.subj === s.id; }).length;
-  var h = head("Study Resources", "Hand-written revision notes, definitions, formulas and worked examples for every topic");
+  var h = head("Study Resources", "Hand-written revision notes, definitions, formulas and worked examples for every topic") + restNote;
   h += '<div class="row wrap" style="margin-bottom:14px"><div class="seg" style="flex-wrap:wrap">' + EXAM_ORDER.map(function (x) { return '<button data-act="resSubj" data-s="' + x.id + '" class="' + (x.id === s.id ? "on" : "") + '">' + esc(x.short) + "</button>"; }).join("") + '</div><div class="grow"></div><input class="input" style="max-width:260px" placeholder="Search topics and notes" id="res-q" data-on="resQ" value="' + esc(UI.resQ) + '" aria-label="Search notes"></div>';
   if (RULES.custom) { var miss = TOPICS.filter(function (t) { return t.subj === s.id && !hasMaterials(t.id); }).length; if (miss) h += '<div class="notice" style="margin-bottom:12px"><div class="grow">' + miss + " topic" + (miss > 1 ? "s" : "") + " in " + esc(s.name) + " don't have notes yet. Pip can write them with AI (notes, questions and flashcards)." + aiNeedsNote() + '</div><button class="btn sm primary" data-act="aiSubject" data-s="' + s.id + '"' + (AI.ready && !AI.busySubj ? "" : " disabled") + ">" + (AI.busySubj === s.id ? "Writing… " + esc(AI.prog || "") : "✨ Make them all") + "</button></div>"; }
   h += '<div class="row small muted" style="margin-bottom:12px;gap:14px"><span>' + revCount + " of " + tot + " topics marked revised</span><span style=\"width:160px\">" + bar(pct(revCount, tot), s.color) + "</span></div>";
