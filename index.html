@@ -1449,6 +1449,11 @@ html.formal .countdown { flex-wrap: nowrap; } html.formal .cd-unit { min-width: 
 .note-sec.rubric { margin-top: 18px; padding-top: 12px; border-top: 2px dashed var(--line-2); }
 .rb-steps { margin: 6px 0 10px; padding-left: 22px; display: grid; gap: 6px; } .rb-steps b { font-weight: 400; font-family: var(--display); font-size: 1.05em; } .rb-steps ul { margin: 2px 0 0; padding-left: 18px; }
 html.formal .note-sec.rubric { border-top: 1px solid var(--line-2); } html.formal .rb-steps b { font: 600 15px var(--font); }
+.lang-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.lang-pick .btn { height: auto; padding: 14px 10px; display: grid; justify-items: center; gap: 2px; }
+.lang-pick .btn b { font-family: var(--display); font-weight: 400; font-size: 22px; }
+@media (max-width: 520px) { .lang-pick { grid-template-columns: 1fr; } }
+html.formal .lang-pick .btn b { font: 600 18px var(--serif); }
 
 </style>
 <script>
@@ -3420,6 +3425,559 @@ gp5: [
 ]
 });
 
+/* ===== Spanish (chosen instead of Hindi or French; exam on the Hindi exam date) =====
+   Same shapes as the other data files: a subject with units and topic notes, plus quiz questions, flashcards,
+   practice exercises, Answer Notes and full-notes guide entries. New questions and cards are appended so that
+   existing IDs never move. */
+var LANG_SUBJ = LANG_SUBJ || {};
+var GUIDE = GUIDE || {};
+LANG_SUBJ.spa = { id: "spa", name: "Spanish", short: "Spanish", marks: 60, duration: 60,
+paper: "Paper 1 Listening (14) · Paper 2 Reading (21) · Paper 4 Writing (15) · Paper 3 Speaking (10, after the writing exam)",
+units: [
+{ name: "Unit 1 – Food & Health", topics: [
+{ id: "es1", t: "Food groups and nutrients", w: 2, n: {
+o: "Name the food groups and nutrients in Spanish and give opinions about food using gustar and encantar.",
+s: "Learn the main food groups (fruta, verduras, cereales, carne, pescado, productos lácteos, legumbres, dulces) and the nutrients they give (proteínas, vitaminas, minerales, hidratos de carbono, grasas, fibra). Give opinions with me gusta / me encanta / no me gusta / odio and give a reason with porque.",
+d: [["la fruta / las verduras", "fruit / vegetables"], ["los cereales", "cereals, grains"], ["los productos lácteos", "dairy products"], ["la carne / el pescado", "meat / fish"], ["las legumbres", "pulses (lentils, beans)"], ["los dulces", "sweets"], ["las proteínas", "proteins"], ["las vitaminas", "vitamins"], ["los hidratos de carbono", "carbohydrates"], ["las grasas", "fats"], ["la fibra", "fibre"]],
+k: ["gustar works like 'to please': me gusta + singular noun (me gusta la fruta), me gustan + plural noun (me gustan las manzanas).", "Use the definite article after gustar: me encanta el pescado (not me encanta pescado).", "Give a reason: porque es sano / es delicioso / tiene muchas vitaminas.", "La leche tiene calcio. El pescado tiene proteínas. Las naranjas tienen vitamina C."],
+f: ["me gusta + el/la + singular noun", "me gustan + los/las + plural noun", "… tiene(n) + nutrient"],
+e: [["Say 'I love apples because they have vitamins.'", "Me encantan las manzanas porque tienen vitaminas."], ["Which nutrient does fish give?", "El pescado tiene proteínas."]],
+r: ["Check singular or plural before choosing gusta or gustan.", "Learn food words with their article (el/la)."] } },
+{ id: "es2", t: "Eating habits and diet", w: 2, n: {
+o: "Describe healthy and unhealthy eating habits using frequency expressions and connectives.",
+s: "Talk about what you eat and how often, and whether it is healthy. Use frequency words (siempre, a menudo, a veces, nunca, todos los días, una vez a la semana) and connectives (y, pero, también, sin embargo, porque) to build longer sentences.",
+d: [["sano / saludable", "healthy"], ["malsano / poco saludable", "unhealthy"], ["la comida basura", "junk food"], ["una dieta equilibrada", "a balanced diet"], ["los refrescos", "fizzy drinks"], ["picar entre horas", "to snack between meals"], ["estar en forma", "to be fit"]],
+k: ["Frequency: siempre (always), a menudo (often), a veces (sometimes), nunca (never), todos los días (every day).", "Nunca can go before the verb (nunca como dulces) or use no … nunca (no como nunca dulces).", "Present tense -er verbs: como, bebo; -ar: tomo, ceno.", "Opinion of a habit: creo que es sano / pienso que no es bueno."],
+f: ["frequency + verb + food + porque + reason"],
+e: [["Say 'I eat fruit every day but I never drink fizzy drinks.'", "Como fruta todos los días, pero nunca bebo refrescos."], ["Is 'Como comida basura a menudo' healthy?", "No: it means 'I often eat junk food', which is unhealthy."]],
+r: ["Use at least two frequency expressions in a writing answer.", "Add a reason with porque to get more marks."] } },
+{ id: "es3", t: "Meals of the day", w: 2, n: {
+o: "Say what you eat and drink at each meal and at what time.",
+s: "The meals are el desayuno (breakfast), la comida or el almuerzo (lunch), la merienda (afternoon snack) and la cena (dinner). Each has a verb: desayunar, comer/almorzar, merendar, cenar. Say the time with a la una / a las + hour.",
+d: [["el desayuno / desayunar", "breakfast / to have breakfast"], ["la comida, el almuerzo / comer, almorzar", "lunch / to have lunch"], ["la merienda / merendar", "afternoon snack / to have a snack"], ["la cena / cenar", "dinner / to have dinner"], ["tomar", "to have (food or drink)"]],
+k: ["Time: a la una (at 1), a las ocho (at 8), a las ocho y media (8:30), a las ocho y cuarto (8:15), a las nueve menos cuarto (8:45).", "almorzar is stem-changing (o→ue): almuerzo, almuerzas, almuerza, almorzamos.", "merendar is stem-changing (e→ie): meriendo, meriendas, merienda, merendamos.", "Para el desayuno tomo… = For breakfast I have…"],
+f: ["(meal verb) + a las + time", "Para el/la + meal + tomo + food"],
+e: [["Say 'I have breakfast at 7:30. I have toast and milk.'", "Desayuno a las siete y media. Tomo tostadas y leche."], ["What is la merienda?", "An afternoon snack, around 5–6 pm."]],
+r: ["Spanish lunch is often late (2–3 pm); dinner can be at 9 pm or later.", "Don't forget the stem change: almuerzo, not almorzo."] } },
+{ id: "es4", t: "Obligatory expressions", w: 2, n: {
+o: "Say what you or others must and must not do using tener que, hay que and deber.",
+s: "To say what someone has to do, use tener que + infinitive (personal), hay que + infinitive (impersonal: one must) or deber + infinitive (must, should). Careful with negatives: no tienes que means 'you don't have to', but no debes means 'you must not'.",
+d: [["tener que + inf.", "to have to"], ["hay que + inf.", "one must / you have to (general)"], ["deber + inf.", "must"], ["es necesario + inf.", "it is necessary to"], ["no hay que / no tienes que", "you don't have to"], ["no debes", "you must not"]],
+k: ["tener: tengo, tienes, tiene, tenemos, tenéis, tienen + que + infinitive.", "deber: debo, debes, debe, debemos, debéis, deben + infinitive (no que).", "hay que never changes: hay que dormir ocho horas.", "Example: Para estar sano, tengo que comer más verduras."],
+f: ["tener (conjugated) + que + infinitive", "hay que + infinitive", "deber (conjugated) + infinitive"],
+e: [["Say 'You have to drink water.'", "Tienes que beber agua."], ["Translate 'No debes comer tanta comida basura.'", "You must not eat so much junk food."]],
+r: ["After tener, always add que; after deber, never add que.", "The verb after the expression stays in the infinitive."] } },
+{ id: "es5", t: "Giving advice and suggestions", w: 2, n: {
+o: "Give advice about healthy living using deberías, es importante, ¿por qué no…? and the tú imperative.",
+s: "Give advice gently with deberías + infinitive (you should), es importante / es mejor + infinitive, or a suggestion like ¿por qué no…? You can also use commands: the tú imperative of regular verbs is the él/ella form of the present tense (come, bebe), with some irregulars (haz, ve, ten, sal, pon, di, ven, sé).",
+d: [["deberías + inf.", "you should"], ["es importante + inf.", "it's important to"], ["es mejor + inf.", "it's better to"], ["¿Por qué no…?", "Why don't you…?"], ["te aconsejo + inf.", "I advise you to"], ["haz ejercicio", "do exercise (command)"]],
+k: ["Regular tú commands: comer → ¡come!, beber → ¡bebe!, caminar → ¡camina!", "Irregular tú commands: hacer → haz, ir → ve, tener → ten, salir → sal, venir → ven, decir → di, poner → pon, ser → sé.", "Negative commands use a different form: ¡no comas!, ¡no bebas!", "Soften advice: deberías comer más fruta (you should eat more fruit)."],
+f: ["deberías + infinitive", "es importante / es mejor + infinitive", "¿Por qué no + present tense?"],
+e: [["Advise a friend to sleep more.", "Deberías dormir más. Es importante dormir ocho horas."], ["Make 'hacer deporte' a command to a friend.", "¡Haz deporte!"]],
+r: ["Use a range: deberías, es importante, an imperative and a ¿por qué no…? question.", "Give a reason for each piece of advice."] } },
+{ id: "es6", t: "Regular and irregular verbs (present)", w: 3, n: {
+o: "Conjugate regular -ar, -er and -ir verbs and key irregular verbs in the present tense.",
+s: "Regular verbs drop -ar, -er or -ir and add endings for each person. -ar: o, as, a, amos, áis, an. -er: o, es, e, emos, éis, en. -ir: o, es, e, imos, ís, en. Some very common verbs are irregular (ser, estar, tener, ir, hacer) or change their stem (querer, poder, preferir, dormir).",
+d: [["hablar (-ar)", "hablo, hablas, habla, hablamos, habláis, hablan"], ["comer (-er)", "como, comes, come, comemos, coméis, comen"], ["vivir (-ir)", "vivo, vives, vive, vivimos, vivís, viven"], ["ser", "soy, eres, es, somos, sois, son"], ["estar", "estoy, estás, está, estamos, estáis, están"], ["tener", "tengo, tienes, tiene, tenemos, tenéis, tienen"], ["ir", "voy, vas, va, vamos, vais, van"], ["hacer", "hago, haces, hace, hacemos, hacéis, hacen"]],
+k: ["Stem-changers change in every form except nosotros and vosotros: querer → quiero, queremos; poder → puedo, podemos; dormir → duermo, dormimos.", "Yo-irregulars: hago, pongo, salgo, tengo, vengo, conozco.", "ser = permanent (Soy alto); estar = location and feelings (Estoy cansado).", "Subject pronouns are usually left out: como = I eat."],
+f: ["stem + ending: habl + o = hablo", "-ar: o as a amos áis an | -er: o es e emos éis en | -ir: o es e imos ís en"],
+e: [["Conjugate 'beber' for nosotros.", "bebemos"], ["Correct: 'Yo teno un perro.'", "Yo tengo un perro."]],
+r: ["Learn ser, estar, tener, ir and hacer by heart.", "Check the person (yo, tú, él…) before writing the ending."] } }
+] },
+{ name: "Unit 2 – Personal & Social Life", topics: [
+{ id: "es7", t: "Family and pets (review)", w: 2, n: {
+o: "Describe family members and pets: names, ages, appearance and personality.",
+s: "Introduce your family and pets with tengo (I have) and se llama (is called). Use tener for age and eyes (tiene doce años, tiene los ojos marrones), ser for personality and appearance (es simpático y alto). Adjectives agree with the noun: alto/alta/altos/altas.",
+d: [["el padre / la madre", "father / mother"], ["el hermano / la hermana", "brother / sister"], ["los abuelos", "grandparents"], ["el tío / la tía", "uncle / aunt"], ["el primo / la prima", "cousin"], ["hijo único / hija única", "only child"], ["el perro / el gato", "dog / cat"], ["el pez / el pájaro / el conejo", "fish / bird / rabbit"], ["la tortuga / el hámster", "tortoise / hamster"]],
+k: ["Possessives: mi/mis, tu/tus, su/sus, nuestro/a/os/as (mis padres, mi hermana).", "Age uses tener: Mi hermano tiene quince años.", "Adjectives go after the noun and agree: un perro pequeño, una gata negra.", "Personality: simpático, divertido, tímido, perezoso, trabajador, molesto, cariñoso."],
+f: ["Tengo + family member/pet + que se llama + name", "Tiene + age + años; Es + adjective (agreeing)"],
+e: [["Say 'I have a black cat called Luna.'", "Tengo una gata negra que se llama Luna."], ["Say 'My grandparents are very kind.'", "Mis abuelos son muy simpáticos."]],
+r: ["Never say 'es doce años': age always uses tener.", "Make adjectives agree in gender and number."] } },
+{ id: "es8", t: "Getting along: llevarse bien/mal", w: 3, n: {
+o: "Describe relationships with family, friends and pets using llevarse bien/mal con and give reasons.",
+s: "llevarse is a reflexive verb: me llevo, te llevas, se lleva, nos llevamos, os lleváis, se llevan. Me llevo bien con… = I get on well with…; me llevo mal con… = I get on badly with…. Always give a reason with porque and a personality adjective or an action (me ayuda, me hace reír, me molesta, discutimos).",
+d: [["llevarse bien con", "to get on well with"], ["llevarse mal con", "to get on badly with"], ["discutir", "to argue"], ["pelearse", "to fight"], ["me hace reír", "makes me laugh"], ["me ayuda", "helps me"], ["me molesta", "annoys me"], ["me apoya", "supports me"]],
+k: ["Reflexive pronoun matches the subject: (yo) me llevo, (ella) se lleva, (nosotros) nos llevamos.", "Bien y mal: Me llevo bien con mi madre, pero a veces discutimos.", "Use con + person: con mi hermano, con mis amigos, con mi perro.", "Contrast with pero / sin embargo for higher marks."],
+f: ["(pronoun) + llevar(se) + bien/mal + con + person + porque + reason"],
+e: [["Say 'I get on well with my sister because she makes me laugh.'", "Me llevo bien con mi hermana porque me hace reír."], ["Say 'My parents get on badly with my brother.'", "Mis padres se llevan mal con mi hermano."]],
+r: ["Don't forget the reflexive pronoun: me llevo, not llevo.", "Add a reason and an example of what happens."] } }
+] },
+{ name: "Unit 3 – Personal & Social Life: holidays and the future", topics: [
+{ id: "es9", t: "Near future: ir a + infinitive", w: 2, n: {
+o: "Talk about plans using ir a + infinitive with future time expressions.",
+s: "The near future describes plans: the present tense of ir + a + infinitive. Voy a viajar (I'm going to travel), vas a comer, va a nadar, vamos a visitar, vais a jugar, van a salir. Add a time phrase such as mañana, este fin de semana, la semana que viene, el verano que viene.",
+d: [["voy a + inf.", "I'm going to"], ["mañana", "tomorrow"], ["este fin de semana", "this weekend"], ["la semana que viene / próxima", "next week"], ["el año que viene", "next year"], ["este verano", "this summer"]],
+k: ["ir: voy, vas, va, vamos, vais, van; then a, then the infinitive.", "Negative: no voy a comer.", "Questions: ¿Qué vas a hacer este verano?", "Don't forget 'a': voy a jugar (not voy jugar)."],
+f: ["ir (present) + a + infinitive"],
+e: [["Say 'This weekend we are going to play football.'", "Este fin de semana vamos a jugar al fútbol."], ["Make it negative: Voy a estudiar.", "No voy a estudiar."]],
+r: ["The second verb is always the infinitive.", "Use a time expression in every future sentence."] } },
+{ id: "es10", t: "Simple future tense", w: 3, n: {
+o: "Form and use the simple future tense of regular and irregular verbs.",
+s: "The simple future (will) adds the same endings to the whole infinitive for all verbs: -é, -ás, -á, -emos, -éis, -án (viajaré, comerás, vivirá). A few verbs use an irregular stem but the same endings: tendr-, har-, podr-, saldr-, vendr-, dir-, querr-, sabr-, pondr-, habr-. It is used for predictions and plans further ahead.",
+d: [["viajaré", "I will travel"], ["comerás", "you will eat"], ["vivirá", "he/she will live"], ["tendremos", "we will have"], ["harán", "they will do"], ["habrá", "there will be"]],
+k: ["Endings are added to the infinitive: hablar → hablaré (not hablé, which is past).", "Irregular stems: tener → tendré, hacer → haré, poder → podré, salir → saldré, venir → vendré, decir → diré, querer → querré, saber → sabré, poner → pondré.", "Weather: hará calor / hará sol / lloverá / nevará.", "Near future = plans soon (voy a ir); simple future = will (iré)."],
+f: ["infinitive + é / ás / á / emos / éis / án", "irregular stem + the same endings"],
+e: [["Put 'visitar' in the future for nosotros.", "visitaremos"], ["Say 'Next year I will go to Spain.'", "El año que viene iré a España."]],
+r: ["Every form except nosotros has an accent.", "Learn the irregular stems as a list."] } },
+{ id: "es11", t: "Travel and holidays: vocabulary", w: 2, n: {
+o: "Use vocabulary for transport, accommodation, places and holiday activities.",
+s: "Learn words for transport (en avión, en tren, en coche, en autobús, en barco, a pie), accommodation (un hotel, un camping, un albergue juvenil, un apartamento), places (la playa, la montaña, el campo, la ciudad) and activities (tomar el sol, nadar, hacer turismo, visitar monumentos, sacar fotos, comprar recuerdos).",
+d: [["las vacaciones", "the holidays"], ["el viaje", "the trip"], ["el billete", "the ticket"], ["la maleta", "the suitcase"], ["el pasaporte", "the passport"], ["alojarse en", "to stay in"], ["el albergue juvenil", "youth hostel"], ["tomar el sol", "to sunbathe"], ["hacer turismo", "to go sightseeing"], ["comprar recuerdos", "to buy souvenirs"]],
+k: ["Transport uses en (en avión), except a pie (on foot).", "a + el = al: voy al campo; a la playa; a la montaña.", "Ir de vacaciones = to go on holiday.", "Countries: España, Francia, Italia, Inglaterra, Estados Unidos, la India."],
+f: ["ir + en + transport", "ir + a + place (al / a la)"],
+e: [["Say 'We are going by train to the mountains.'", "Vamos en tren a la montaña."], ["What is 'un albergue juvenil'?", "A youth hostel."]],
+r: ["Remember al = a + el.", "Learn activity phrases as whole chunks."] } },
+{ id: "es12", t: "Describing a future holiday", w: 3, n: {
+o: "Write and speak about a future holiday in detail using both future tenses, opinions and reasons.",
+s: "A strong answer covers: where (Iré a…), when (el verano que viene), with whom (con mi familia), how (en avión), how long (durante una semana), where you will stay (nos alojaremos en…), what you will do (visitaré…, nadaré…), the weather (hará calor) and an opinion with a reason (será genial porque…). Mix ir a + infinitive and the simple future.",
+d: [["durante una semana", "for a week"], ["nos alojaremos", "we will stay"], ["será genial", "it will be great"], ["hará buen tiempo", "the weather will be good"], ["tengo muchas ganas de…", "I'm really looking forward to…"]],
+k: ["Use a range of tenses: present (me gusta viajar), near future and simple future.", "Opinions: Creo que será… / Pienso que va a ser…", "Connectives: primero, luego, después, finalmente, además, sin embargo.", "Answer all the bullet points in the writing task."],
+f: ["Where + when + who + how + stay + activities + weather + opinion"],
+e: [["Say where and how you will travel.", "El verano que viene iré a Barcelona con mis primos en avión."], ["Give an opinion with a reason.", "Será inolvidable porque nunca he visto el mar Mediterráneo."]],
+r: ["Cover every bullet point: missing one costs marks.", "Check accents on future forms: iré, visitaremos, será."] } }
+] }
+] };
+
+/* ----- questions (ids es1, es2, …) ----- */
+(function () {
+var n = 0;
+function M(t, d, q, o, a, x) { QUIZ.push({ id: "es" + (++n), t: t, y: "mcq", d: d, q: q, o: o, a: a, x: x }); }
+function S(t, d, q, a, x) { QUIZ.push({ id: "es" + (++n), t: t, y: "short", d: d, q: q, a: a, x: x }); }
+function W(t, d, y, m, q, x) { QUIZ.push({ id: "es" + (++n), t: t, y: y, d: d, m: m, q: q, x: x }); }
+M("es1", 1, "What does 'los productos lácteos' mean?", ["Pulses", "Dairy products", "Cereals", "Sweets"], 1, "Lácteos comes from leche (milk): dairy products.");
+M("es1", 2, "Choose the correct sentence.", ["Me gusta las manzanas.", "Me gustan las manzanas.", "Me gusto las manzanas.", "Me gustas manzanas."], 1, "Las manzanas is plural, so gustan.");
+S("es1", 1, "Translate into Spanish: fish", ["el pescado", "pescado"], "El pescado is fish as food (el pez is a live fish).");
+M("es1", 2, "'La leche tiene calcio' means…", ["Milk has calcium.", "Milk is healthy.", "I like milk.", "Milk has vitamins."], 0, "tiene = has.");
+M("es2", 1, "Which word means 'never'?", ["siempre", "a veces", "nunca", "a menudo"], 2, "nunca = never.");
+S("es2", 2, "Translate: I eat fruit every day.", ["como fruta todos los días", "como fruta cada día"], "como = I eat; todos los días = every day.");
+M("es2", 2, "'La comida basura no es saludable' means…", ["Junk food is not healthy.", "Fast food is tasty.", "Food is not cheap.", "I don't eat food."], 0, "comida basura = junk food; saludable = healthy.");
+W("es2", 3, "exam", 5, "Write 40–50 words in Spanish about your eating habits. Say what you eat often, what you never eat and whether your diet is healthy.", "1 mark each: what you eat with a frequency word; what you never eat; opinion of your diet; a reason with porque; accurate verbs and a connective (pero / también).");
+M("es3", 1, "Which meal is 'la cena'?", ["Breakfast", "Lunch", "Afternoon snack", "Dinner"], 3, "cenar = to have dinner.");
+S("es3", 2, "Write 'at half past eight' in Spanish.", ["a las ocho y media"], "y media = half past.");
+M("es3", 2, "Choose the correct form: Yo ___ a las dos (almorzar).", ["almorzo", "almuerzo", "almuerza", "almorzamos"], 1, "Stem change o→ue for yo: almuerzo.");
+M("es4", 1, "'Tengo que estudiar' means…", ["I want to study.", "I have to study.", "I like studying.", "I am studying."], 1, "tener que + infinitive = to have to.");
+M("es4", 2, "Which one means 'you must not'?", ["No tienes que", "No hay que", "No debes", "Tienes que"], 2, "No debes = you must not; no tienes que = you don't have to.");
+S("es4", 2, "Complete: ___ que dormir ocho horas. (one must)", ["hay"], "hay que + infinitive = one must.");
+M("es5", 2, "Which is advice meaning 'you should'?", ["debo", "deberías", "deber", "debido"], 1, "deberías + infinitive = you should.");
+S("es5", 2, "Give the tú command of 'hacer'.", ["haz"], "hacer → haz (irregular).");
+M("es5", 2, "'¿Por qué no comes más verduras?' is…", ["a complaint", "a suggestion", "a question about the past", "an order"], 1, "¿Por qué no…? = Why don't you…? (a suggestion).");
+W("es5", 3, "struct", 4, "A friend eats badly and never exercises. Write four pieces of advice in Spanish using four different structures.", "1 mark each for correct advice using: deberías + inf; es importante/mejor + inf; tú command; ¿Por qué no…? (accept tener que/hay que).");
+M("es6", 1, "Complete: Nosotros ___ en Mumbai (vivir).", ["vivo", "vivimos", "viven", "vivís"], 1, "-ir nosotros: -imos.");
+S("es6", 2, "Give the yo form of 'tener'.", ["tengo"], "Irregular: tengo.");
+M("es6", 2, "Choose the correct verb: Mi madre ___ cansada hoy.", ["es", "está", "tiene", "hace"], 1, "Feelings use estar.");
+S("es6", 3, "Give the él form of 'querer'.", ["quiere"], "Stem change e→ie: quiere.");
+M("es7", 1, "'Mi tía' is…", ["my grandmother", "my aunt", "my cousin", "my sister"], 1, "tía = aunt.");
+M("es7", 2, "How do you say 'My brother is 14'?", ["Mi hermano es catorce años.", "Mi hermano tiene catorce años.", "Mi hermano está catorce años.", "Mi hermano hay catorce años."], 1, "Age uses tener.");
+S("es7", 2, "Make 'simpático' agree: Mis abuelas son ___.", ["simpáticas"], "Feminine plural: -as.");
+M("es8", 2, "'Me llevo mal con mi hermano' means…", ["I take my brother out.", "I get on badly with my brother.", "I look like my brother.", "I miss my brother."], 1, "llevarse mal con = to get on badly with.");
+S("es8", 2, "Complete: Mi hermana ___ lleva bien con mi madre.", ["se"], "Third person reflexive pronoun: se.");
+M("es8", 2, "Which phrase means 'makes me laugh'?", ["me ayuda", "me molesta", "me hace reír", "me apoya"], 2, "hacer reír = to make laugh.");
+W("es8", 3, "exam", 5, "Write 40–50 words in Spanish about who you get on well and badly with, and why.", "Award marks for: llevarse bien with correct pronoun; llevarse mal; reasons with porque; personality adjectives that agree; a connective such as pero / sin embargo.");
+M("es9", 1, "'Voy a nadar' means…", ["I swim.", "I swam.", "I'm going to swim.", "I would swim."], 2, "ir a + infinitive = going to.");
+S("es9", 2, "Complete: Mañana nosotros ___ a visitar el museo.", ["vamos"], "ir, nosotros: vamos.");
+M("es9", 2, "Which time phrase is about the future?", ["ayer", "la semana pasada", "el año que viene", "anoche"], 2, "el año que viene = next year.");
+M("es10", 2, "What is the future of 'hacer' for yo?", ["haceré", "haré", "hago", "hice"], 1, "Irregular stem har- + é.");
+S("es10", 2, "Put 'comer' into the future for ellos.", ["comerán"], "comer + án.");
+M("es10", 3, "'Habrá mucha gente' means…", ["There were many people.", "There will be many people.", "There are many people.", "There would be many people."], 1, "habrá = there will be.");
+S("es10", 3, "Give the future of 'tener' for tú.", ["tendrás"], "Irregular stem tendr- + ás.");
+M("es11", 1, "'La maleta' is…", ["the ticket", "the suitcase", "the passport", "the map"], 1, "maleta = suitcase.");
+M("es11", 2, "Which is correct?", ["Voy a el campo.", "Voy al campo.", "Voy en el campo.", "Voy a campo."], 1, "a + el = al.");
+S("es11", 1, "Translate: by plane", ["en avión"], "Transport uses en.");
+W("es12", 3, "exam", 15, "Write 80–100 words in Spanish about your next holiday. Mention: where and with whom you will go; how you will travel and where you will stay; two activities you will do; why you are looking forward to it.", "Content (5): all four bullet points covered with detail. Language (10): range of future tenses (ir a + inf and simple future), opinions with reasons, connectives, accurate verbs and adjective agreement.");
+M("es12", 2, "'Nos alojaremos en un hotel' means…", ["We stayed in a hotel.", "We will stay in a hotel.", "We are building a hotel.", "We like hotels."], 1, "alojarse in the future: nos alojaremos.");
+S("es12", 2, "Write 'It will be sunny' in Spanish.", ["hará sol"], "Weather with hacer in the future: hará sol.");
+})();
+
+FLASH.push(
+["es1", "la fruta / las verduras", "fruit / vegetables"], ["es1", "los productos lácteos", "dairy products"], ["es1", "me gustan + plural", "I like (plural things): me gustan las fresas"],
+["es2", "nunca / a veces / a menudo / siempre", "never / sometimes / often / always"], ["es2", "la comida basura", "junk food"],
+["es3", "el desayuno, la comida, la merienda, la cena", "breakfast, lunch, afternoon snack, dinner"], ["es3", "almorzar (yo)", "almuerzo (o→ue)"],
+["es4", "tener que + inf.", "to have to"], ["es4", "no tienes que vs no debes", "you don't have to vs you must not"],
+["es5", "deberías + inf.", "you should"], ["es5", "Irregular tú commands", "haz, ve, ten, sal, ven, di, pon, sé"],
+["es6", "-ar endings", "o, as, a, amos, áis, an"], ["es6", "ser vs estar", "ser: permanent traits; estar: location, feelings, temporary states"], ["es6", "ir (present)", "voy, vas, va, vamos, vais, van"],
+["es7", "Age in Spanish", "tener + años: Tiene doce años."], ["es7", "hijo único / hija única", "only child"],
+["es8", "llevarse bien/mal con", "to get on well/badly with"], ["es8", "me hace reír", "makes me laugh"],
+["es9", "Near future", "ir + a + infinitive: voy a viajar"],
+["es10", "Simple future endings", "-é, -ás, -á, -emos, -éis, -án on the infinitive"], ["es10", "Irregular future stems", "tendr-, har-, podr-, saldr-, vendr-, dir-, querr-, sabr-, pondr-, habr-"],
+["es11", "alojarse en", "to stay in (a hotel)"], ["es11", "hacer turismo / tomar el sol", "to go sightseeing / to sunbathe"],
+["es12", "hará calor / lloverá", "it will be hot / it will rain"]
+);
+
+PRACTICE_EX.spa = [
+{ id: "vocab", name: "Vocabulary sprint", types: ["mcq", "short"], n: 10, task: "Vocabulary sprint on {t}: 10 quick word questions. Say each Spanish word aloud with its article.", steps: ["Answer quickly; say each word aloud with el/la.", "Write any word you missed with its meaning.", "Test yourself on those words again at the end."] },
+{ id: "verbs", name: "Verb drill", types: ["short", "mcq"], n: 8, task: "Verb drill on {t}: conjugate the key verbs in present, near future and simple future.", steps: ["Write the full table (yo to ellos) for one regular and one irregular verb.", "Answer the questions.", "Check accents and endings against the notes."] },
+{ id: "write", name: "Timed writing (Paper 4)", types: ["exam", "struct", "mcq"], n: 4, task: "Timed writing on {t}: 15 minutes to answer every bullet point with opinions, reasons and two tenses.", steps: ["Underline every bullet point.", "Write one or two sentences for each with an opinion and porque.", "Check verbs, agreement and accents."] },
+{ id: "speak", name: "Speaking rehearsal (Paper 3)", types: ["struct", "short", "mcq"], n: 5, task: "Speaking rehearsal on {t}: answer each question aloud in full sentences for 30 seconds.", steps: ["Read the question and answer aloud without notes.", "Extend each answer: opinion + reason + time phrase.", "Record yourself or say it to someone, then improve one answer."] },
+{ id: "read", name: "Reading and listening skills", types: ["mcq", "short"], n: 8, task: "Reading and listening practice on {t}: find key words, negatives and time phrases in each question.", steps: ["Underline question words before answering.", "Watch for negatives (no, nunca) and changes (pero).", "Check numbers and times carefully."] }
+];
+
+ANSWER_NOTES.push({ subj: "spa", from: "starter", intro: "60 marks in 60 minutes (speaking is extra). Paper 1 Listening 14, Paper 2 Reading 21, Paper 4 Writing 15, and Paper 3 Speaking 10, held after the writing exam (stayback).",
+types: [
+{ code: "1", name: "Listening (Paper 1)", marks: "14", q: "You hear short recordings and answer multiple-choice or short questions in English or Spanish.", steps: [
+  { h: "Before the recording", pts: ["Read every question and underline the key word (who, when, where, what, why).", "Predict the Spanish words you might hear (food, times, family, places)."] },
+  { h: "While listening", pts: ["Listen for detail: numbers, times, days and negatives (no, nunca).", "Watch for distractors: several options may be mentioned; pick the one that answers the question.", "Listen for changes of mind: pero, sin embargo, al final."] },
+  { h: "After", pts: ["Answer every question; never leave a blank.", "Check that each answer matches the question word."] }] },
+{ code: "2", name: "Reading (Paper 2)", marks: "21", q: "Short texts and a longer text with multiple-choice, true/false and short-answer questions.", steps: [
+  { h: "Find the answer", pts: ["Scan for the key word from the question, then read the sentences around it.", "Use cognates (vitaminas, restaurante) and context to work out new words."] },
+  { h: "Watch for traps", pts: ["Negatives (no, nunca, nadie), tense (past, present or future) and who is doing the action.", "Answer in the language the question asks for."] }] },
+{ code: "3", name: "Speaking (Paper 3)", marks: "10", q: "A short conversation on the topics (food and health, family and getting along, holidays and future plans).", steps: [
+  { h: "Build every answer the same way", pts: ["Answer + detail + opinion + reason + time phrase.", "Use two tenses where you can (present and future)."], ex: ["Normalmente desayuno cereales, pero mañana voy a comer tostadas porque son más sanas."] },
+  { h: "Keep going", pts: ["If you don't understand: ¿Puede repetir, por favor?", "Fillers to gain time: Pues…, A ver…, Bueno…"] }] },
+{ code: "4", name: "Writing (Paper 4)", marks: "15", q: "Write about a topic covering several bullet points (for example your eating habits, your family or your next holiday).", steps: [
+  { h: "Cover every bullet point", pts: ["Write at least two sentences for each one; missing a bullet point loses content marks."] },
+  { h: "Show a range of language", pts: ["Opinions with reasons (me encanta… porque…), connectives (pero, también, sin embargo), and more than one tense.", "Use expressions from the units: tengo que, deberías, me llevo bien con, voy a…, iré…"], ex: ["El verano que viene iré a Madrid con mi familia. Vamos a visitar el museo del Prado porque me encanta el arte."] },
+  { h: "Check", pts: ["Verb endings, adjective agreement, accents (iré, también, está)."] }] }
+] });
+
+Object.assign(GUIDE, {
+es1: [
+  { t: "Naming foods and their group", how: ["Learn each food with el or la.", "Group it: fruta, verduras, cereales, carne, pescado, lácteos."], q: "Which group do el queso and el yogur belong to?", w: [], a: "Los productos lácteos (dairy products)" },
+  { t: "Giving an opinion with gustar", how: ["Singular noun → gusta; plural → gustan.", "Add the article."], q: "Write: I love strawberries but I don't like milk.", w: ["las fresas is plural → me encantan", "la leche is singular → no me gusta"], a: "Me encantan las fresas, pero no me gusta la leche." },
+  { t: "Saying what a food contains", how: ["Food + tiene(n) + nutrient."], q: "Say 'Oranges have a lot of vitamin C.'", w: ["las naranjas is plural → tienen"], a: "Las naranjas tienen mucha vitamina C." },
+  { t: "Reading for nutrients", how: ["Spot cognates: proteínas, vitaminas, minerales, calcio, fibra."], q: "Text: 'El pescado tiene muchas proteínas.' What does fish contain?", w: [], a: "A lot of protein" }
+],
+es2: [
+  { t: "Describing habits with frequency", how: ["Frequency word + present tense + food."], q: "Write: I sometimes eat chocolate.", w: [], a: "A veces como chocolate." },
+  { t: "Healthy or unhealthy?", how: ["Use es sano / no es sano / es malsano with a reason."], q: "Say why fizzy drinks are unhealthy.", w: [], a: "Los refrescos no son sanos porque tienen mucho azúcar." },
+  { t: "Extending a sentence", how: ["Join ideas with y, pero, también, sin embargo."], q: "Join: Como verduras. Nunca como comida basura.", w: [], a: "Como verduras, pero nunca como comida basura." },
+  { t: "Writing about your diet", how: ["What you eat + how often + opinion + reason + a change you will make."], q: "Write three sentences about your diet.", w: [], a: "Normalmente como bastante fruta. Sin embargo, a veces bebo refrescos. Creo que mi dieta es bastante sana, pero voy a beber más agua." }
+],
+es3: [
+  { t: "Saying what you eat at each meal", how: ["Para el desayuno / Para la cena + tomo / como + food."], q: "Say what you have for breakfast.", w: [], a: "Para el desayuno tomo cereales con leche y un zumo de naranja." },
+  { t: "Saying the time", how: ["a la una / a las + hour; y cuarto, y media, menos cuarto."], q: "Write: I have dinner at a quarter to nine.", w: [], a: "Ceno a las nueve menos cuarto." },
+  { t: "Stem-changing meal verbs", how: ["almorzar o→ue; merendar e→ie (not in nosotros)."], q: "Write 'we have lunch' and 'I have a snack'.", w: [], a: "almorzamos; meriendo" },
+  { t: "Comparing meals in Spain and India", how: ["Use comparisons: más tarde que, más temprano que."], q: "Say that in Spain people have dinner later than in India.", w: [], a: "En España se cena más tarde que en la India." }
+],
+es4: [
+  { t: "tener que (personal obligation)", how: ["tener (conjugated) + que + infinitive."], q: "Write: My brother has to eat more vegetables.", w: [], a: "Mi hermano tiene que comer más verduras." },
+  { t: "hay que (general obligation)", how: ["hay que + infinitive, never changes."], q: "Write: You have to (one must) drink water every day.", w: [], a: "Hay que beber agua todos los días." },
+  { t: "deber (must)", how: ["deber (conjugated) + infinitive, no que."], q: "Write: We must sleep eight hours.", w: [], a: "Debemos dormir ocho horas." },
+  { t: "Don't have to vs must not", how: ["no tener que = no obligation; no deber = forbidden."], q: "Translate: (a) No tienes que comer carne. (b) No debes fumar.", w: [], a: "(a) You don't have to eat meat. (b) You must not smoke." }
+],
+es5: [
+  { t: "Should: deberías", how: ["deberías + infinitive (polite advice)."], q: "Advise a friend to eat less sugar.", w: [], a: "Deberías comer menos azúcar." },
+  { t: "Commands (tú imperative)", how: ["Regular: él/ella form (come, bebe). Irregular: haz, ve, ten, sal, ven, di, pon, sé."], q: "Turn into commands: beber agua; hacer ejercicio; ir al gimnasio.", w: [], a: "¡Bebe agua! ¡Haz ejercicio! ¡Ve al gimnasio!" },
+  { t: "Suggestions", how: ["¿Por qué no + present tense? / es mejor + infinitive."], q: "Suggest walking to school.", w: [], a: "¿Por qué no vas al colegio a pie? Es mejor caminar." },
+  { t: "Advice with a reason", how: ["Advice + porque + benefit."], q: "Give advice with a reason about sleep.", w: [], a: "Es importante dormir ocho horas porque así tienes más energía." }
+],
+es6: [
+  { t: "Regular verbs in the present", how: ["Remove -ar/-er/-ir and add the ending for the person."], q: "Conjugate 'beber' for yo, tú and ellos.", w: [], a: "bebo, bebes, beben" },
+  { t: "Irregular verbs", how: ["Learn ser, estar, tener, ir, hacer by heart."], q: "Complete: Yo ___ (hacer) deporte y ___ (ir) al parque.", w: [], a: "hago; voy" },
+  { t: "Stem-changing verbs", how: ["Change e→ie, o→ue, e→i in all forms except nosotros/vosotros."], q: "Write 'I can' and 'we can' (poder).", w: [], a: "puedo; podemos" },
+  { t: "ser or estar", how: ["ser: who/what someone is (traits, nationality). estar: where and how (location, mood)."], q: "Complete: Mi padre ___ médico y ahora ___ en el hospital.", w: [], a: "es; está" },
+  { t: "Finding the error", how: ["Check the person and the ending."], q: "Correct: Nosotros come pizza.", w: [], a: "Nosotros comemos pizza." }
+],
+es7: [
+  { t: "Introducing your family", how: ["En mi familia hay + number + personas. Tengo + family member."], q: "Say there are four people in your family and you have one sister.", w: [], a: "En mi familia hay cuatro personas. Tengo una hermana." },
+  { t: "Describing a person", how: ["Name + age (tener) + appearance and personality (ser) with agreement."], q: "Describe your cousin Sofía (13, tall, funny).", w: [], a: "Mi prima se llama Sofía. Tiene trece años. Es alta y divertida." },
+  { t: "Describing a pet", how: ["Tengo + pet + que se llama + name + description."], q: "Say you have two small rabbits.", w: [], a: "Tengo dos conejos pequeños." },
+  { t: "Possessive adjectives", how: ["mi/mis, tu/tus, su/sus: plural nouns take -s."], q: "Complete: ___ padres y ___ hermano (my).", w: [], a: "mis padres y mi hermano" }
+],
+es8: [
+  { t: "Saying who you get on with", how: ["me llevo bien/mal con + person."], q: "Write: I get on well with my father.", w: [], a: "Me llevo bien con mi padre." },
+  { t: "Other people", how: ["Change the pronoun and the verb: se lleva, nos llevamos, se llevan."], q: "Write: My sisters get on badly.", w: [], a: "Mis hermanas se llevan mal." },
+  { t: "Giving reasons", how: ["porque + adjective, or porque + action (me ayuda, discutimos)."], q: "Say why you get on badly with your brother.", w: [], a: "Me llevo mal con mi hermano porque es molesto y siempre discutimos." },
+  { t: "A balanced answer", how: ["Positive + pero + negative."], q: "Write one balanced sentence about your mother.", w: [], a: "Me llevo bien con mi madre porque me apoya, pero a veces discutimos sobre los deberes." }
+],
+es9: [
+  { t: "Forming the near future", how: ["ir (present) + a + infinitive."], q: "Write: They are going to travel to Mexico.", w: [], a: "Van a viajar a México." },
+  { t: "Questions and answers", how: ["¿Qué vas a hacer…? → Voy a…"], q: "Answer: ¿Qué vas a hacer este fin de semana?", w: [], a: "Este fin de semana voy a jugar al tenis con mis amigos." },
+  { t: "Negative plans", how: ["no goes before ir."], q: "Write: I'm not going to watch TV.", w: [], a: "No voy a ver la tele." }
+],
+es10: [
+  { t: "Regular future", how: ["Infinitive + é, ás, á, emos, éis, án."], q: "Put into the future: (yo) visitar, (ellos) vivir.", w: [], a: "visitaré; vivirán" },
+  { t: "Irregular future", how: ["Irregular stem + the same endings."], q: "Write: I will have, we will do, you (tú) will be able to.", w: [], a: "tendré; haremos; podrás" },
+  { t: "Weather in the future", how: ["hará calor/frío/sol; lloverá; nevará."], q: "Say it will be hot and it won't rain.", w: [], a: "Hará calor y no lloverá." },
+  { t: "Near future or simple future?", how: ["Both are correct for future; using both shows range."], q: "Rewrite with the simple future: Voy a ir a la playa.", w: [], a: "Iré a la playa." }
+],
+es11: [
+  { t: "Transport", how: ["en + transport; a pie."], q: "Write: We travel by boat and then on foot.", w: [], a: "Viajamos en barco y luego a pie." },
+  { t: "Places with a/al", how: ["a + el = al; a la playa."], q: "Write: I go to the countryside and to the beach.", w: [], a: "Voy al campo y a la playa." },
+  { t: "Holiday activities", how: ["Learn verb + noun chunks."], q: "List three holiday activities in Spanish.", w: [], a: "tomar el sol, hacer turismo, comprar recuerdos" },
+  { t: "Accommodation", how: ["alojarse en + place."], q: "Write: I stay in a youth hostel.", w: [], a: "Me alojo en un albergue juvenil." }
+],
+es12: [
+  { t: "Opening sentence (where, when, who)", how: ["Time phrase + future verb + place + con + people."], q: "Write an opening about going to Spain next summer with your family.", w: [], a: "El verano que viene iré a España con mi familia." },
+  { t: "Travel and accommodation", how: ["Viajaremos en + transport; nos alojaremos en + place."], q: "Say you will travel by plane and stay in a hotel near the beach.", w: [], a: "Viajaremos en avión y nos alojaremos en un hotel cerca de la playa." },
+  { t: "Activities with sequencing", how: ["Primero, luego, después, finalmente + future verbs."], q: "Describe two activities in order.", w: [], a: "Primero visitaré los monumentos y luego nadaré en el mar." },
+  { t: "Opinion and reason", how: ["Será + adjective + porque…"], q: "Say why you are looking forward to it.", w: [], a: "Tengo muchas ganas de ir porque será la primera vez que viajo en avión." }
+]
+});
+
+/* ===== French (chosen instead of Hindi or Spanish; exam on the Hindi exam date). Same shapes as lang-spa.js ===== */
+var LANG_SUBJ = LANG_SUBJ || {};
+var GUIDE = GUIDE || {};
+LANG_SUBJ.fre = { id: "fre", name: "French", short: "French", marks: 60, duration: 60,
+paper: "Paper 1 Listening (14) · Paper 2 Reading (21) · Paper 4 Writing (15) · Paper 3 Speaking (10, after the writing exam)",
+units: [
+{ name: "Unit 1 – Food & Health", topics: [
+{ id: "fr1", t: "Food groups and nutrients", w: 2, n: {
+o: "Name the food groups and nutrients in French and use the partitive article and opinion verbs correctly.",
+s: "Learn the food groups (les fruits, les légumes, les féculents, les produits laitiers, la viande, le poisson, les œufs, les sucreries, les matières grasses) and nutrients (les protéines, les vitamines, les glucides, les lipides, les fibres, le calcium). To say 'some', use the partitive: du, de la, de l', des. With opinions (aimer, adorer, détester) use le, la, les.",
+d: [["les fruits / les légumes", "fruit / vegetables"], ["les féculents", "starchy foods (bread, pasta, rice)"], ["les produits laitiers", "dairy products"], ["la viande / le poisson", "meat / fish"], ["les sucreries", "sweets"], ["les matières grasses", "fats"], ["les protéines / les vitamines", "proteins / vitamins"], ["les glucides", "carbohydrates"], ["les fibres", "fibre"]],
+k: ["Partitive: du pain (m), de la viande (f), de l'eau (vowel), des légumes (plural).", "After a negative, du/de la/des become de or d': Je ne mange pas de viande.", "Opinions take the definite article: J'adore les fruits; je déteste le poisson.", "Le lait contient du calcium. Le poisson contient des protéines."],
+f: ["manger / boire + du / de la / de l' / des + food", "aimer / adorer / détester + le / la / les + food"],
+e: [["Say 'I eat bread and drink water.'", "Je mange du pain et je bois de l'eau."], ["Make it negative: Je mange des sucreries.", "Je ne mange pas de sucreries."]],
+r: ["Never use the partitive after aimer: j'aime le chocolat, not j'aime du chocolat.", "Learn each food with its gender."] } },
+{ id: "fr2", t: "Eating habits and diet", w: 2, n: {
+o: "Describe healthy and unhealthy eating habits with frequency expressions, negatives and connectives.",
+s: "Talk about what you eat, how often and whether it is healthy (sain) or unhealthy (mauvais pour la santé). Use frequency words (toujours, souvent, parfois, de temps en temps, rarement, tous les jours) and negatives (ne … jamais, ne … pas). Join ideas with mais, et, aussi, cependant, parce que.",
+d: [["sain(e)", "healthy"], ["mauvais pour la santé", "bad for your health"], ["une alimentation équilibrée", "a balanced diet"], ["la malbouffe", "junk food"], ["grignoter", "to snack"], ["les boissons gazeuses", "fizzy drinks"], ["être en forme", "to be fit"]],
+k: ["ne … jamais goes around the verb: Je ne mange jamais de frites.", "Frequency usually goes after the verb: Je mange souvent des légumes.", "Opinion: Je pense que c'est sain / Je trouve que c'est mauvais pour la santé.", "Because: parce que (parce qu' before a vowel) or car."],
+f: ["verb + frequency + partitive + food + parce que + reason"],
+e: [["Say 'I often eat vegetables but I never drink fizzy drinks.'", "Je mange souvent des légumes, mais je ne bois jamais de boissons gazeuses."], ["What is 'grignoter'?", "To snack (between meals)."]],
+r: ["After jamais and pas, use de, not des.", "Give a reason to gain marks."] } },
+{ id: "fr3", t: "Meals of the day", w: 2, n: {
+o: "Say what you eat and drink at each meal and at what time.",
+s: "The meals are le petit-déjeuner (breakfast), le déjeuner (lunch), le goûter (afternoon snack) and le dîner (dinner). Use prendre (to have): je prends, tu prends, il prend, nous prenons, vous prenez, ils prennent. Say the time with à + heure(s).",
+d: [["le petit-déjeuner", "breakfast"], ["le déjeuner / déjeuner", "lunch / to have lunch"], ["le goûter", "afternoon snack"], ["le dîner / dîner", "dinner / to have dinner"], ["prendre", "to have (food or drink)"]],
+k: ["Time: à huit heures, à huit heures et demie (8:30), et quart (8:15), moins le quart (7:45), à midi, à minuit.", "prendre is irregular: je prends, nous prenons, ils prennent.", "Au petit-déjeuner, je prends… = For breakfast I have…", "à + le = au: au déjeuner; à la cantine."],
+f: ["Au + meal, je prends + partitive + food", "Je dîne à + time"],
+e: [["Say 'For breakfast I have cereal and an orange juice.'", "Au petit-déjeuner, je prends des céréales et un jus d'orange."], ["Say 'We have dinner at half past seven.'", "Nous dînons à sept heures et demie."]],
+r: ["Remember the hyphen: petit-déjeuner.", "Use au before masculine meals: au dîner."] } },
+{ id: "fr4", t: "Obligatory expressions", w: 2, n: {
+o: "Say what you or others must and must not do using il faut, devoir and avoir besoin de.",
+s: "To say what must be done, use il faut + infinitive (one must; impersonal) or devoir + infinitive (je dois, tu dois, il doit, nous devons, vous devez, ils doivent). Avoir besoin de + infinitive or noun means 'to need'. Careful with negatives: il ne faut pas = you must not; tu n'es pas obligé de = you don't have to.",
+d: [["il faut + inf.", "one must, you have to"], ["devoir + inf.", "must, to have to"], ["avoir besoin de", "to need"], ["être obligé(e) de", "to be obliged to"], ["il ne faut pas", "you must not"], ["tu n'es pas obligé de", "you don't have to"]],
+k: ["devoir: je dois, tu dois, il/elle doit, nous devons, vous devez, ils/elles doivent.", "il faut never changes: il faut manger équilibré.", "Negative with devoir: je ne dois pas manger trop de sucre.", "J'ai besoin de dormir = I need to sleep."],
+f: ["il faut + infinitive", "devoir (conjugated) + infinitive", "avoir besoin de + infinitive / noun"],
+e: [["Say 'You must drink water.'", "Tu dois boire de l'eau. / Il faut boire de l'eau."], ["Translate 'Il ne faut pas manger trop de sel.'", "You must not eat too much salt."]],
+r: ["The verb after il faut and devoir stays in the infinitive.", "Learn all forms of devoir; it is irregular."] } },
+{ id: "fr5", t: "Giving advice and suggestions", w: 2, n: {
+o: "Give advice about healthy living using tu devrais, il faut, je te conseille de, pourquoi ne pas and the imperative.",
+s: "Give advice with tu devrais / vous devriez + infinitive (you should), il faut + infinitive, je te conseille de + infinitive, or a suggestion: Pourquoi ne pas + infinitive? Commands use the imperative: present-tense tu form without tu, and -er verbs drop the final -s (mange, bois, fais).",
+d: [["tu devrais + inf.", "you should"], ["vous devriez + inf.", "you (polite/plural) should"], ["je te conseille de + inf.", "I advise you to"], ["Pourquoi ne pas…?", "Why not…?"], ["Il vaut mieux + inf.", "It's better to"], ["fais du sport", "do sport (command)"]],
+k: ["Imperative: mange ! (manger), bois ! (boire), fais ! (faire), va ! (aller), prends ! (prendre).", "-er verbs drop the -s in the tu command: tu manges → mange !", "Negative command: ne mange pas trop de sucreries !", "Nous form = let's: mangeons sainement !"],
+f: ["tu devrais + infinitive", "je te conseille de + infinitive", "Pourquoi ne pas + infinitive ?"],
+e: [["Advise a friend to sleep more.", "Tu devrais dormir plus. Il faut dormir huit heures."], ["Make 'faire du sport' a command to a friend.", "Fais du sport !"]],
+r: ["Use several structures, not just tu dois.", "Give a reason with parce que for each piece of advice."] } },
+{ id: "fr6", t: "Regular and irregular verbs (present)", w: 3, n: {
+o: "Conjugate regular -er, -ir and -re verbs and key irregular verbs in the present tense.",
+s: "Regular verbs drop -er, -ir or -re and add endings. -er: e, es, e, ons, ez, ent. -ir: is, is, it, issons, issez, issent. -re: s, s, –, ons, ez, ent. Key irregular verbs are être, avoir, aller, faire, prendre, boire, pouvoir and vouloir.",
+d: [["manger (-er)", "je mange, tu manges, il mange, nous mangeons, vous mangez, ils mangent"], ["finir (-ir)", "je finis, tu finis, il finit, nous finissons, vous finissez, ils finissent"], ["vendre (-re)", "je vends, tu vends, il vend, nous vendons, vous vendez, ils vendent"], ["être", "suis, es, est, sommes, êtes, sont"], ["avoir", "ai, as, a, avons, avez, ont"], ["aller", "vais, vas, va, allons, allez, vont"], ["faire", "fais, fais, fait, faisons, faites, font"], ["boire", "bois, bois, boit, buvons, buvez, boivent"]],
+k: ["manger keeps an e in nous mangeons (to keep the soft g).", "je becomes j' before a vowel: j'aime, j'ai.", "The -ent ending of ils/elles is silent.", "pouvoir: je peux, nous pouvons, ils peuvent; vouloir: je veux, nous voulons, ils veulent."],
+f: ["stem + ending: mang + e = mange", "-er: e es e ons ez ent | -ir: is is it issons issez issent | -re: s s – ons ez ent"],
+e: [["Conjugate 'finir' for nous.", "nous finissons"], ["Correct: 'Je suis douze ans.'", "J'ai douze ans."]],
+r: ["Learn être, avoir, aller and faire by heart.", "Check the person before writing the ending."] } }
+] },
+{ name: "Unit 2 – Personal & Social Life", topics: [
+{ id: "fr7", t: "Family and pets (review)", w: 2, n: {
+o: "Describe family members and pets: names, ages, appearance and personality.",
+s: "Introduce people with j'ai (I have) and il/elle s'appelle (is called). Age uses avoir: il a douze ans. Use être for personality and appearance: elle est grande et sympa. Adjectives agree: grand/grande/grands/grandes, and most go after the noun.",
+d: [["le père / la mère", "father / mother"], ["le frère / la sœur", "brother / sister"], ["les grands-parents", "grandparents"], ["l'oncle / la tante", "uncle / aunt"], ["le cousin / la cousine", "cousin"], ["fils unique / fille unique", "only child"], ["un chien / un chat", "a dog / a cat"], ["un poisson / un oiseau / un lapin", "a fish / a bird / a rabbit"], ["une tortue / un hamster", "a tortoise / a hamster"]],
+k: ["Possessives: mon/ma/mes, ton/ta/tes, son/sa/ses (mon père, ma mère, mes parents).", "Age uses avoir: Mon frère a quinze ans.", "Feminine adjectives usually add -e: petit → petite; plural adds -s.", "Personality: sympa, drôle, gentil(le), timide, paresseux/paresseuse, travailleur/travailleuse, énervant(e)."],
+f: ["J'ai + family member/pet + qui s'appelle + name", "Il/Elle a + age + ans; Il/Elle est + adjective (agreeing)"],
+e: [["Say 'I have a black cat called Luna.'", "J'ai une chatte noire qui s'appelle Luna."], ["Say 'My grandparents are very kind.'", "Mes grands-parents sont très gentils."]],
+r: ["Never say 'je suis … ans': age uses avoir.", "Make adjectives agree in gender and number."] } },
+{ id: "fr8", t: "Getting along: s'entendre bien/mal", w: 3, n: {
+o: "Describe relationships with family, friends and pets using s'entendre bien/mal avec and give reasons.",
+s: "s'entendre is a reflexive verb: je m'entends, tu t'entends, il/elle s'entend, nous nous entendons, vous vous entendez, ils/elles s'entendent. Je m'entends bien avec… = I get on well with…; je m'entends mal avec… = I get on badly with…. Give reasons with parce que and an adjective or an action (il me fait rire, elle m'aide, il m'énerve, on se dispute).",
+d: [["s'entendre bien avec", "to get on well with"], ["s'entendre mal avec", "to get on badly with"], ["se disputer avec", "to argue with"], ["il/elle me fait rire", "he/she makes me laugh"], ["il/elle m'aide", "he/she helps me"], ["il/elle m'énerve", "he/she annoys me"], ["il/elle me soutient", "he/she supports me"]],
+k: ["The pronoun matches the subject: je m'entends, elle s'entend, nous nous entendons.", "Contrast: Je m'entends bien avec ma mère, mais on se dispute parfois.", "avec + person: avec mon frère, avec mes amis, avec mon chien.", "Use mais / cependant for a higher mark."],
+f: ["(pronoun) + s'entendre + bien/mal + avec + person + parce que + reason"],
+e: [["Say 'I get on well with my sister because she makes me laugh.'", "Je m'entends bien avec ma sœur parce qu'elle me fait rire."], ["Say 'My parents get on badly with my brother.'", "Mes parents s'entendent mal avec mon frère."]],
+r: ["Don't forget the reflexive pronoun: je m'entends, not j'entends.", "parce que becomes parce qu' before il/elle."] } }
+] },
+{ name: "Unit 3 – Personal & Social Life: holidays and the future", topics: [
+{ id: "fr9", t: "Near future: aller + infinitive", w: 2, n: {
+o: "Talk about plans using aller + infinitive with future time expressions.",
+s: "The near future describes plans: the present tense of aller + infinitive. Je vais voyager (I'm going to travel), tu vas manger, il va nager, nous allons visiter, vous allez jouer, ils vont partir. Add a time phrase: demain, ce week-end, la semaine prochaine, l'année prochaine, cet été.",
+d: [["je vais + inf.", "I'm going to"], ["demain", "tomorrow"], ["ce week-end", "this weekend"], ["la semaine prochaine", "next week"], ["l'année prochaine", "next year"], ["cet été", "this summer"]],
+k: ["aller: vais, vas, va, allons, allez, vont, then the infinitive.", "Negative goes around aller: je ne vais pas jouer.", "Question: Qu'est-ce que tu vas faire cet été ?", "No extra word between aller and the infinitive."],
+f: ["aller (present) + infinitive"],
+e: [["Say 'This weekend we are going to play football.'", "Ce week-end, nous allons jouer au foot."], ["Make it negative: Je vais étudier.", "Je ne vais pas étudier."]],
+r: ["The second verb is always the infinitive.", "Use a time expression in every future sentence."] } },
+{ id: "fr10", t: "Simple future tense", w: 3, n: {
+o: "Form and use the simple future tense of regular and irregular verbs.",
+s: "The simple future (will) adds -ai, -as, -a, -ons, -ez, -ont to the infinitive (je jouerai, tu finiras); -re verbs drop the final e (il vendra). Irregular stems take the same endings: être → ser-, avoir → aur-, aller → ir-, faire → fer-, pouvoir → pourr-, voir → verr-, venir → viendr-, vouloir → voudr-, devoir → devr-.",
+d: [["je jouerai", "I will play"], ["tu finiras", "you will finish"], ["il vendra", "he will sell"], ["nous serons", "we will be"], ["ils feront", "they will do"], ["il y aura", "there will be"]],
+k: ["Endings: -ai, -as, -a, -ons, -ez, -ont (like the present of avoir).", "Irregular: je serai, j'aurai, j'irai, je ferai, je pourrai, je verrai, je viendrai.", "Weather: il fera beau / il fera chaud / il pleuvra / il neigera.", "Near future = plans soon (je vais aller); simple future = will (j'irai)."],
+f: ["infinitive (‑re loses e) + ai / as / a / ons / ez / ont", "irregular stem + the same endings"],
+e: [["Put 'visiter' in the future for nous.", "nous visiterons"], ["Say 'Next year I will go to France.'", "L'année prochaine, j'irai en France."]],
+r: ["Learn the irregular stems as a list.", "-re verbs: drop the e before the ending (prendre → je prendrai)."] } },
+{ id: "fr11", t: "Travel and holidays: vocabulary", w: 2, n: {
+o: "Use vocabulary for transport, accommodation, places and holiday activities, with the right prepositions.",
+s: "Learn transport (en avion, en train, en voiture, en car, en bateau, à pied, à vélo), accommodation (un hôtel, un camping, une auberge de jeunesse, un gîte), places (à la plage, à la montagne, à la campagne, en ville) and activities (se baigner, bronzer, faire du tourisme, visiter des monuments, prendre des photos, acheter des souvenirs). Countries: en + feminine (en France), au + masculine (au Canada), aux + plural (aux États-Unis), à + city (à Paris).",
+d: [["les vacances", "the holidays (always plural)"], ["le voyage", "the trip"], ["le billet", "the ticket"], ["la valise", "the suitcase"], ["le passeport", "the passport"], ["loger", "to stay"], ["une auberge de jeunesse", "a youth hostel"], ["bronzer", "to sunbathe"], ["faire du tourisme", "to go sightseeing"], ["acheter des souvenirs", "to buy souvenirs"]],
+k: ["Vehicles you get into use en (en voiture); things you sit on use à (à vélo, à pied).", "à + le = au: au bord de la mer; à la plage.", "Partir en vacances = to go on holiday.", "Countries: en France, en Espagne, en Inde, au Japon, aux États-Unis."],
+f: ["aller + en / au / aux + country", "voyager + en / à + transport"],
+e: [["Say 'We are going to Spain by train.'", "Nous allons en Espagne en train."], ["What is 'une auberge de jeunesse'?", "A youth hostel."]],
+r: ["Check the gender of the country before choosing en or au.", "Learn activity phrases as whole chunks."] } },
+{ id: "fr12", t: "Describing a future holiday", w: 3, n: {
+o: "Write and speak about a future holiday in detail using both future tenses, opinions and reasons.",
+s: "Cover: where (J'irai en…), when (l'été prochain), with whom (avec ma famille), how (en avion), how long (pendant une semaine), where you will stay (nous logerons dans…), activities (je visiterai…, je me baignerai…), the weather (il fera chaud) and an opinion with a reason (ce sera génial parce que…). Mix aller + infinitive and the simple future.",
+d: [["pendant une semaine", "for a week"], ["nous logerons", "we will stay"], ["ce sera génial", "it will be great"], ["il fera beau", "the weather will be nice"], ["j'ai hâte de…", "I can't wait to…"]],
+k: ["Use a range of tenses: present (j'adore voyager), near future and simple future.", "Opinions: Je pense que ce sera… / À mon avis, ça va être…", "Connectives: d'abord, ensuite, puis, après, enfin, de plus, cependant.", "Answer every bullet point in the writing task."],
+f: ["Where + when + who + how + stay + activities + weather + opinion"],
+e: [["Say where and how you will travel.", "L'été prochain, j'irai à Paris avec mes cousins en train."], ["Give an opinion with a reason.", "Ce sera inoubliable parce que je verrai la tour Eiffel."]],
+r: ["Cover every bullet point: missing one costs marks.", "Check future endings and irregular stems."] } }
+] }
+] };
+
+(function () {
+var n = 0;
+function M(t, d, q, o, a, x) { QUIZ.push({ id: "fr" + (++n), t: t, y: "mcq", d: d, q: q, o: o, a: a, x: x }); }
+function S(t, d, q, a, x) { QUIZ.push({ id: "fr" + (++n), t: t, y: "short", d: d, q: q, a: a, x: x }); }
+function W(t, d, y, m, q, x) { QUIZ.push({ id: "fr" + (++n), t: t, y: y, d: d, m: m, q: q, x: x }); }
+M("fr1", 1, "What does 'les produits laitiers' mean?", ["Starchy foods", "Dairy products", "Sweets", "Fats"], 1, "laitier comes from lait (milk).");
+M("fr1", 2, "Choose the correct sentence.", ["Je mange de la pain.", "Je mange du pain.", "Je mange des pain.", "Je mange le pain souvent du."], 1, "pain is masculine: du pain.");
+M("fr1", 2, "Make negative: Je bois du lait.", ["Je ne bois pas du lait.", "Je ne bois pas de lait.", "Je ne bois pas le lait.", "Je bois pas lait."], 1, "After a negative, du becomes de.");
+S("fr1", 1, "Translate into French: fish", ["le poisson", "poisson"], "le poisson.");
+M("fr2", 1, "Which expression means 'never'?", ["toujours", "parfois", "ne … jamais", "souvent"], 2, "ne … jamais = never.");
+S("fr2", 2, "Translate: I eat vegetables every day.", ["je mange des légumes tous les jours"], "des légumes; tous les jours.");
+M("fr2", 2, "'La malbouffe est mauvaise pour la santé' means…", ["Junk food is bad for your health.", "Fruit is good for you.", "Bad food is cheap.", "I don't eat fast."], 0, "malbouffe = junk food.");
+W("fr2", 3, "exam", 5, "Write 40–50 words in French about your eating habits. Say what you eat often, what you never eat and whether your diet is healthy.", "1 mark each: food with a frequency word; ne … jamais + de; opinion of your diet; reason with parce que; accurate verbs and a connective.");
+M("fr3", 1, "Which meal is 'le goûter'?", ["Breakfast", "Lunch", "Afternoon snack", "Dinner"], 2, "le goûter = afternoon snack.");
+S("fr3", 2, "Write 'at half past eight' in French.", ["à huit heures et demie"], "et demie = half past.");
+M("fr3", 2, "Choose the correct form: Nous ___ le petit-déjeuner à sept heures (prendre).", ["prenons", "prennent", "prends", "prenez"], 0, "prendre, nous: prenons.");
+M("fr4", 1, "'Je dois étudier' means…", ["I want to study.", "I must study.", "I like studying.", "I studied."], 1, "devoir + infinitive = must.");
+M("fr4", 2, "Which means 'you must not'?", ["Il faut", "Il ne faut pas", "Tu n'es pas obligé de", "Tu as besoin de"], 1, "Il ne faut pas = you must not.");
+S("fr4", 2, "Give the ils form of 'devoir'.", ["doivent"], "ils doivent.");
+M("fr5", 2, "Which is advice meaning 'you should'?", ["tu dois", "tu devrais", "tu as dû", "tu devras"], 1, "tu devrais + infinitive = you should.");
+S("fr5", 2, "Give the tu command of 'manger'.", ["mange"], "-er verbs drop the s: mange !");
+M("fr5", 2, "'Pourquoi ne pas faire du vélo ?' is…", ["a complaint", "a suggestion", "a past event", "a rule"], 1, "Pourquoi ne pas…? = Why not…? (a suggestion).");
+W("fr5", 3, "struct", 4, "A friend eats badly and never exercises. Write four pieces of advice in French using four different structures.", "1 mark each for correct advice using: tu devrais + inf; il faut + inf; je te conseille de + inf; an imperative (accept pourquoi ne pas + inf).");
+M("fr6", 1, "Complete: Nous ___ nos devoirs (finir).", ["finons", "finissons", "finissez", "finit"], 1, "-ir nous: finissons.");
+S("fr6", 2, "Give the je form of 'avoir'.", ["ai", "j'ai"], "j'ai.");
+M("fr6", 2, "Choose the correct verb: Ils ___ au cinéma.", ["vont", "allent", "vais", "allons"], 0, "aller, ils: vont.");
+S("fr6", 3, "Give the vous form of 'faire'.", ["faites"], "Irregular: vous faites.");
+M("fr7", 1, "'Ma tante' is…", ["my grandmother", "my aunt", "my cousin", "my sister"], 1, "tante = aunt.");
+M("fr7", 2, "How do you say 'My brother is 14'?", ["Mon frère est quatorze ans.", "Mon frère a quatorze ans.", "Mon frère fait quatorze ans.", "Mon frère va quatorze ans."], 1, "Age uses avoir.");
+S("fr7", 2, "Make 'petit' agree: mes sœurs sont ___.", ["petites"], "Feminine plural: -es.");
+M("fr8", 2, "'Je m'entends mal avec mon frère' means…", ["I can't hear my brother.", "I get on badly with my brother.", "I look like my brother.", "I miss my brother."], 1, "s'entendre mal avec = to get on badly with.");
+S("fr8", 2, "Complete: Ma sœur ___ entend bien avec ma mère.", ["s'"], "Third person reflexive pronoun: s'.");
+M("fr8", 2, "Which phrase means 'he makes me laugh'?", ["il m'aide", "il m'énerve", "il me fait rire", "il me soutient"], 2, "faire rire = to make laugh.");
+W("fr8", 3, "exam", 5, "Write 40–50 words in French about who you get on well and badly with, and why.", "Award marks for: s'entendre bien with the correct pronoun; s'entendre mal; reasons with parce que; adjectives that agree; a connective such as mais / cependant.");
+M("fr9", 1, "'Je vais nager' means…", ["I swim.", "I swam.", "I'm going to swim.", "I would swim."], 2, "aller + infinitive = going to.");
+S("fr9", 2, "Complete: Demain, nous ___ visiter le musée.", ["allons"], "aller, nous: allons.");
+M("fr9", 2, "Which time phrase is about the future?", ["hier", "la semaine dernière", "l'année prochaine", "hier soir"], 2, "l'année prochaine = next year.");
+M("fr10", 2, "What is the future of 'faire' for je?", ["je faisrai", "je ferai", "je fais", "je fis"], 1, "Irregular stem fer- + ai.");
+S("fr10", 2, "Put 'jouer' into the future for ils.", ["joueront"], "jouer + ont.");
+M("fr10", 3, "'Il y aura beaucoup de monde' means…", ["There were many people.", "There will be many people.", "There are many people.", "There would be many people."], 1, "il y aura = there will be.");
+S("fr10", 3, "Give the future of 'être' for tu.", ["seras"], "Irregular stem ser- + as.");
+M("fr11", 1, "'La valise' is…", ["the ticket", "the suitcase", "the passport", "the map"], 1, "valise = suitcase.");
+M("fr11", 2, "Which is correct?", ["Je vais au France.", "Je vais en France.", "Je vais à la France.", "Je vais aux France."], 1, "Feminine country: en France.");
+S("fr11", 1, "Translate: by plane", ["en avion"], "en avion.");
+W("fr12", 3, "exam", 15, "Write 80–100 words in French about your next holiday. Mention: where and with whom you will go; how you will travel and where you will stay; two activities you will do; why you are looking forward to it.", "Content (5): all four bullet points covered with detail. Language (10): range of future tenses (aller + inf and simple future), opinions with reasons, connectives, accurate verbs and agreement.");
+M("fr12", 2, "'Nous logerons dans un hôtel' means…", ["We stayed in a hotel.", "We will stay in a hotel.", "We are building a hotel.", "We like hotels."], 1, "loger in the future: nous logerons.");
+S("fr12", 2, "Write 'The weather will be nice' in French.", ["il fera beau"], "faire in the future: il fera beau.");
+})();
+
+FLASH.push(
+["fr1", "du / de la / de l' / des", "some (masc. / fem. / before a vowel / plural)"], ["fr1", "les produits laitiers", "dairy products"], ["fr1", "After a negative", "de / d': je ne mange pas de viande"],
+["fr2", "toujours / souvent / parfois / ne … jamais", "always / often / sometimes / never"], ["fr2", "la malbouffe", "junk food"],
+["fr3", "le petit-déjeuner, le déjeuner, le goûter, le dîner", "breakfast, lunch, afternoon snack, dinner"], ["fr3", "prendre (present)", "prends, prends, prend, prenons, prenez, prennent"],
+["fr4", "il faut + inf.", "one must"], ["fr4", "devoir (present)", "dois, dois, doit, devons, devez, doivent"],
+["fr5", "tu devrais + inf.", "you should"], ["fr5", "Imperative of -er verbs", "tu form without -s: mange !"],
+["fr6", "-er endings", "e, es, e, ons, ez, ent"], ["fr6", "être (present)", "suis, es, est, sommes, êtes, sont"], ["fr6", "aller (present)", "vais, vas, va, allons, allez, vont"],
+["fr7", "Age in French", "avoir + ans: Il a douze ans."], ["fr7", "fils unique / fille unique", "only child"],
+["fr8", "s'entendre bien/mal avec", "to get on well/badly with"], ["fr8", "il/elle me fait rire", "he/she makes me laugh"],
+["fr9", "Near future", "aller + infinitive: je vais voyager"],
+["fr10", "Simple future endings", "-ai, -as, -a, -ons, -ez, -ont"], ["fr10", "Irregular future stems", "ser-, aur-, ir-, fer-, pourr-, verr-, viendr-, voudr-, devr-"],
+["fr11", "en / au / aux + country", "en France (f), au Canada (m), aux États-Unis (pl)"], ["fr11", "faire du tourisme / bronzer", "to go sightseeing / to sunbathe"],
+["fr12", "il fera chaud / il pleuvra", "it will be hot / it will rain"]
+);
+
+PRACTICE_EX.fre = [
+{ id: "vocab", name: "Vocabulary sprint", types: ["mcq", "short"], n: 10, task: "Vocabulary sprint on {t}: 10 quick word questions. Say each French word aloud with le/la.", steps: ["Answer quickly; say each word aloud with its article.", "Write any word you missed with its meaning.", "Test yourself on those words again at the end."] },
+{ id: "verbs", name: "Verb drill", types: ["short", "mcq"], n: 8, task: "Verb drill on {t}: conjugate the key verbs in present, near future and simple future.", steps: ["Write the full table (je to ils) for one regular and one irregular verb.", "Answer the questions.", "Check endings and accents against the notes."] },
+{ id: "write", name: "Timed writing (Paper 4)", types: ["exam", "struct", "mcq"], n: 4, task: "Timed writing on {t}: 15 minutes to answer every bullet point with opinions, reasons and two tenses.", steps: ["Underline every bullet point.", "Write one or two sentences for each with an opinion and parce que.", "Check verbs, agreement and accents."] },
+{ id: "speak", name: "Speaking rehearsal (Paper 3)", types: ["struct", "short", "mcq"], n: 5, task: "Speaking rehearsal on {t}: answer each question aloud in full sentences for 30 seconds.", steps: ["Read the question and answer aloud without notes.", "Extend each answer: opinion + reason + time phrase.", "Record yourself or say it to someone, then improve one answer."] },
+{ id: "read", name: "Reading and listening skills", types: ["mcq", "short"], n: 8, task: "Reading and listening practice on {t}: find key words, negatives and time phrases in each question.", steps: ["Underline question words before answering.", "Watch for negatives (ne … pas, ne … jamais) and changes (mais).", "Check numbers and times carefully."] }
+];
+
+ANSWER_NOTES.push({ subj: "fre", from: "starter", intro: "60 marks in 60 minutes (speaking is extra). Paper 1 Listening 14, Paper 2 Reading 21, Paper 4 Writing 15, and Paper 3 Speaking 10, held after the writing exam (stayback).",
+types: [
+{ code: "1", name: "Listening (Paper 1)", marks: "14", q: "You hear short recordings and answer multiple-choice or short questions in English or French.", steps: [
+  { h: "Before the recording", pts: ["Read every question and underline the key word (who, when, where, what, why).", "Predict the French words you might hear (food, times, family, places)."] },
+  { h: "While listening", pts: ["Listen for detail: numbers, times, days and negatives (ne … pas, ne … jamais).", "Watch for distractors: several options may be mentioned; pick the one that answers the question.", "Listen for changes of mind: mais, cependant, finalement."] },
+  { h: "After", pts: ["Answer every question; never leave a blank.", "Check that each answer matches the question word."] }] },
+{ code: "2", name: "Reading (Paper 2)", marks: "21", q: "Short texts and a longer text with multiple-choice, true/false and short-answer questions.", steps: [
+  { h: "Find the answer", pts: ["Scan for the key word from the question, then read the sentences around it.", "Use cognates (les vitamines, le restaurant) and context to work out new words."] },
+  { h: "Watch for traps", pts: ["Negatives, tense (past, present or future) and who is doing the action.", "Answer in the language the question asks for."] }] },
+{ code: "3", name: "Speaking (Paper 3)", marks: "10", q: "A short conversation on the topics (food and health, family and getting along, holidays and future plans).", steps: [
+  { h: "Build every answer the same way", pts: ["Answer + detail + opinion + reason + time phrase.", "Use two tenses where you can (present and future)."], ex: ["D'habitude, je prends des céréales, mais demain je vais manger des fruits parce que c'est plus sain."] },
+  { h: "Keep going", pts: ["If you don't understand: Vous pouvez répéter, s'il vous plaît ?", "Fillers to gain time: Alors…, Eh bien…, Bon…"] }] },
+{ code: "4", name: "Writing (Paper 4)", marks: "15", q: "Write about a topic covering several bullet points (for example your eating habits, your family or your next holiday).", steps: [
+  { h: "Cover every bullet point", pts: ["Write at least two sentences for each one; missing a bullet point loses content marks."] },
+  { h: "Show a range of language", pts: ["Opinions with reasons (j'adore… parce que…), connectives (mais, aussi, cependant) and more than one tense.", "Use expressions from the units: il faut, je dois, tu devrais, je m'entends bien avec, je vais…, j'irai…"], ex: ["L'été prochain, j'irai à Nice avec ma famille. Nous allons nous baigner tous les jours parce que j'adore la mer."] },
+  { h: "Check", pts: ["Verb endings, agreement, accents (été, très, à)."] }] }
+] });
+
+Object.assign(GUIDE, {
+fr1: [
+  { t: "Naming foods and their group", how: ["Learn each food with le or la.", "Group it: fruits, légumes, féculents, produits laitiers, viande, poisson."], q: "Which group do le fromage and le yaourt belong to?", w: [], a: "Les produits laitiers (dairy products)" },
+  { t: "Partitive articles", how: ["du (m), de la (f), de l' (vowel), des (plural)."], q: "Complete: Je mange ___ pain, ___ salade et ___ œufs.", w: ["pain m → du; salade f → de la; œufs pl → des"], a: "du, de la, des" },
+  { t: "Negative partitive", how: ["After ne … pas/jamais: de or d'."], q: "Make negative: Je bois de l'eau gazeuse.", w: [], a: "Je ne bois pas d'eau gazeuse." },
+  { t: "Opinions about food", how: ["aimer/adorer/détester + le/la/les + reason."], q: "Write: I love fish because it has protein.", w: [], a: "J'adore le poisson parce qu'il contient des protéines." }
+],
+fr2: [
+  { t: "Describing habits with frequency", how: ["Verb + frequency + partitive + food."], q: "Write: I sometimes eat chocolate.", w: [], a: "Je mange parfois du chocolat." },
+  { t: "Never: ne … jamais", how: ["ne before the verb, jamais after; then de."], q: "Write: I never eat chips.", w: [], a: "Je ne mange jamais de frites." },
+  { t: "Healthy or unhealthy?", how: ["C'est sain / C'est mauvais pour la santé + reason."], q: "Say why fizzy drinks are unhealthy.", w: [], a: "Les boissons gazeuses sont mauvaises pour la santé parce qu'elles contiennent beaucoup de sucre." },
+  { t: "Writing about your diet", how: ["What you eat + how often + opinion + reason + a change you will make."], q: "Write three sentences about your diet.", w: [], a: "D'habitude, je mange beaucoup de fruits. Cependant, je grignote parfois des chips. Je pense que mon alimentation est assez équilibrée, mais je vais boire plus d'eau." }
+],
+fr3: [
+  { t: "Saying what you eat at each meal", how: ["Au + meal, je prends + partitive."], q: "Say what you have for breakfast.", w: [], a: "Au petit-déjeuner, je prends des céréales et un jus d'orange." },
+  { t: "Saying the time", how: ["à + heures; et quart, et demie, moins le quart."], q: "Write: I have dinner at a quarter to eight.", w: [], a: "Je dîne à huit heures moins le quart." },
+  { t: "The verb prendre", how: ["prends, prends, prend, prenons, prenez, prennent."], q: "Complete: Mes parents ___ un café.", w: [], a: "prennent" },
+  { t: "Comparing meals", how: ["plus tard que / plus tôt que."], q: "Say that in France people have dinner later than you.", w: [], a: "En France, on dîne plus tard que moi." }
+],
+fr4: [
+  { t: "il faut (general obligation)", how: ["il faut + infinitive, never changes."], q: "Write: You have to drink water every day.", w: [], a: "Il faut boire de l'eau tous les jours." },
+  { t: "devoir (personal obligation)", how: ["devoir (conjugated) + infinitive."], q: "Write: We must sleep eight hours.", w: [], a: "Nous devons dormir huit heures." },
+  { t: "avoir besoin de", how: ["avoir (conjugated) + besoin de + infinitive or noun."], q: "Write: I need to do more sport.", w: [], a: "J'ai besoin de faire plus de sport." },
+  { t: "Must not vs don't have to", how: ["il ne faut pas = forbidden; tu n'es pas obligé(e) de = no obligation."], q: "Translate: (a) Il ne faut pas fumer. (b) Tu n'es pas obligé de manger de la viande.", w: [], a: "(a) You must not smoke. (b) You don't have to eat meat." }
+],
+fr5: [
+  { t: "Should: tu devrais", how: ["tu devrais + infinitive."], q: "Advise a friend to eat less sugar.", w: [], a: "Tu devrais manger moins de sucre." },
+  { t: "Commands (imperative)", how: ["tu form without tu; -er verbs drop the -s."], q: "Turn into commands: boire de l'eau; manger des légumes; faire du sport.", w: [], a: "Bois de l'eau ! Mange des légumes ! Fais du sport !" },
+  { t: "Suggestions", how: ["Pourquoi ne pas + infinitive ? / Il vaut mieux + infinitive."], q: "Suggest walking to school.", w: [], a: "Pourquoi ne pas aller au collège à pied ? Il vaut mieux marcher." },
+  { t: "Advice with a reason", how: ["Advice + parce que + benefit."], q: "Give advice with a reason about sleep.", w: [], a: "Je te conseille de dormir huit heures parce que tu auras plus d'énergie." }
+],
+fr6: [
+  { t: "Regular verbs in the present", how: ["Remove -er/-ir/-re and add the ending for the person."], q: "Conjugate 'vendre' for je, nous and ils.", w: [], a: "je vends, nous vendons, ils vendent" },
+  { t: "Irregular verbs", how: ["Learn être, avoir, aller, faire, prendre, boire by heart."], q: "Complete: Je ___ (faire) du sport et je ___ (aller) au parc.", w: [], a: "fais; vais" },
+  { t: "avoir or être", how: ["Age, hunger, thirst use avoir: j'ai faim, j'ai douze ans."], q: "Correct: Je suis faim.", w: [], a: "J'ai faim." },
+  { t: "Finding the error", how: ["Check the person and the ending."], q: "Correct: Nous mange de la pizza.", w: [], a: "Nous mangeons de la pizza." }
+],
+fr7: [
+  { t: "Introducing your family", how: ["Dans ma famille, il y a + number + personnes. J'ai + family member."], q: "Say there are four people in your family and you have one sister.", w: [], a: "Dans ma famille, il y a quatre personnes. J'ai une sœur." },
+  { t: "Describing a person", how: ["Name + age (avoir) + appearance and personality (être) with agreement."], q: "Describe your cousin Léa (13, tall, funny).", w: [], a: "Ma cousine s'appelle Léa. Elle a treize ans. Elle est grande et drôle." },
+  { t: "Describing a pet", how: ["J'ai + pet + qui s'appelle + name + description."], q: "Say you have two small rabbits.", w: [], a: "J'ai deux petits lapins." },
+  { t: "Possessive adjectives", how: ["mon (m), ma (f), mes (pl); mon before a feminine word starting with a vowel (mon amie)."], q: "Complete: ___ père, ___ mère et ___ parents (my).", w: [], a: "mon père, ma mère et mes parents" }
+],
+fr8: [
+  { t: "Saying who you get on with", how: ["je m'entends bien/mal avec + person."], q: "Write: I get on well with my father.", w: [], a: "Je m'entends bien avec mon père." },
+  { t: "Other people", how: ["Change the pronoun and verb: il s'entend, nous nous entendons, ils s'entendent."], q: "Write: My sisters get on badly.", w: [], a: "Mes sœurs s'entendent mal." },
+  { t: "Giving reasons", how: ["parce que + adjective, or an action (il m'énerve, on se dispute)."], q: "Say why you get on badly with your brother.", w: [], a: "Je m'entends mal avec mon frère parce qu'il m'énerve et on se dispute souvent." },
+  { t: "A balanced answer", how: ["Positive + mais + negative."], q: "Write one balanced sentence about your mother.", w: [], a: "Je m'entends bien avec ma mère parce qu'elle me soutient, mais on se dispute parfois à cause des devoirs." }
+],
+fr9: [
+  { t: "Forming the near future", how: ["aller (present) + infinitive."], q: "Write: They are going to travel to Canada.", w: [], a: "Ils vont voyager au Canada." },
+  { t: "Questions and answers", how: ["Qu'est-ce que tu vas faire…? → Je vais…"], q: "Answer: Qu'est-ce que tu vas faire ce week-end ?", w: [], a: "Ce week-end, je vais jouer au tennis avec mes amis." },
+  { t: "Negative plans", how: ["ne … pas goes around aller."], q: "Write: I'm not going to watch TV.", w: [], a: "Je ne vais pas regarder la télé." }
+],
+fr10: [
+  { t: "Regular future", how: ["Infinitive + ai, as, a, ons, ez, ont (-re loses e)."], q: "Put into the future: (je) visiter, (ils) vendre.", w: [], a: "je visiterai; ils vendront" },
+  { t: "Irregular future", how: ["Irregular stem + the same endings."], q: "Write: I will be, we will go, you (tu) will have.", w: [], a: "je serai; nous irons; tu auras" },
+  { t: "Weather in the future", how: ["il fera beau/chaud/froid; il pleuvra; il neigera."], q: "Say it will be hot and it won't rain.", w: [], a: "Il fera chaud et il ne pleuvra pas." },
+  { t: "Near future or simple future?", how: ["Both are correct; using both shows range."], q: "Rewrite with the simple future: Je vais aller à la plage.", w: [], a: "J'irai à la plage." }
+],
+fr11: [
+  { t: "Countries", how: ["en + feminine, au + masculine, aux + plural, à + city."], q: "Write: I am going to Spain, then to Japan, then to Paris.", w: [], a: "Je vais en Espagne, puis au Japon, puis à Paris." },
+  { t: "Transport", how: ["en + vehicle; à pied, à vélo."], q: "Write: We travel by boat and then on foot.", w: [], a: "Nous voyageons en bateau, puis à pied." },
+  { t: "Holiday activities", how: ["Learn verb + noun chunks."], q: "List three holiday activities in French.", w: [], a: "bronzer, faire du tourisme, acheter des souvenirs" },
+  { t: "Accommodation", how: ["loger dans + place."], q: "Write: I stay in a youth hostel.", w: [], a: "Je loge dans une auberge de jeunesse." }
+],
+fr12: [
+  { t: "Opening sentence (where, when, who)", how: ["Time phrase + future verb + place + avec + people."], q: "Write an opening about going to France next summer with your family.", w: [], a: "L'été prochain, j'irai en France avec ma famille." },
+  { t: "Travel and accommodation", how: ["Nous voyagerons en + transport; nous logerons dans + place."], q: "Say you will travel by plane and stay in a hotel near the beach.", w: [], a: "Nous voyagerons en avion et nous logerons dans un hôtel près de la plage." },
+  { t: "Activities with sequencing", how: ["D'abord, ensuite, puis, enfin + future verbs."], q: "Describe two activities in order.", w: [], a: "D'abord, je visiterai les monuments, puis je me baignerai dans la mer." },
+  { t: "Opinion and reason", how: ["Ce sera + adjective + parce que…"], q: "Say why you are looking forward to it.", w: [], a: "J'ai hâte d'y aller parce que ce sera la première fois que je prends l'avion." }
+]
+});
+
 /* ===== Profiles: the built-in syllabus is the default; visitors can add their own (stored only in their browser) ===== */
 var PROFILE_REG_KEY = "ecc.profiles", BASE_KEY = "ecc.nov2026.v1";
 var RULES = { id: "default", name: "November 2026 exams", start: "2026-11-01", end: "2026-11-30", restWeekdays: [4], dailyMax: 90, custom: false, label: "November 2026 · IST" };
@@ -3444,6 +4002,22 @@ function applyCfg(cfg, id) {
   var cfg = raw && raw.cfg;
   if (!cfg || !cfg.subjects || !cfg.subjects.length) { REG.active = "default"; writeReg(REG); return; }
   try { applyCfg(cfg, REG.active); } catch (e) { REG.active = "default"; writeReg(REG); location.reload(); }
+})();
+/* ----- second language: Hindi, Spanish or French. The chosen one takes Hindi's place (same exam date and time).
+   The choice lives in the saved state (so it syncs) and is mirrored on this device in ecc.lang so it is known before the topics are indexed. ----- */
+var LANGS = { hin: "Hindi", spa: "Spanish", fre: "French" };
+var LANG = (function () { var l = null; try { l = localStorage.getItem("ecc.lang"); } catch (e) { } return LANGS[l] ? l : null; })();
+var LANG_ACTIVE = "hin";
+(function () {
+  if (RULES.custom) return;
+  var want = LANG || "hin", i = -1;
+  SUBJECTS.forEach(function (s, k) { if (s.id === "hin") i = k; });
+  if (i < 0) return;
+  LANG_SUBJ.hin = LANG_SUBJ.hin || { id: "hin", name: "Hindi", units: SUBJECTS[i].units, paper: null };
+  if (want === "hin" || !LANG_SUBJ[want]) return;
+  var h = SUBJECTS[i], L = LANG_SUBJ[want];
+  SUBJECTS[i] = { id: L.id, name: L.name, short: L.short, color: h.color, exam: h.exam, start: h.start, report: h.report, marks: L.marks, duration: L.duration, reading: 0, paper: L.paper, units: L.units };
+  LANG_ACTIVE = want;
 })();
 function switchProfile(id) { REG.active = id; writeReg(REG); try { location.hash = "dashboard"; } catch (e) { } location.reload(); }
 function deleteProfile(id) {
@@ -3484,8 +4058,9 @@ var TOPICS = []; var TOPIC = {};
 SUBJECTS.forEach(function (s) { s.units.forEach(function (u, ui) { u.topics.forEach(function (t) { t.subj = s.id; t.unit = u.name; t.ui = ui; TOPICS.push(t); TOPIC[t.id] = t; }); }); });
 var EXAM_ORDER = SUBJECTS.slice().sort(function (a, b) { return a.exam < b.exam ? -1 : 1; });
 var MONTH_START = RULES.start, MONTH_END = RULES.end;
-var FLASH_CARDS = FLASH.map(function (f, i) { return { id: "f" + i, t: f[0], front: f[1], back: f[2], subj: TOPIC[f[0]].subj }; });
+var FLASH_CARDS = FLASH.map(function (f, i) { return TOPIC[f[0]] ? { id: "f" + i, t: f[0], front: f[1], back: f[2], subj: TOPIC[f[0]].subj } : null; }).filter(Boolean); /* cards of a language not taken are skipped; ids keep their position */
 function tObj(t) { return (t.n && t.n.o) || "Understand and practise " + t.t + "."; }
+for (var _qi = QUIZ.length - 1; _qi >= 0; _qi--) if (!TOPIC[QUIZ[_qi].t]) QUIZ.splice(_qi, 1);
 QUIZ.forEach(function (q) { q.subj = TOPIC[q.t].subj; });
 
 /* ---------- time ---------- */
@@ -3560,7 +4135,31 @@ function load() {
   FIRST_RUN = !raw && storageOK;
   if (raw) { try { S = migrate(JSON.parse(raw)); } catch (e) { S = null; } }
   if (!S) S = freshState();
+  langReconcile();
   return S;
+}
+/* Language progress: sessions and quiz history of a language not currently taken are set aside in S.langStash,
+   and come back if the student switches back. Topic statuses, notes and cards are keyed by topic, so they never clash. */
+function langNeeded() { return !RULES.custom && !(S && S.settings && LANGS[S.settings.lang]); }
+function langReconcile() {
+  if (RULES.custom || typeof LANGS === "undefined") return;
+  var st = S.settings;
+  if (LANGS[st.lang] && st.lang !== LANG_ACTIVE) { try { localStorage.setItem("ecc.lang", st.lang); localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) { } location.reload(); return; }
+  if (!LANGS[st.lang] && LANG) st.lang = LANG;
+  S.langStash = S.langStash || {};
+  var moved = false, keep = function (x) { return x.done || x.manual || x.edited; };
+  Object.keys(LANGS).forEach(function (id) {
+    if (SUBJ[id]) return;
+    var ss = S.sessions.filter(function (x) { return x.subj === id; }), qh = S.quiz.history.filter(function (h) { return h.subj === id; });
+    if (!ss.length && !qh.length) return;
+    var box = S.langStash[id] || (S.langStash[id] = { sessions: [], quiz: [] });
+    box.sessions = box.sessions.concat(ss.filter(keep)); box.quiz = box.quiz.concat(qh);
+    S.sessions = S.sessions.filter(function (x) { return x.subj !== id; }); S.quiz.history = S.quiz.history.filter(function (h) { return h.subj !== id; });
+    moved = true;
+  });
+  var back = S.langStash[LANG_ACTIVE];
+  if (back) { S.sessions = S.sessions.concat(back.sessions || []); S.quiz.history = S.quiz.history.concat(back.quiz || []).sort(function (a, b) { return (a.at || 0) - (b.at || 0); }); delete S.langStash[LANG_ACTIVE]; moved = true; }
+  if (moved) S.gen = null;
 }
 function migrate(o) {
   var f = freshState();
@@ -4771,7 +5370,7 @@ function studyPane(x, tps) {
     return '<div class="card" style="margin-top:14px"><h2>Before the ' + esc(s.name) + ' exam</h2><p class="muted small">' + fmtD(s.exam, true) + " · " + examTimeText(s) + " · " + s.marks + " marks · " + s.duration + ' min</p><div class="stack" style="margin-top:12px">' + (RULES.custom ? ["Admit card / ID", "Pens, pencil, eraser, ruler", "Any equipment allowed for " + s.name, "Clear water bottle", "Watch (not a smartwatch)", "Sleep early; leave home in good time"] : CHECKLIST).map(function (c, i) { var k = s.id + ":" + i, on = S.checklist && S.checklist[k]; return '<label class="row"><input type="checkbox" class="check" data-on="stCheck" data-k="' + k + '"' + (on ? " checked" : "") + "><span>" + esc(c) + "</span></label>"; }).join("") + "</div></div>";
   }
   if (tab === "tips") {
-    var tips = { math: ["Show every step: method marks add up.", "Check signs and units; round only at the end.", "Leave hard questions and come back."], eng: ["Use the reading time to underline key ideas.", "Quote briefly and explain the effect.", "Plan your writing for 5 minutes before you start."], sci: ["Read graphs carefully: describe, then explain.", "Use key words: diffusion, electrostatic, limiting factor.", "Show working in calculations with units."], hum: ["Give dates and named examples.", "For sources: content, origin, purpose, then judgement.", "Plan the 8-mark answer with both sides and a conclusion."], hin: ["Listen for the key word in each item; use the second play to check.", "Follow letter and diary formats exactly.", "Check verb endings for gender."], dl: ["Write place values above binary digits.", "Trace code line by line with a table.", "Watch colons and indentation in Python."], gp: ["Name the type of information and the signal word.", "Always justify 'most important' with a criterion.", "Suggest specific improvements to research."] }[RULES.custom ? "" : x.subj] || ["Read every question twice and underline key words.", "Use the marks as a guide to how much to write.", "Leave time at the end to check your answers."];
+    var tips = { math: ["Show every step: method marks add up.", "Check signs and units; round only at the end.", "Leave hard questions and come back."], eng: ["Use the reading time to underline key ideas.", "Quote briefly and explain the effect.", "Plan your writing for 5 minutes before you start."], sci: ["Read graphs carefully: describe, then explain.", "Use key words: diffusion, electrostatic, limiting factor.", "Show working in calculations with units."], hum: ["Give dates and named examples.", "For sources: content, origin, purpose, then judgement.", "Plan the 8-mark answer with both sides and a conclusion."], hin: ["Listen for the key word in each item; use the second play to check.", "Follow letter and diary formats exactly.", "Check verb endings for gender."], spa: ["Cover every bullet point in the writing task.", "Give opinions with porque and use two tenses.", "Check verb endings, agreement and accents."], fre: ["Cover every bullet point in the writing task.", "Give opinions with parce que and use two tenses.", "Check verb endings, agreement and accents."], dl: ["Write place values above binary digits.", "Trace code line by line with a table.", "Watch colons and indentation in Python."], gp: ["Name the type of information and the signal word.", "Always justify 'most important' with a criterion.", "Suggest specific improvements to research."] }[RULES.custom ? "" : x.subj] || ["Read every question twice and underline key words.", "Use the marks as a guide to how much to write.", "Leave time at the end to check your answers."];
     return '<div class="card" style="margin-top:14px"><h2>Exam tips</h2><ul style="margin-top:8px">' + tips.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul></div>";
   }
   return "";
@@ -5047,7 +5646,7 @@ function pgPrefs() {
   if (window.ECC_GROQ) h += groqPrefsCard();
   h += '<div class="card span-12"><div class="card-h"><h2>Syllabus</h2><button class="btn primary" data-act="importer">' + ic("upload") + 'Upload a syllabus</button></div><p class="small muted">The built-in syllabus is the default. Anyone can add their own exam date sheet and syllabus; it is saved only in their browser. Switch between them any time; each keeps its own progress.</p><div class="stack" style="margin-top:12px">' +
     [{ id: "default", name: "Built-in syllabus · November 2026 exams" }].concat(REG.list).map(function (p) { var on = p.id === RULES.id; return '<div class="session-row"><span class="stripe" style="background:' + (on ? "var(--good)" : "var(--line-2)") + '"></span><div class="grow"><div class="s-title">' + esc(p.name) + "</div>" + (p.id === "default" ? '<div class="s-meta">7 subjects with hand-written notes, quizzes and flashcards</div>' : '<div class="s-meta">Your upload · notes and questions are made by AI</div>') + '</div><div class="day-actions">' + (on ? '<span class="chip good">In use</span>' : '<button class="btn sm" data-act="useProfile" data-id="' + p.id + '">Switch to this</button>') + (p.id !== "default" ? '<button class="btn sm ghost" data-act="delProfile" data-id="' + p.id + '">Delete</button>' : "") + "</div></div>"; }).join("") + "</div></div>";
-  h += '<div class="card span-6"><div class="card-h"><h2>Appearance</h2></div><label class="row between"><span>Chalkboard (dark) mode <span class="tiny faint">· off = crayon on paper</span></span><input type="checkbox" class="toggle" id="p-theme" data-on="prefTheme"' + (st.theme === "dark" ? " checked" : "") + '></label><label class="row between" style="margin-top:12px"><span>Cartoon cursor <span class="tiny faint">· off = your normal cursor</span></span><input type="checkbox" class="toggle" id="p-cursor" data-on="prefCursor"' + (st.toonCursor !== false ? " checked" : "") + '></label><label class="row between" style="margin-top:12px"><span>Study sessions on holidays <span class="tiny faint">· off = holidays stay free; on = optional sessions are added automatically (never required)</span></span><input type="checkbox" class="toggle" id="p-holstudy" data-on="prefHolStudy"' + (st.holidayStudy === true ? " checked" : "") + '></label><label class="row between" style="margin-top:12px"><span>Pip dances 🕺 <span class="tiny faint">· a low-key groove while he waits</span></span><input type="checkbox" class="toggle" id="p-pipdance" data-on="prefPipDance"' + (st.pipDance !== false ? " checked" : "") + '></label><label class="row between" style="margin-top:12px"><span>Extra silly animations 🎉 <span class="tiny faint">· trails, sparkles, paper planes, Pip tricks</span></span><input type="checkbox" class="toggle" id="p-silly" data-on="prefSilly"' + (st.silly !== false ? " checked" : "") + '></label><div class="row between" style="margin-top:12px"><span>Guided tour of the site</span><button class="btn sm" data-act="tour">Show the tutorial</button></div><label class="row between" style="margin-top:12px"><span>Pip uses AI when available <span class="tiny faint">' + (window.ECC_GROQ ? "· with your Groq key" : "· on the claude.ai page") + '</span></span><input type="checkbox" class="toggle" id="p-pipai" data-on="prefPipAI"' + (st.pipAI !== false ? " checked" : "") + '></label><label class="row between" style="margin-top:12px"><span>Show Pip, the paper helper <span class="tiny faint">· bottom corner</span></span><input type="checkbox" class="toggle" id="p-pip" data-on="prefPip"' + (st.pip !== false ? " checked" : "") + "></label></div>";
+  h += '<div class="card span-6"><div class="card-h"><h2>Appearance</h2></div><label class="row between"><span>Chalkboard (dark) mode <span class="tiny faint">· off = crayon on paper</span></span><input type="checkbox" class="toggle" id="p-theme" data-on="prefTheme"' + (st.theme === "dark" ? " checked" : "") + '></label><label class="row between" style="margin-top:12px"><span>Cartoon cursor <span class="tiny faint">· off = your normal cursor</span></span><input type="checkbox" class="toggle" id="p-cursor" data-on="prefCursor"' + (st.toonCursor !== false ? " checked" : "") + '></label>' + (RULES.custom ? "" : '<div class="row between" style="margin-top:12px"><span>Second language <span class="tiny faint">· exam on ' + esc(fmtD(SUBJ[LANG_ACTIVE].exam, true)) + '</span></span><div class="seg">' + Object.keys(LANGS).map(function (k) { return '<button data-act="langPick" data-l="' + k + '" class="' + (k === LANG_ACTIVE ? "on" : "") + '">' + LANGS[k] + "</button>"; }).join("") + "</div></div>") + '<label class="row between" style="margin-top:12px"><span>Study sessions on holidays <span class="tiny faint">· off = holidays stay free; on = optional sessions are added automatically (never required)</span></span><input type="checkbox" class="toggle" id="p-holstudy" data-on="prefHolStudy"' + (st.holidayStudy === true ? " checked" : "") + '></label><label class="row between" style="margin-top:12px"><span>Pip dances 🕺 <span class="tiny faint">· a low-key groove while he waits</span></span><input type="checkbox" class="toggle" id="p-pipdance" data-on="prefPipDance"' + (st.pipDance !== false ? " checked" : "") + '></label><label class="row between" style="margin-top:12px"><span>Extra silly animations 🎉 <span class="tiny faint">· trails, sparkles, paper planes, Pip tricks</span></span><input type="checkbox" class="toggle" id="p-silly" data-on="prefSilly"' + (st.silly !== false ? " checked" : "") + '></label><div class="row between" style="margin-top:12px"><span>Guided tour of the site</span><button class="btn sm" data-act="tour">Show the tutorial</button></div><label class="row between" style="margin-top:12px"><span>Pip uses AI when available <span class="tiny faint">' + (window.ECC_GROQ ? "· with your Groq key" : "· on the claude.ai page") + '</span></span><input type="checkbox" class="toggle" id="p-pipai" data-on="prefPipAI"' + (st.pipAI !== false ? " checked" : "") + '></label><label class="row between" style="margin-top:12px"><span>Show Pip, the paper helper <span class="tiny faint">· bottom corner</span></span><input type="checkbox" class="toggle" id="p-pip" data-on="prefPip"' + (st.pip !== false ? " checked" : "") + "></label></div>";
   h += '<div class="card span-6"><div class="card-h"><h2>Reminders</h2></div><div class="stack"><label class="row between"><span>In-app session reminders</span><input type="checkbox" class="toggle" id="p-inapp" data-on="prefN" data-k="inApp"' + (n.inApp ? " checked" : "") + '></label><label class="row between"><span>Browser notifications <span class="tiny faint">(if your browser allows them)</span></span><input type="checkbox" class="toggle" id="p-browser" data-on="prefN" data-k="browser"' + (n.browser ? " checked" : "") + '></label><label class="row between"><span>Daily summary when I open the app</span><input type="checkbox" class="toggle" id="p-daily" data-on="prefN" data-k="daily"' + (n.daily ? " checked" : "") + '></label><label class="f">Remind me before a session<select class="input" id="p-lead" data-on="prefN" data-k="lead">' + [5, 10, 15, 30].map(function (m) { return '<option value="' + m + '"' + (n.lead === m ? " selected" : "") + ">" + m + " minutes before</option>"; }).join("") + '</select></label><p class="tiny faint">Reminders never appear on rest days, holidays, your days off, or after an exam is finished.</p></div></div>';
   h += '<div class="card span-12"><div class="notice limit" style="margin-bottom:14px"><b>Daily limit: ' + fmtDur(DAILY_MAX) + '.</b> The planner never schedules more than ' + DAILY_MAX + ' minutes of study on any day, and you can\'t add or move sessions past it.</div><div class="card-h"><h2>Study sessions and daily workload</h2><button class="btn primary" data-act="regen">' + ic("refresh") + 'Apply and regenerate timetable</button></div><div class="grid g-4" style="gap:14px">';
   h += '<label class="f">Default session length<select class="input" id="sessionLen" data-on="pref" data-k="sessionLen">' + [15, 20, 25, 30].map(function (m) { return '<option value="' + m + '"' + (st.sessionLen === m ? " selected" : "") + ">" + m + " minutes</option>"; }).join("") + '</select><span class="tiny faint">Small subtopics are grouped into sessions of up to 1½ × this</span></label>';
@@ -5409,7 +6008,7 @@ function pipBase(t) {
 }
 
 /* ---------- matching helpers ---------- */
-var SUBJ_ALIAS = [["math", /\b(maths?|mathematics)\b/], ["eng", /\benglish\b/], ["sci", /\b(science|sci|chemistry|physics|biology)\b/], ["hum", /\b(humanities|history|hum|sst|social)\b/], ["hin", /\bhindi\b/], ["dl", /\b(dl|digital literacy|digital|computers?|python|coding)\b/], ["gp", /\b(gp|global perspectives?|global)\b/]];
+var SUBJ_ALIAS = [["math", /\b(maths?|mathematics)\b/], ["eng", /\benglish\b/], ["sci", /\b(science|sci|chemistry|physics|biology)\b/], ["hum", /\b(humanities|history|hum|sst|social)\b/], ["hin", /\bhindi\b/], ["spa", /\b(spanish|espa[ñn]ol)\b/], ["fre", /\b(french|fran[çc]ais)\b/], ["dl", /\b(dl|digital literacy|digital|computers?|python|coding)\b/], ["gp", /\b(gp|global perspectives?|global)\b/]];
 function findSubj(t) { for (var i = 0; i < SUBJ_ALIAS.length; i++) if (SUBJ_ALIAS[i][1].test(t)) return SUBJ[SUBJ_ALIAS[i][0]]; return null; }
 var STOP = { the: 1, and: 1, for: 1, with: 1, about: 1, open: 1, notes: 1, note: 1, quiz: 1, me: 1, on: 1, of: 1, in: 1, to: 1, show: 1, my: 1, a: 1, an: 1, study: 1, topic: 1, flashcards: 1, cards: 1, mark: 1, done: 1, completed: 1, complete: 1, as: 1, test: 1, practice: 1, practise: 1, what: 1, is: 1, are: 1, define: 1, meaning: 1, formula: 1, formulas: 1, unit: 1, please: 1, can: 1, you: 1 };
 function words(t) { return t.toLowerCase().replace(/[^a-z0-9ऀ-ॿ\s]/g, " ").split(/\s+/).filter(function (w) { return w.length > 1 && !STOP[w]; }); }
@@ -6036,6 +6635,7 @@ function applyLocal(id, mj, fromLj, obj) {
   if (extra) m = m3(parseJ(fromLj), S, m, "");
   Object.keys(S).forEach(function (k) { if (!(k in m)) delete S[k]; });
   Object.keys(m).forEach(function (k) { S[k] = m[k]; });
+  if (!RULES.custom && typeof LANGS !== "undefined" && LANGS[S.settings.lang] && S.settings.lang !== LANG_ACTIVE) { try { localStorage.setItem("ecc.lang", S.settings.lang); localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) { } location.reload(); return; }
   if (!S.gen) generate(); else if (extra) save(); else { try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) { } }
   syncRender();
 }
@@ -6222,9 +6822,9 @@ async function saveFile(filename, blob) {
 
 
 /* ===== Answer Notes: how to write each type of question, per subject; printable / PDF ===== */
-function anList() { return ANSWER_NOTES.filter(function (n) { return n.subj; }); }
+function anList() { return ANSWER_NOTES.filter(function (n) { return n.subj && !(typeof LANGS !== "undefined" && LANGS[n.subj] && !SUBJ[n.subj]); }); }
 function anGet(sid) { return ANSWER_NOTES.filter(function (n) { return n.subj === sid; })[0] || ANSWER_NOTES[0]; }
-var AN_SUBJ = { hum: ["Humanities", "Humanities", "#8b48dc"], eng: ["English", "English", "#e8761a"], math: ["Mathematics", "Maths", "#2f6fdb"], sci: ["Science", "Science", "#0f8f6e"], hin: ["Hindi", "Hindi", "#e23b3b"], dl: ["Digital Literacy", "DL", "#139ccd"], gp: ["Global Perspectives", "GP", "#bf9000"] };
+var AN_SUBJ = { hum: ["Humanities", "Humanities", "#8b48dc"], eng: ["English", "English", "#e8761a"], math: ["Mathematics", "Maths", "#2f6fdb"], sci: ["Science", "Science", "#0f8f6e"], hin: ["Hindi", "Hindi", "#e23b3b"], spa: ["Spanish", "Spanish", "#e23b3b"], fre: ["French", "French", "#e23b3b"], dl: ["Digital Literacy", "DL", "#139ccd"], gp: ["Global Perspectives", "GP", "#bf9000"] };
 function anSubj(sid) { var a = AN_SUBJ[sid]; return a ? { id: sid, name: a[0], short: a[1], color: a[2] } : { id: sid, name: sid, short: sid, color: "#5d5766" }; }
 function anMarks(m) { return m === "" || m === undefined ? "" : m + (/^\d+$/.test(String(m)) && +m === 1 ? " mark" : " marks"); }
 function anText(t) { return esc(t).replace(/\n/g, "<br>"); }
@@ -6652,7 +7252,11 @@ function freshTopics(subj, topic, n, tids) {
   return shuffle(list).slice(0, Math.max(3, Math.min(n, 8)));
 }
 function freshSubjName(subj) { return subj === "all" ? "several school subjects" : SUBJ[subj].name; }
-function freshLangNote(topics) { return topics.some(function (t) { return t.subj === "hin"; }) ? "\nFor Hindi topics, write the questions and answers in Hindi (Devanagari), as in a Grade 8 Hindi exam." : ""; }
+function freshLangNote(topics) {
+  if (topics.some(function (t) { return t.subj === "hin"; })) return "\nFor Hindi topics, write the questions and answers in Hindi (Devanagari), as in a Grade 8 Hindi exam.";
+  var L = topics.some(function (t) { return t.subj === "spa"; }) ? "Spanish" : topics.some(function (t) { return t.subj === "fre"; }) ? "French" : "";
+  return L ? "\nThis is " + L + " as a foreign language (Grade 8, beginner to intermediate). Questions may be in English; Spanish or French words, sentences and answers must be accurate, with correct accents. Test vocabulary, verb forms and translation of short sentences." : "";
+}
 
 /* ----- quiz ----- */
 function freshQuizPrompt(cfg, topics, n, types, avoid) {
@@ -6879,7 +7483,7 @@ document.addEventListener("keydown", function (e) {
 }, true);
 ACT.tour = function () { startTour(); };
 /* show once per device to everyone who hasn't seen this version of the tour */
-function tourMaybe() { if (!tourSeen()) setTimeout(function () { if (!TOUR.on && !$("#modal")) startTour(); }, 900); }
+function tourMaybe() { if (!tourSeen()) setTimeout(function () { if (!TOUR.on && !$("#modal") && !(typeof langNeeded === "function" && langNeeded())) startTour(); }, 900); }
 
 /* ===== Motion: page entrances, feedback on the thing you just touched, count-ups, ticking countdowns,
    springy modals/toasts/Pip, flashcard swipes and crayon confetti. Everything is skipped when the device asks
@@ -7550,6 +8154,40 @@ function introReveal() {
   var skip = function () { if (INTRO.done) return; el.classList.add("skip"); introReveal(); setTimeout(gone, 240); window.removeEventListener("keydown", skip); };
   el.addEventListener("click", skip); window.addEventListener("keydown", skip);
 })();
+
+/* ===== Choosing the second language: asked once on first open (and once for anyone who hasn't chosen yet), changeable in Preferences ===== */
+function langApply(id) {
+  if (!LANGS[id]) return;
+  S.settings.lang = id; save();
+  try { localStorage.setItem("ecc.lang", id); } catch (e) { }
+  if (id === LANG_ACTIVE) { closeModal(); toast(LANGS[id] + " it is. Your timetable already includes it.", "good"); render(); return; }
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) { }
+  location.reload();
+}
+function langPicker(first) {
+  var ex = SUBJ[LANG_ACTIVE];
+  openModal('<div class="modal-h"><h2>' + (first ? "Which language do you take?" : "Change your second language") + '</h2></div>' +
+    '<p class="muted">Choose Hindi, Spanish or French. Its syllabus, notes, quizzes and flashcards are added to your timetable, with the exam on ' + esc(fmtD(ex.exam, true)) + '.' + (first ? "" : " Progress in each language is kept, so switching back brings it back.") + '</p>' +
+    '<div class="lang-pick">' + Object.keys(LANGS).map(function (k) {
+      var L = LANG_SUBJ[k], n = 0; (L && L.units || []).forEach(function (u) { n += u.topics.length; });
+      return '<button class="btn lg' + (k === LANG_ACTIVE && !first ? " primary" : "") + '" data-act="langChoose" data-l="' + k + '"><b>' + LANGS[k] + '</b><span class="small muted">' + { hin: "हिन्दी", spa: "Español", fre: "Français" }[k] + " · " + n + " topics</span></button>";
+    }).join("") + "</div>" + (first ? '<p class="tiny muted" style="margin-top:12px">You can change this later in Preferences.</p>' : ""));
+  if (first) { var m = $("#modal"); if (m) m.setAttribute("data-lock", "1"); }
+}
+ACT.langChoose = function (el) { langApply(el.getAttribute("data-l")); };
+ACT.langPick = function (el) {
+  var id = el.getAttribute("data-l"); if (id === LANG_ACTIVE) return;
+  confirmBox("Switch to " + LANGS[id] + "?", "Your timetable will swap " + LANGS[LANG_ACTIVE] + " for " + LANGS[id] + ". Finished " + LANGS[LANG_ACTIVE] + " sessions and quiz results are kept and come back if you switch again. Other subjects don't change.", "Switch to " + LANGS[id], function () { langApply(id); });
+};
+function langPickerMaybe() {
+  if (typeof S === "undefined" || !S || !langNeeded()) return;
+  if (document.getElementById("intro") || $("#modal") || UI.focus) { setTimeout(langPickerMaybe, 400); return; }
+  langPicker(true);
+}
+setTimeout(langPickerMaybe, 0);
+/* the first-time picker stays open until a language is chosen */
+var _closeModalL = closeModal;
+closeModal = function () { var m = $("#modal"); if (m && m.getAttribute("data-lock") && langNeeded()) return; return _closeModalL.apply(this, arguments); };
 
 try { boot(); } catch (e) { console.error(e); document.getElementById("view").innerHTML = "<div class=\"notice bad\">The app could not start: " + String(e.message).replace(/</g,"&lt;") + "</div>"; }
 
