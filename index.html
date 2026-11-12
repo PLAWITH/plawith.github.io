@@ -1327,45 +1327,89 @@ html.formal.theme-anim, html.formal.theme-anim * { transition: background-color 
 
 /* =====================================================================
    Opening animation (#intro): plays when the site opens, in either look.
-   Crayon: a star pops in, a pencil writes the name, a highlighter swipes it, and the sheet is lifted off the desk.
-   Formal: a brass rule draws, the name rises from behind it, and the cover fades to the page.
-   Pure CSS timing, so it always clears itself; a tap or key skips it.
+   Crayon (about 4.4 s): the margin is ruled, a star is drawn and coloured in, doodles pop up around the page, a pencil writes
+   the name, a highlighter swipes it, three boxes are ticked, and the page is peeled away from the bottom corner.
+   Formal (about 3.6 s): a crest is drawn and filled, a brass rule opens, the name rises behind it, a hairline loads,
+   then a white cover and a navy cover lift one after the other.
+   Everything rests in its finished state and animates *from* hidden, and the timing is pure CSS, so it always clears itself.
    ===================================================================== */
-#intro { position: fixed; inset: 0; z-index: 5000; display: grid; place-items: center; overflow: hidden; background-color: var(--paper); background-image: var(--grain), repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px); color: var(--text); cursor: pointer; transform-origin: 0 0; box-shadow: 0 30px 60px rgba(45, 42, 50, .35); animation: in-lift .62s cubic-bezier(.6, 0, .8, .3) 1.65s forwards; }
+#intro { position: fixed; inset: 0; z-index: 5000; overflow: hidden; cursor: pointer; animation: in-gone .01s linear 4.4s forwards; }
 html.no-intro #intro { display: none; }
-.in-c { display: grid; justify-items: center; gap: 10px; padding: 24px; text-align: center; }
-.in-star { width: 84px; height: 84px; overflow: visible; animation: in-star .7s cubic-bezier(.34, 1.56, .64, 1) backwards; }
-.in-title { position: relative; font-family: var(--display); font-size: clamp(30px, 8.2vw, 54px); line-height: 1.25; white-space: nowrap; }
-.in-t { display: inline-block; padding: 0 .22em; background: linear-gradient(transparent 52%, var(--hi) 52% 90%, transparent 90%) no-repeat left / 0% 100%; clip-path: inset(-20% 100% -20% 0); animation: in-write .85s linear .3s forwards, in-swipe .34s ease-out 1.12s forwards; }
-.in-pencil { position: absolute; left: 0; top: 50%; width: .95em; height: .95em; margin: -.9em 0 0 -.1em; opacity: 0; animation: in-pencil .85s linear .3s, in-scribble .17s ease-in-out .3s 5; }
-.in-rule { display: none; }
-.in-sub { font-size: clamp(16px, 4vw, 20px); color: var(--muted); animation: f-fade .4s ease-out 1.15s backwards; }
-.in-sub::after { content: "Sharpening the crayons…"; }
-@keyframes in-star { from { opacity: 0; transform: scale(0) rotate(-200deg); } }
-@keyframes in-write { to { clip-path: inset(-20% 0 -20% 0); } }
-@keyframes in-swipe { to { background-size: 100% 100%; } }
+.in-sheet { position: absolute; inset: 0; display: grid; place-items: center; background-color: var(--paper); background-image: var(--grain), repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px); color: var(--text); clip-path: polygon(0 0, 0 0, 0 0); animation: in-peel .9s cubic-bezier(.55, .05, .6, .95) 3.5s backwards; }
+.in-margin { position: absolute; top: 0; bottom: 0; left: max(22px, 9vw); width: 2px; background: var(--margin); transform-origin: top; animation: f-tall .7s ease-out .05s backwards; }
+.in-margin::after { content: ""; position: absolute; top: 0; bottom: 0; left: 5px; width: 1px; background: var(--margin); opacity: .6; }
+.in-curl { position: absolute; left: 0; top: 0; width: 320vmax; height: 17vmax; margin: -9vmax 0 0 -60vmax; transform-origin: 60vmax 9vmax; transform: translateX(0) rotate(135deg); opacity: 0; pointer-events: none;
+  background: linear-gradient(to bottom, transparent 0, rgba(45, 42, 50, .05) 30%, rgba(45, 42, 50, .28) 52.9%, #fffdf6 53%, #f1ead8 70%, #e2d8c0 96%, rgba(45, 42, 50, .55) 97%, transparent 100%);
+  animation: in-curl .9s cubic-bezier(.55, .05, .6, .95) 3.5s backwards; }
+html[data-app-theme="dark"] .in-curl { background: linear-gradient(to bottom, transparent 0, rgba(0, 0, 0, .1) 30%, rgba(0, 0, 0, .45) 52.9%, #3b4f47 53%, #2f423b 70%, #26362f 96%, rgba(0, 0, 0, .6) 97%, transparent 100%); }
+.in-c { position: relative; display: grid; justify-items: center; gap: 12px; width: min(980px, 94vw); padding: clamp(70px, 14vh, 130px) 16px; text-align: center; }
+.in-d { position: absolute; width: clamp(42px, 9vw, 84px); height: clamp(42px, 9vw, 84px); overflow: visible; animation: in-pop .6s cubic-bezier(.34, 1.56, .64, 1) backwards, in-bob 2.6s ease-in-out infinite; }
+.in-d.d1 { left: 4%; top: 6%; rotate: -12deg; animation-delay: .75s, 1.4s; }
+.in-d.d2 { right: 5%; top: 3%; rotate: 9deg; animation-delay: .95s, 1.7s; }
+.in-d.d3 { right: 0; top: 46%; rotate: 6deg; animation-delay: 1.3s, 2s; }
+.in-d.d4 { left: 1%; top: 50%; rotate: -6deg; animation-delay: 1.15s, 1.9s; }
+.in-d.d5 { right: 12%; bottom: 3%; rotate: 8deg; animation-delay: 1.6s, 2.3s; }
+.in-d.d6 { left: 13%; bottom: 5%; rotate: -10deg; animation-delay: 1.45s, 2.1s; }
+.in-star { width: clamp(76px, 15vw, 108px); height: clamp(76px, 15vw, 108px); overflow: visible; animation: in-hop .55s cubic-bezier(.3, 0, .3, 1) 3.05s; }
+.st-line { stroke-dasharray: 1; animation: in-draw .75s ease-in-out .15s backwards; }
+.st-fill { animation: in-fill .35s ease-out .8s backwards; transform-origin: 50% 50%; transform-box: fill-box; }
+.st-face { animation: f-fade .25s ease-out 1s backwards; }
+.in-crest, .in-rule, .in-load { display: none; }
+.in-title { position: relative; font-family: var(--display); font-size: clamp(32px, 9vw, 78px); line-height: 1.25; white-space: nowrap; }
+.in-t { display: inline-block; padding: 0 .22em; background: linear-gradient(transparent 52%, var(--hi) 52% 90%, transparent 90%) no-repeat left / 100% 100%; animation: in-write 1.15s linear 1.05s backwards, in-swipe .38s ease-out 2.25s backwards; }
+.in-pencil { position: absolute; left: 100%; top: 50%; width: .95em; height: .95em; margin: -.9em 0 0 -.1em; opacity: 0; animation: in-pencil 1.15s linear 1.05s, in-scribble .16s ease-in-out 1.05s 7; }
+.in-sub { font-size: clamp(16px, 4vw, 21px); color: var(--muted); animation: f-fade .4s ease-out 2.35s backwards; }
+.in-sub::after { content: "November 2026"; }
+.in-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px clamp(14px, 4vw, 30px); margin-top: 6px; font-family: var(--display); font-size: clamp(18px, 4.6vw, 25px); }
+.in-list span { display: inline-flex; align-items: center; gap: 12px; animation: in-pop .45s cubic-bezier(.34, 1.56, .64, 1) backwards; }
+.in-list span:nth-child(1) { animation-delay: 2.45s; } .in-list span:nth-child(2) { animation-delay: 2.6s; } .in-list span:nth-child(3) { animation-delay: 2.75s; }
+.in-list i { width: 1em; height: 1em; border: 2.5px solid currentColor; border-radius: 5px 3px 6px 4px; display: grid; place-items: center; }
+.in-list svg { width: 1.45em; height: 1.45em; margin: -.5em 0 0 .2em; overflow: visible; fill: none; stroke: var(--good); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.in-list path { stroke-dasharray: 1; animation: in-draw .28s ease-out backwards; }
+.in-list span:nth-child(1) path { animation-delay: 2.8s; } .in-list span:nth-child(2) path { animation-delay: 3s; } .in-list span:nth-child(3) path { animation-delay: 3.2s; }
+@keyframes in-gone { to { visibility: hidden; } }
+@keyframes in-peel { from { clip-path: polygon(0 0, 200vmax 0, 0 200vmax); } to { clip-path: polygon(0 0, 0 0, 0 0); } }
+@keyframes in-curl { 0% { transform: translateX(200vmax) rotate(135deg); opacity: 1; } 85% { opacity: 1; } 100% { transform: translateX(0) rotate(135deg); opacity: 0; } }
+@keyframes in-pop { from { opacity: 0; transform: scale(.2) rotate(-25deg); } }
+@keyframes in-bob { 50% { transform: translateY(-5px) rotate(3deg); } }
+@keyframes in-hop { 30% { transform: translateY(-26px) rotate(-14deg) scale(1.08); } 60% { transform: translateY(0) rotate(8deg) scale(.96, 1.04); } 80% { transform: translateY(-6px) rotate(-3deg); } }
+@keyframes in-draw { from { stroke-dashoffset: 1; } }
+@keyframes in-fill { from { opacity: 0; transform: scale(.6); } }
+@keyframes in-write { from { clip-path: inset(-20% 100% -20% 0); } to { clip-path: inset(-20% 0 -20% 0); } }
+@keyframes in-swipe { from { background-size: 0% 100%; } }
 @keyframes in-pencil { 0% { left: 0; opacity: 1; } 96% { left: 100%; opacity: 1; } 100% { left: 100%; opacity: 0; } }
 @keyframes in-scribble { 50% { transform: translateY(-.22em) rotate(-7deg); } }
-@keyframes in-lift { 0% { transform: none; } 100% { transform: translate(-6%, -112%) rotate(-7deg); visibility: hidden; } }
 @keyframes in-fade { to { opacity: 0; visibility: hidden; } }
-#intro.skip, html.formal #intro.skip { animation: in-fade .22s ease-out forwards !important; }
-/* a reload in the same tab gets the short version: the cover is already written and just lifts */
-html.intro-quick #intro { animation-delay: .15s; animation-duration: .5s; }
-html.intro-quick #intro * { animation: none !important; }
-html.intro-quick .in-t { clip-path: none; background-size: 100% 100%; }
-/* formal cover */
-html.formal #intro { background: var(--panel); box-shadow: none; animation: in-fade .55s ease-in-out 1.25s forwards !important; }
-html.formal .in-c { gap: 0; }
-html.formal .in-star, html.formal .in-pencil { display: none; }
-html.formal .in-title { overflow: hidden; padding: 0 4px 12px; font-family: var(--serif); font-weight: 600; font-size: clamp(26px, 6.4vw, 42px); letter-spacing: -0.01em; }
-html.formal .in-t { clip-path: none; background: none; padding: 0; animation: in-up .7s var(--f-ease) .25s backwards !important; }
-html.formal .in-rule { display: block; width: min(320px, 70vw); height: 2px; background: var(--brass); transform-origin: center; animation: f-line .6s var(--f-ease) .1s backwards !important; }
-html.formal .in-sub { margin-top: 14px; font-size: 14px; letter-spacing: .16em; color: var(--muted); animation: in-track .6s ease-out .65s backwards !important; }
-html.formal .in-sub::after { content: "Examination preparation"; }
 @keyframes in-up { from { transform: translateY(115%); } }
 @keyframes in-track { from { opacity: 0; letter-spacing: .34em; } }
-html.formal.intro-quick #intro { animation-delay: .1s !important; animation-duration: .4s !important; }
+@keyframes in-away { to { transform: translateY(-101%); } }
+#intro.skip, html.formal #intro.skip { animation: in-fade .22s ease-out forwards !important; }
+/* a reload in the same tab gets the short version: the finished cover, then straight to the exit */
+html.intro-quick #intro * { animation: none !important; }
+html.intro-quick #intro { animation-delay: .9s; }
+html.intro-quick #intro .in-sheet { animation: in-peel .7s cubic-bezier(.55, .05, .6, .95) .2s backwards !important; }
+html.intro-quick #intro .in-curl { animation: in-curl .7s cubic-bezier(.55, .05, .6, .95) .2s backwards !important; }
+/* ----- formal cover ----- */
+html.formal #intro { background: var(--navy); animation: in-away .6s cubic-bezier(.7, 0, .2, 1) 2.95s forwards, in-gone .01s linear 3.6s forwards !important; }
+html.formal #intro .in-sheet { background: var(--panel); clip-path: none; animation: in-away .65s cubic-bezier(.7, 0, .2, 1) 2.7s forwards !important; }
+html.formal .in-curl, html.formal .in-margin, html.formal .in-d, html.formal .in-star, html.formal .in-pencil, html.formal .in-list { display: none; }
+html.formal .in-c { gap: 0; }
+html.formal .in-crest { display: block; width: clamp(74px, 13vw, 100px); height: auto; margin-bottom: 22px; overflow: visible; }
+html.formal .cr-line { stroke: var(--navy); stroke-dasharray: 1; animation: in-draw .9s ease-in-out .1s backwards !important; }
+html.formal .cr-fill { fill: var(--navy); animation: f-fade .5s ease-out .85s backwards !important; }
+html.formal .cr-in { stroke: var(--brass); stroke-dasharray: 1; animation: in-draw .8s ease-in-out .7s backwards !important; }
+html.formal .cr-book { stroke: #fff; stroke-dasharray: 1; animation: in-draw .8s ease-in-out 1.05s backwards !important; }
+html.formal .in-title { overflow: hidden; padding: 0 4px 12px; font-family: var(--serif); font-weight: 600; font-size: clamp(27px, 6.6vw, 46px); letter-spacing: -0.01em; }
+html.formal #intro .in-t { background: none; padding: 0; animation: in-up .75s var(--f-ease) 1.25s backwards !important; }
+html.formal #intro .in-rule { display: block; width: min(360px, 72vw); height: 2px; background: var(--brass); transform-origin: center; animation: f-line .7s var(--f-ease) 1.05s backwards !important; }
+html.formal #intro .in-sub { margin-top: 15px; font-size: 13.5px; letter-spacing: .16em; color: var(--muted); animation: in-track .65s ease-out 1.75s backwards !important; }
+html.formal .in-sub::after { content: "Examination preparation"; }
+html.formal #intro .in-load { display: block; width: 120px; height: 2px; margin-top: 34px; background: var(--line); overflow: hidden; animation: f-fade .3s ease-out 1.5s backwards !important; }
+html.formal #intro .in-load i { display: block; height: 100%; background: var(--navy); transform-origin: left; animation: f-line 1.05s cubic-bezier(.4, 0, .2, 1) 1.6s backwards !important; }
+html.formal[data-app-theme="dark"] .cr-line { stroke: var(--brass); } html.formal[data-app-theme="dark"] #intro .in-load i { background: var(--brass); }
 html.formal.intro-quick #intro * { animation: none !important; }
+html.formal.intro-quick #intro { animation: in-away .5s cubic-bezier(.7, 0, .2, 1) .45s forwards, in-gone .01s linear 1s forwards !important; }
+html.formal.intro-quick #intro .in-sheet { animation: in-away .55s cubic-bezier(.7, 0, .2, 1) .2s forwards !important; }
 /* once the cover is gone, the frame of the app arrives in order */
 html.app-in .sidebar .brand { animation: in-side .5s var(--ease-out) backwards; }
 html.app-in .sidebar .nav-btn { animation: in-side .5s var(--spring) backwards; animation-delay: calc(var(--n, 0) * 45ms + 80ms); }
@@ -1398,6 +1442,9 @@ html.formal .an-tbl thead th { font: 600 13px var(--font); color: var(--muted); 
   .an-tbl tr { padding: 8px 0; border-bottom: 2px solid var(--ink); } .an-tbl th, .an-tbl td { border: 0; padding: 3px 0; }
   .an-tbl td::before { content: attr(data-l) ": "; color: var(--faint); }
 }
+html.formal .countdown { flex-wrap: nowrap; } html.formal .cd-unit { min-width: 0; flex: 0 1 78px; }
+.in-list span { gap: 14px; }
+@media (max-width: 640px) { .in-d.d4 { top: 24%; left: 2%; } .in-d.d3 { top: 68%; right: 3%; } .in-d.d6 { left: 8%; bottom: 2%; } .in-d.d5 { right: 22%; bottom: 0; } }
 
 </style>
 <script>
@@ -1411,12 +1458,24 @@ try { (function () { var d = document.documentElement, L = localStorage;
 </script>
 </head>
 <body>
-<div id="intro" aria-hidden="true"><div class="in-c">
-<svg class="in-star" viewBox="0 0 100 100"><path d="M50 9 L61 37 L92 38 L67 57 L76 88 L50 71 L24 88 L33 57 L8 38 L39 37 Z" fill="#ffd23f" stroke="#2d2a32" stroke-width="5" stroke-linejoin="round"/><path d="M40 50 q2 -4 4 0 M56 50 q2 -4 4 0" fill="none" stroke="#2d2a32" stroke-width="3" stroke-linecap="round"/><path d="M43 59 q7 7 14 0" fill="none" stroke="#2d2a32" stroke-width="3" stroke-linecap="round"/></svg>
+<div id="intro" aria-hidden="true">
+<div class="in-sheet"><div class="in-margin"></div><div class="in-c">
+<svg class="in-d d1" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8c-11 0-19 8-19 18 0 7 4 12 8 16v6h22v-6c4-4 8-9 8-16 0-10-8-18-19-18z" fill="#ffd23f"/><path d="M24 54h16M27 60h10M32 26v12M27 30l5-4 5 4"/></svg>
+<svg class="in-d d2" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14c8-3 16-2 24 3v38c-8-5-16-6-24-3z" fill="#7fb8f0"/><path d="M56 14c-8-3-16-2-24 3v38c8-5 16-6 24-3z" fill="#bfe0ff"/><path d="M14 24c4-1 8 0 12 2M14 32c4-1 8 0 12 2M38 26c4-2 8-3 12-2"/></svg>
+<svg class="in-d d3" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 30 58 8 40 56 30 36z" fill="#ffffff"/><path d="M30 36 58 8M30 36l-2 14 8-8"/></svg>
+<svg class="in-d d4" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 54H54L10 10z" fill="#8fe0b8"/><path d="M22 54v-6M32 54v-6M42 54v-6M10 42h6M10 32h6M22 44h10l-10-10z" /></svg>
+<svg class="in-d d5" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6h26l8 8v44H16z" fill="#ffffff"/><path d="M42 6v8h8"/><text x="32" y="42" text-anchor="middle" font-size="22" fill="#e23b3b" stroke="none" font-family="Schoolbell, cursive">A+</text></svg>
+<svg class="in-d d6" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 54C14 42 8 32 8 22c0-8 6-13 12-13 5 0 9 3 12 8 3-5 7-8 12-8 6 0 12 5 12 13 0 10-6 20-24 32z" fill="#ff8fab"/></svg>
+<svg class="in-star" viewBox="0 0 100 100"><path class="st-fill" d="M50 9 L61 37 L92 38 L67 57 L76 88 L50 71 L24 88 L33 57 L8 38 L39 37 Z" fill="#ffd23f"/><path class="st-line" pathLength="1" d="M50 9 L61 37 L92 38 L67 57 L76 88 L50 71 L24 88 L33 57 L8 38 L39 37 Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><g class="st-face" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M40 50 q2 -4 4 0 M56 50 q2 -4 4 0"/><path d="M43 59 q7 7 14 0"/></g></svg>
+<svg class="in-crest" viewBox="0 0 100 104"><path class="cr-fill" d="M50 5 L90 17 V50 C90 75 71 91 50 100 C29 91 10 75 10 50 V17 Z"/><path class="cr-line" pathLength="1" d="M50 5 L90 17 V50 C90 75 71 91 50 100 C29 91 10 75 10 50 V17 Z" fill="none" stroke-width="3" stroke-linejoin="round"/><path class="cr-in" pathLength="1" d="M50 13 L83 23 V50 C83 70 68 84 50 92 C32 84 17 70 17 50 V23 Z" fill="none" stroke-width="1.5" stroke-linejoin="round"/><path class="cr-book" pathLength="1" d="M50 41 C43 35 34 34 28 36 V63 C34 61 43 62 50 68 C57 62 66 61 72 63 V36 C66 34 57 35 50 41 V68" fill="none" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/></svg>
 <div class="in-title"><span class="in-t">Exam Command Centre</span><svg class="in-pencil" viewBox="0 0 64 64"><g transform="rotate(38 32 32)"><rect x="26" y="2" width="12" height="42" rx="2" fill="#ffd23f" stroke="#2d2a32" stroke-width="3"/><rect x="26" y="2" width="12" height="9" rx="2" fill="#ff8fab" stroke="#2d2a32" stroke-width="3"/><path d="M26 44 L32 60 L38 44 Z" fill="#f3d9b1" stroke="#2d2a32" stroke-width="3" stroke-linejoin="round"/><path d="M30 54 L32 60 L34 54 Z" fill="#2d2a32"/></g></svg></div>
 <div class="in-rule"></div>
 <div class="in-sub"></div>
+<div class="in-list"><span><i><svg viewBox="0 0 40 40"><path pathLength="1" d="M6 22C10 25 13 29 16 34 20 22 27 12 35 6"/></svg></i>Plan</span><span><i><svg viewBox="0 0 40 40"><path pathLength="1" d="M6 22C10 25 13 29 16 34 20 22 27 12 35 6"/></svg></i>Practise</span><span><i><svg viewBox="0 0 40 40"><path pathLength="1" d="M6 22C10 25 13 29 16 34 20 22 27 12 35 6"/></svg></i>Ace it</span></div>
+<div class="in-load"><i></i></div>
 </div></div>
+<div class="in-curl"></div>
+</div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <filter id="rough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="4" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="3.4" xChannelSelector="R" yChannelSelector="G"/></filter>
 <filter id="crayon" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="2" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="3" xChannelSelector="R" yChannelSelector="G" result="d"/><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="9" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.75" result="gm"/><feComposite in="d" in2="gm" operator="in"/></filter>
@@ -2767,9 +2826,21 @@ levels: [
 { l: "Level 2", m: "3–4", pts: ["A partly justified research design.", "A range of methods and/or evidence, mostly described with little explanation.", "Explanations may lack some credibility or are only partly related to testing the claim."] },
 { l: "Level 1", m: "1–2", pts: ["Limited research design.", "A limited range of methods and/or evidence with no explanation; the research or topic is only described.", "Methods and evidence are not credible or not related to testing the claim."] },
 { l: "Level 0", m: "0", pts: ["Nothing that can be given credit."] }] },
-{ code: "6", name: "Evaluating research", marks: "8",
+{ code: "6", name: "Research analysis", marks: "8", src: "ms",
 q: "Explain the strengths and weaknesses of the research outlined in Source 3. [8]",
-steps: [{ h: "How to answer", pts: ["Strengths: mix of primary and secondary research, expert or official sources, real experiences.", "Weaknesses: small sample (only parents and neighbours), biased sources (e.g. a magazine promoting one side), one country only, conclusion too general (“around the world”).", "Give an improvement for each weakness.", "End with an overall judgement of how reliable the research is."] }] }
+steps: [
+{ h: "Find the purpose of the research", pts: ["Say what the research was trying to find out. Every point you make should link back to this purpose."] },
+{ h: "Explain strengths", pts: ["Clear purpose of the research.", "Ethical research, for example permission was given.", "Primary research.", "Notes were taken, so the interview is recorded accurately.", "A case study may give detailed information.", "Based on authentic, personal testimony and experience.", "The source of evidence or respondent is clearly related to the research question.", "Uses a quotation from the interview as evidence.", "Any other relevant strength."],
+ex: ["One strength is that the research is primary research, because the researcher _____. This makes it more reliable for its purpose because _____."] },
+{ h: "Explain weaknesses", pts: ["Use the weaknesses column of the research methods table in “Testing a claim”: for example time-consuming, answers may be biased, a small group that is hard to generalise from.", "Say how each weakness affects what the research was trying to find out."] },
+{ h: "Explain, don't just list", pts: ["Give a wide range of points, with BOTH strengths and weaknesses.", "Give a reason for every point and support it from the source. A list with no explanation stays in the lower levels."] }],
+note: "The strengths above come from your mark scheme for one paper about an interview, so pick the ones that fit the research in your question.",
+levels: [
+{ l: "Level 4", m: "7–8", pts: ["Consistently evaluative.", "Reasoned explanation of a wide range of evaluative points, including both strengths and weaknesses.", "Explanations are credible, supported and clearly related to the purpose of the research."] },
+{ l: "Level 3", m: "5–6", pts: ["Mainly evaluative.", "Reasoned explanation of a range of evaluative points.", "Explanations are mostly supported, credible and related to the purpose of the research."] },
+{ l: "Level 2", m: "3–4", pts: ["Partly evaluative.", "A range of evaluative points that are mostly descriptive, with little explanation.", "Explanations are partly supported and may lack some credibility, or are only partly related to the purpose."] },
+{ l: "Level 1", m: "1–2", pts: ["Limited evaluation.", "A limited range of points with no explanation; the research or topic is only described.", "Points are just stated, not credible, or not related to the purpose of the research."] },
+{ l: "Level 0", m: "0", pts: ["Nothing that can be given credit."] }] }
 ] }
 ];
 
@@ -6808,7 +6879,10 @@ function introReveal() {
   if (!el) return;
   if (d.classList.contains("no-intro") || getComputedStyle(el).display === "none") { el.remove(); return; }
   var quick = d.classList.contains("intro-quick"), formal = d.classList.contains("formal");
-  var t = quick ? (formal ? [100, 520] : [150, 680]) : formal ? [1250, 1830] : [1650, 2300], now = performance.now();
+  /* [when the app starts to show, when the cover is gone] in ms; must match the CSS timeline in styles.css */
+  var t = quick ? (formal ? [480, 1000] : [520, 950]) : formal ? [3000, 3620] : [3900, 4450], now = 0;
+  /* the cover's own clock: its CSS animations start at the first paint, which can be later than the page load */
+  try { var sh = el.querySelector(".in-sheet"), an = (formal ? el : sh).getAnimations ? (formal ? el : sh).getAnimations() : []; an.forEach(function (x) { if (typeof x.currentTime === "number") now = Math.max(now, x.currentTime); }); } catch (e) { }
   var gone = function () { if (el.parentNode) el.remove(); };
   setTimeout(introReveal, Math.max(0, t[0] - now));
   setTimeout(gone, Math.max(0, t[1] - now) + 60);
