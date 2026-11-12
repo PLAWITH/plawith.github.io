@@ -1081,6 +1081,139 @@ html.formal .q-track { border-bottom-style: solid; border-bottom-width: 1px; }
 html.formal .study-pane .q-track { background-image: none; }
 html.formal .m-ans .q-margin .pen path { animation: none; }
 
+/* =====================================================================
+   Formal mode, second pass: an official document rather than a grey form.
+   Serif headings like a report, navy ink, hairline rules, flat white sheets on a cool desk.
+   ===================================================================== */
+html.formal {
+  --paper: #eef0f3; --paper-2: #e6e9ed; --panel: #ffffff; --panel-solid: #ffffff; --panel-hi: #f6f7f9;
+  --ink: #d3d8de; --text: #1b1f24; --muted: #535b65; --faint: #7d858f;
+  --line: #e6e9ed; --line-2: #c5cbd3;
+  --accent: #1f3a5f; --accent-ink: #ffffff; --accent-soft: rgba(31, 58, 95, 0.08);
+  --hi: #e3e8ef; --hi-soft: rgba(31, 58, 95, 0.07);
+  --good: #1e6b3a; --warn: #8a5a00; --bad: #a3261e;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; --display: var(--font);
+  --serif: Charter, "Iowan Old Style", "Palatino Linotype", Palatino, Cambria, "Noto Serif", Georgia, serif;
+  --wob: 4px; --wob-2: 4px; --wob-pill: 4px; --r: 4px; --r-sm: 4px;
+  --shadow: none; --shadow-soft: none;
+}
+html.formal[data-app-theme="dark"] {
+  --paper: #16191d; --paper-2: #111417; --panel: #1f2328; --panel-solid: #1f2328; --panel-hi: #252a30;
+  --ink: #363c44; --text: #e6e8eb; --muted: #a7aeb7; --faint: #7c848e;
+  --line: #2a2f36; --line-2: #454c56;
+  --accent: #9db9e0; --accent-ink: #101820; --accent-soft: rgba(157, 185, 224, 0.12); --hi: #2c3239; --hi-soft: rgba(157, 185, 224, 0.1);
+  --good: #84c493; --warn: #d9b668; --bad: #e59089;
+}
+html.formal body { font-size: 15.5px; line-height: 1.5; -webkit-font-smoothing: antialiased; font-variant-numeric: lining-nums; }
+html.formal :is(h1, h2, h3, .brand-t, .topbar .t, .an-step-h, .study-title, .hero h1.big) { font-family: var(--serif); font-weight: 600; letter-spacing: -0.005em; }
+html.formal h1 { font-size: 29px; line-height: 1.2; } html.formal h2 { font-size: 19px; line-height: 1.3; } html.formal h3 { font-size: 16.5px; }
+html.formal .hero h1.big { font-size: 36px; }
+html.formal .emo { display: none; }
+html.formal .eyebrow { font-size: 13.5px; color: var(--muted); }
+html.formal .small { font-size: 14px; } html.formal .tiny { font-size: 12.5px; }
+/* page title sits on a rule, like a letterhead */
+html.formal .page-head { align-items: flex-end; padding-bottom: 14px; margin-bottom: 20px; border-bottom: 1px solid var(--line-2); }
+html.formal .page-head .sub { margin-top: 4px; font-size: 14.5px; }
+/* sheets: white, hairline border, no shadow */
+html.formal .card, html.formal .acc, html.formal .modal { box-shadow: none; }
+html.formal .modal { box-shadow: 0 12px 40px rgba(0, 0, 0, .22); }
+html.formal .card-h { margin-bottom: 14px; }
+html.formal .stat .v { font-size: 27px; font-weight: 650; letter-spacing: -0.01em; }
+html.formal .stat .l { font-size: 14px; }
+html.formal .cd-unit { background: var(--panel-hi); min-width: 72px; padding: 8px 12px 6px; }
+html.formal .cd-unit b { font-size: 29px; font-weight: 650; }
+html.formal .cd-unit span { text-transform: none; letter-spacing: 0; font-size: 12.5px; color: var(--muted); }
+/* buttons */
+html.formal .btn { height: 36px; padding-inline: 14px; font-size: 14.5px; font-weight: 550; border-radius: 4px; }
+html.formal .btn::before { border-color: var(--line-2) !important; }
+html.formal .btn.sm { height: 30px; padding-inline: 10px; font-size: 13.5px; } html.formal .btn.lg { height: 44px; padding-inline: 20px; font-size: 16px; }
+html.formal .btn.primary::before { border-color: var(--accent) !important; }
+html.formal .btn.ghost::before { border-color: transparent !important; }
+html.formal .btn:hover { filter: none; background-color: var(--panel-hi); }
+html.formal .btn.primary:hover { background-color: color-mix(in srgb, var(--accent) 88%, #000); }
+html.formal .btn:disabled { opacity: .5; }
+html.formal .input { font-size: 15px; border-width: 1px; border-color: var(--line-2); border-radius: 4px; background-color: var(--panel); }
+html.formal .input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); outline: none; }
+html.formal .chip { font-size: 12.5px; min-height: 22px; padding: 0 8px; border-width: 1px; font-weight: 500; }
+html.formal .seg { padding: 3px; background: var(--paper-2); border-color: var(--ink); }
+html.formal .seg button { font-size: 14px; border-radius: 3px; }
+html.formal .seg button.on { background: var(--panel); background-image: none; box-shadow: 0 0 0 1px var(--line-2); font-weight: 600; }
+/* sidebar */
+html.formal .sidebar { background: var(--panel); background-image: none; }
+html.formal .brand-t { font-size: 20px; line-height: 1.15; }
+html.formal .nav-btn { font-size: 15px; border-radius: 4px; position: relative; color: var(--muted); }
+html.formal .nav-btn:hover { background: var(--panel-hi); color: var(--text); }
+html.formal .nav-btn.active { background: var(--accent-soft); color: var(--accent); }
+html.formal .nav-btn.active::after { content: ""; position: absolute; left: 0; top: 7px; bottom: 7px; width: 3px; border-radius: 2px; background: var(--accent); }
+html.formal .side-foot { border-top-color: var(--line); }
+html.formal .topbar { background-color: var(--panel); background-image: none; border-bottom: 1px solid var(--line-2); }
+/* schedule rows: finished ones are quiet instead of crossed out */
+html.formal .session-row { padding: 12px 14px; }
+html.formal .s-title { font-size: 15.5px; font-weight: 600; line-height: 1.35; }
+html.formal .session-row.done { opacity: 1; }
+html.formal .session-row.done .s-title { text-decoration: none; font-weight: 500; color: var(--faint); }
+html.formal .session-row .stripe { width: 4px; border-radius: 2px; background-image: none; }
+html.formal .date-tile { background: var(--panel-hi); }
+html.formal .exam-row { border-bottom-color: var(--line); }
+/* bars and rings: thin and solid */
+html.formal .bar { height: 6px; border: 0; border-radius: 3px; background: var(--hi); }
+html.formal .ring svg circle:first-child { stroke: var(--hi); stroke-width: 6; stroke-dasharray: none; }
+html.formal .ring svg circle + circle { stroke-width: 6; stroke-linecap: butt; }
+html.formal .ring .rv { font-weight: 650; }
+/* calendar: flat tints instead of hatching */
+html.formal .cal-cell.rest { background-image: none; background-color: var(--paper-2); }
+html.formal .cal-cell.hol, html.formal .cal-cell.off { background-image: none; background-color: color-mix(in srgb, var(--warn) 9%, var(--panel)); }
+html.formal .cal-tag { font-size: 11.5px; border-radius: 3px; }
+html.formal .cal-cell.today .cn { box-shadow: 0 0 0 1.5px var(--accent); color: var(--accent); font-weight: 700; }
+html.formal .rest-banner { background-image: none; }
+html.formal .notice { border-color: var(--line-2); border-left: 3px solid var(--accent); background: var(--panel); border-radius: 4px; }
+html.formal .notice.warn { border-left-color: var(--warn); background: color-mix(in srgb, var(--warn) 6%, var(--panel)); }
+html.formal .notice.bad { border-left-color: var(--bad); }
+html.formal .tbl th { font-size: 13px; font-weight: 600; color: var(--muted); }
+/* answer notes read like a mark scheme */
+html.formal .an-intro { border-left: 3px solid var(--accent); }
+html.formal .an-badge { width: 38px; height: 38px; flex-basis: 38px; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 4px; font: 600 19px/1 var(--serif); }
+html.formal .an-q { margin-top: 14px; padding: 12px 16px; border: 0; border-left: 3px solid var(--line-2); border-radius: 0; background: var(--panel-hi); font-size: 16px; }
+html.formal .an-h { margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); font-size: 16.5px; }
+html.formal .an-steps { gap: 0; }
+html.formal .an-step { padding: 12px 0 12px 40px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: none; }
+html.formal .an-step:last-child { border-bottom: 0; }
+html.formal .an-step:before { left: 0; top: 12px; width: 26px; height: 26px; border: 1px solid var(--line-2); border-radius: 50%; background: none; color: var(--accent); font: 600 14px/1 var(--font); }
+html.formal .an-step-h { font-size: 16.5px; margin-bottom: 3px; }
+html.formal .an-pts { font-size: 15px; }
+html.formal .an-ex { margin-top: 8px; padding: 8px 12px; border: 0; border-left: 2px solid var(--line-2); border-radius: 0; background: var(--panel-hi); font-size: 14.5px; }
+html.formal .an-eg { font-family: var(--font); font-style: italic; color: var(--muted); }
+html.formal .an-note { margin-top: 14px; border: 0; border-left: 3px solid var(--accent); border-radius: 0; background: var(--accent-soft); }
+html.formal .an-levels { gap: 0; border: 1px solid var(--line-2); border-radius: 4px; overflow: hidden; }
+html.formal .an-lv { gap: 0; align-items: stretch; border-bottom: 1px solid var(--line); }
+html.formal .an-lv:last-child { border-bottom: 0; }
+html.formal .an-lv-tag { flex: 0 0 118px; padding: 10px 12px; text-align: left; border: 0; border-right: 1px solid var(--line); border-radius: 0; color: var(--text); background: color-mix(in srgb, var(--accent) calc((1 - var(--k)) * 13%), var(--panel-hi)); }
+html.formal .an-lv-tag b { font: 600 14.5px/1.3 var(--font); }
+html.formal .an-lv-tag span { font-size: 13px; color: var(--muted); }
+html.formal .an-lv .an-pts { margin: 0; padding: 10px 14px 10px 32px; }
+/* help button and switch */
+html.formal .pip-btn { width: 48px; height: 48px; box-shadow: 0 2px 8px rgba(0, 0, 0, .18); }
+html.formal .pip-btn::after { font: 600 22px/1 var(--serif); }
+html.formal .formal-switch { border-color: var(--line-2); box-shadow: none; font: 500 13px var(--font); background-color: var(--panel); }
+html.formal .toggle:checked { background-color: var(--accent); border-color: var(--accent); }
+html.formal .q-num { font-family: var(--serif); }
+html.formal .feedback { border-color: var(--line); }
+html.formal .study-bar { background-color: var(--panel); background-image: none; border-bottom: 1px solid var(--line-2); }
+html.formal .focus-wrap { background-color: var(--paper); }
+@media (max-width: 860px) {
+  html.formal h1 { font-size: 24px; }
+  html.formal .hero h1.big { font-size: 29px; }
+  html.formal .an-lv { flex-direction: column; } html.formal .an-lv-tag { flex: none; border-right: 0; border-bottom: 1px solid var(--line); display: flex; gap: 10px; align-items: baseline; }
+  html.formal .an-lv-tag b { display: inline; }
+}
+html.formal .side-foot .nav-btn, html.formal .side-foot .btn { font-size: 14px; white-space: nowrap; }
+html.formal .toggle::after { background: var(--faint); }
+html.formal .toggle:checked::after { background: var(--accent-ink); }
+.app:not(.nav-open) .sidebar { box-shadow: none; }
+html.formal .app.nav-open .sidebar { box-shadow: 0 0 40px rgba(0, 0, 0, .22); }
+html.formal .btn.icon-btn { padding-inline: 0; }
+@media (max-width: 860px) { html.formal .cd-unit { min-width: 0; padding: 6px 4px 5px; } html.formal .cd-unit b { font-size: 25px; } }
+
 </style>
 </head>
 <body>
@@ -2373,14 +2506,29 @@ q: "Write a program that asks for a mark and prints “Pass” if it is 40 or mo
 steps: [{ h: "How to answer", pts: ["Convert input: mark = int(input(\"Enter mark: \"))", "Colon after if / elif / else / for, and indent the block.", "Use the right operator (>=, ==, !=).", "Test with sample values, including the boundary (39, 40)."], ex: ["mark = int(input(\"Enter mark: \"))\nif mark >= 40:\n    print(\"Pass\")\nelse:\n    print(\"Fail\")"] }] }
 ] },
 
-{ subj: "gp", from: "starter", intro: "Sources are in the insert. Quote them, but explain in your own words.",
+{ subj: "gp", from: "mixed", intro: "Sources are in the insert. Quote them, but explain in your own words.",
 types: [
 { code: "1", name: "Fact and opinion", marks: "1 + 2",
 q: "(i) Identify one opinion in the sources. [1]  (ii) Explain why it is an opinion. [2]",
 steps: [{ h: "How to answer", pts: ["Quote the exact words.", "Opinion: a personal view or judgement that can't be proven; look for words like “I think”, “not fair”, “best”.", "Fact: can be checked and proven with evidence, often a number or statistic.", "Explain in two parts: what it is + how you can tell."], ex: ["“In my view this is not fair.” It is an opinion because it is the writer's personal judgement, and fairness can't be proven or checked."] }] },
-{ code: "2", name: "Most significant cause or consequence", marks: "8",
-q: "Which cause of … do you think is the most significant? Explain why. [8]",
-steps: [{ h: "How to answer", pts: ["Identify 2–3 causes from the sources.", "Explain each one with evidence from the sources.", "Compare them using criteria: how many people it affects, how serious, how long-lasting, whether it leads to other problems.", "Judgement: “The most significant cause is … because …, whereas …”"] }] },
+{ code: "2", name: "Most significant cause", marks: "8", src: "ms",
+q: "Sources 1 and 2 suggest causes of [the issue]. Which cause of [the issue] do you think is the most significant? Explain why. [8]",
+steps: [
+{ h: "Give your opinion", pts: ["Choose ONE cause from the sources and say clearly that it is the most significant.", "Use the wording of the question so the marker sees your opinion straight away."],
+ex: ["I think the most significant cause of [the issue] is _____."] },
+{ h: "Justify it with reasons and support", pts: ["Give reasons why this cause matters most.", "Support each reason with evidence from Source 1 or Source 2, and say which source it comes from."],
+ex: ["This is because _____. Source 1 shows this when it says “_____”."] },
+{ h: "Explain, and keep it about the issue", pts: ["Explain how your cause leads to the issue in the question. Every point must link back to that issue.", "Keep it credible: say things that are believable and that the sources or real life back up."],
+ex: ["This means that _____, which leads to more [issue]."] },
+{ h: "Finish with a clear judgement", pts: ["Sum up in one sentence why your cause is more significant than the others."],
+ex: ["Overall, _____ is the most significant cause because _____."] }],
+note: "The marker labels your answer with J, R and EXP. Make sure all three are easy to find: your judgement (the opinion you justify), your reasons, and your explanation.",
+levels: [
+{ l: "Level 4", m: "7–8", pts: ["Clear justification of an opinion.", "The opinion is clearly explained and supported.", "The explanation is credible and clearly related to the issue."] },
+{ l: "Level 3", m: "5–6", pts: ["Some justification of an opinion.", "The opinion is explained with some support.", "The explanation is mainly credible and related to the issue."] },
+{ l: "Level 2", m: "3–4", pts: ["Partial justification of an opinion.", "The opinion is partly explained and has minimal support.", "The explanation is partly related to the issue."] },
+{ l: "Level 1", m: "1–2", pts: ["A limited opinion.", "The opinion is stated with little explanation.", "Any explanation may be general, off the point or not credible."] },
+{ l: "Level 0", m: "0", pts: ["Nothing that can be given credit."] }] },
 { code: "3", name: "Testing a claim", marks: "8",
 q: "“…” Explain how this claim could be tested. Consider the research methods and evidence that could be used. [8]",
 steps: [{ h: "How to answer", pts: ["Primary research: survey or interview (who, how many, what you'd ask).", "Secondary research: reliable sources such as government statistics, UN reports, recent studies.", "Say what evidence would support or disprove the claim.", "Reliability: large, varied sample; up-to-date, unbiased sources; compare several sources (corroboration)."] }] },
@@ -2425,7 +2573,7 @@ hum: [
 { id: "facts", name: "Dates, people and events drill", types: ["mcq", "short", "exam"], n: 8, task: "Facts drill on {t}: dates, leaders, places and causes. You need these as 'own knowledge' in source answers.", steps: ["Answer the questions quickly.", "Make a mini timeline of the key dates in your notebook.", "Add any fact you got wrong to your flashcards."] }],
 gp: [
 { id: "fact", name: "Fact or opinion?", types: ["mcq", "exam"], n: 6, task: "Fact-or-opinion practice on {t}: identify each type of statement and explain how you can tell.", steps: ["For each statement, decide: fact, opinion, prediction or value judgement.", "Explain how you can tell (can it be checked? does it use 'should' or 'I think'?).", "Then answer the questions below."] },
-{ id: "cause", name: "Most significant cause or consequence", types: ["exam", "mcq"], n: 5, task: "Most-significant practice on {t}: pick 2–3 causes or consequences and justify which matters most.", steps: ["List 2–3 causes or consequences of an issue in this topic.", "Compare them using criteria: how many people, how serious, how long-lasting.", "Write a judgement sentence: 'The most significant is … because …, whereas …'."] },
+{ id: "cause", name: "Most significant cause or consequence", types: ["exam", "mcq"], n: 5, task: "Most-significant practice on {t}: pick 2–3 causes or consequences and justify which matters most.", steps: ["Choose ONE cause (or consequence) and state it as your opinion.", "Justify it: give reasons, each one supported from the sources.", "Explain how it leads to the issue, then finish with a judgement sentence: 'Overall, … is the most significant because …'.", "Mark yourself with the levels in Answer Notes: 7–8 marks needs an opinion that is clearly explained, supported and credible."] },
 { id: "claim", name: "Testing a claim", types: ["exam", "mcq"], n: 5, task: "Claim-testing practice on {t}: plan how you would test a claim using primary and secondary research.", steps: ["Write one claim about this topic.", "Plan primary research (survey or interview: who, how many) and secondary research (reliable sources).", "Say what evidence would support or disprove it, then answer the questions below."] },
 { id: "research", name: "Evaluating research", types: ["exam", "mcq"], n: 5, task: "Research evaluation practice on {t}: list strengths, weaknesses and improvements for a piece of research.", steps: ["Imagine a student's research project on this topic.", "List 2 strengths and 2 weaknesses (sample, bias, sources, conclusion).", "Give an improvement for each weakness, then answer the questions below."] }],
 dl: [
@@ -3378,7 +3526,7 @@ function updateSide() {
   PAGES.forEach(function (p) { var b = $("#nav-" + p); if (b) b.classList.toggle("active", p === UI.page); });
   var n = upcomingExams()[0], el = $("#side-next");
   var bs = $(".brand-s"); if (bs) bs.textContent = RULES.custom ? RULES.name : "November 2026 · IST";
-  var sp = $("#side-prof"); if (sp) sp.innerHTML = '<button class="btn sm ghost" data-act="nav" data-page="preferences" style="padding:0 6px">' + (RULES.custom ? "📄 " + esc(RULES.name) + " · change" : "📄 Use your own syllabus") + "</button>";
+  var sp = $("#side-prof"); if (sp) sp.innerHTML = '<button class="btn sm ghost" data-act="nav" data-page="preferences" style="padding:0 6px">' + (RULES.custom ? '<span class="emo">📄 </span>' + esc(RULES.name) + " · change" : '<span class="emo">📄 </span>Use your own syllabus') + "</button>";
   el.innerHTML = n ? 'Next: <b>' + esc(n.name) + "</b><br>" + fmtD(n.exam) + " · " + relDay(n.exam) : "<b>All examinations completed</b>";
   $("#theme-btn").innerHTML = ic(S.settings.theme === "dark" ? "sun" : "moon") + "<span>" + (S.settings.theme === "dark" ? "Paper mode" : "Chalkboard mode") + "</span>";
   $("#top-title").textContent = PAGE_T[UI.page];
@@ -5238,16 +5386,16 @@ function pgNotes() {
   var canPrint = !aiInFrame();
   var h = head("Answer Notes", "How to write each type of question, step by step, with how the marks are given", (canPrint ? '<button class="btn" data-act="notesPrint">' + ic("download") + "Print</button>" : "") + '<button class="btn primary" data-act="notesPdf">' + ic("download") + "Save as PDF</button>");
   h += '<div class="seg an-subjs" role="tablist" aria-label="Subject">' + list.map(function (n) { var x = anSubj(n.subj); return '<button role="tab" aria-selected="' + (n.subj === sid) + '" class="' + (n.subj === sid ? "on" : "") + '" style="--c:' + x.color + '" data-act="notesSubj" data-s="' + n.subj + '"><span class="dot" style="background:' + x.color + '"></span>' + esc(x.short) + "</button>"; }).join("") + "</div>";
-  h += '<div class="an-intro card" style="--c:' + s.color + '"><div class="row between wrap" style="gap:8px"><h2 style="margin:0">' + esc(s.name) + '</h2><span class="chip ' + (N.from === "class" ? "good" : "") + '">' + (N.from === "class" ? "From your class notes" : "Starter notes · we'll change these as we go") + "</span></div>" + (N.intro ? '<p class="muted" style="margin:6px 0 0">' + esc(N.intro) + "</p>" : "") +
+  h += '<div class="an-intro card" style="--c:' + s.color + '"><div class="row between wrap" style="gap:8px"><h2 style="margin:0">' + esc(s.name) + '</h2><span class="chip ' + (N.from === "class" ? "good" : "") + '">' + (N.from === "class" ? "From your class notes" : N.from === "mixed" ? N.types.filter(function (t) { return t.src === "ms"; }).length + " of " + N.types.length + " types use your mark scheme so far" : "Starter notes, to be changed as we go") + "</span></div>" + (N.intro ? '<p class="muted" style="margin:6px 0 0">' + esc(N.intro) + "</p>" : "") +
     '<div class="row wrap an-jump" style="margin-top:10px">' + N.types.map(function (t) { return '<a class="chip" href="#an-' + sid + "-" + t.code + '" data-act="anJump" data-id="an-' + sid + "-" + t.code + '"><b>' + esc(t.code) + "</b>&nbsp;" + esc(t.name) + "</a>"; }).join("") + "</div></div>";
   N.types.forEach(function (t) { h += anTypeCard(t, s); });
   return h;
 }
 function anTypeCard(t, s) {
   var h = '<section class="card an-type" id="an-' + s.id + "-" + esc(t.code) + '" style="--c:' + s.color + '">';
-  h += '<div class="an-top"><div class="an-badge" aria-hidden="true">' + esc(t.code) + '</div><div class="grow"><div class="eyebrow">' + (/^[A-Z]$/.test(t.code) ? "Type " + esc(t.code) : "Question type " + esc(t.code)) + '</div><h2 style="margin:2px 0 0">' + esc(t.name) + "</h2></div>" + (t.marks !== undefined ? '<span class="chip accent an-mk">' + esc(anMarks(t.marks)) + "</span>" : "") + "</div>";
+  h += '<div class="an-top"><div class="an-badge" aria-hidden="true">' + esc(t.code) + '</div><div class="grow"><div class="eyebrow">' + (/^[A-Z]$/.test(t.code) ? "Type " + esc(t.code) : "Question type " + esc(t.code)) + '</div><h2 style="margin:2px 0 0">' + esc(t.name) + "</h2></div>" + (anGet(s.id).from === "mixed" ? '<span class="chip ' + (t.src === "ms" ? "good" : "") + ' an-src">' + (t.src === "ms" ? "From your mark scheme" : "Starter notes") + "</span>" : "") + (t.marks !== undefined ? '<span class="chip accent an-mk">' + esc(anMarks(t.marks)) + "</span>" : "") + "</div>";
   if (t.q) h += '<div class="an-q"><div class="tiny muted">The question looks like this</div><div>' + anText(t.q) + "</div></div>";
-  h += '<h3 class="an-h">✏️ How to write it</h3><ol class="an-steps">';
+  h += '<h3 class="an-h"><span class="emo">✏️ </span>How to write it</h3><ol class="an-steps">';
   t.steps.forEach(function (st) {
     h += '<li class="an-step"><div class="an-step-h">' + esc(st.h) + '</div><ul class="an-pts">' + st.pts.map(function (p) { return "<li>" + anText(p) + "</li>"; }).join("") + "</ul>";
     if (st.ex && st.ex.length) h += st.ex.map(function (e) { return '<div class="an-ex"><span class="an-eg">e.g.</span>' + anText(e) + "</div>"; }).join("");
@@ -5256,7 +5404,7 @@ function anTypeCard(t, s) {
   h += "</ol>";
   if (t.note) h += '<div class="an-note"><b>Remember:</b> ' + anText(t.note) + "</div>";
   if (t.levels && t.levels.length) {
-    h += '<h3 class="an-h">🏆 How the marks are given</h3><div class="an-levels">';
+    h += '<h3 class="an-h"><span class="emo">🏆 </span>How the marks are given</h3><div class="an-levels">';
     t.levels.forEach(function (lv, i) {
       var tone = t.levels.length > 1 ? i / (t.levels.length - 1) : 0;
       h += '<div class="an-lv" style="--k:' + tone.toFixed(2) + '"><div class="an-lv-tag"><b>' + esc(lv.l) + "</b>" + (lv.m !== "" ? "<span>" + esc(lv.m) + (/^\d/.test(lv.m) ? (lv.m === "1" ? " mark" : " marks") : "") + "</span>" : "") + '</div><ul class="an-pts">' + lv.pts.map(function (p) { return "<li>" + anText(p) + "</li>"; }).join("") + "</ul></div>";
@@ -5288,9 +5436,9 @@ function anPrintCSS() {
 function anLvColor(k) { var a = [[183, 228, 199], [255, 236, 170], [255, 214, 170], [235, 228, 240]]; var i = Math.min(a.length - 1, Math.round(k * (a.length - 1))); return "rgb(" + a[i].join(",") + ")"; }
 function anBlocks(sid) {
   var N = anGet(sid), s = anSubj(sid), B = [];
-  B.push('<h1 class="pa-title"><span style="--c:' + s.color + '55">' + esc(s.name) + ' · Answer Notes</span></h1><p class="pa-sub">How to write each type of question · ' + (N.from === "class" ? "from your class notes" : "starter notes") + "</p>" + (N.intro ? '<div class="pa-intro">' + esc(N.intro) + "</div>" : ""));
+  B.push('<h1 class="pa-title"><span style="--c:' + s.color + '55">' + esc(s.name) + ' · Answer Notes</span></h1><p class="pa-sub">How to write each type of question · ' + (N.from === "class" ? "from your class notes" : N.from === "mixed" ? "your mark scheme where marked, starter notes elsewhere" : "starter notes") + "</p>" + (N.intro ? '<div class="pa-intro">' + esc(N.intro) + "</div>" : ""));
   N.types.forEach(function (t) {
-    var head = '<div class="pa-type"><div class="pa-badge">' + esc(t.code) + '</div><div class="pa-tname">' + (/^[A-Z]$/.test(t.code) ? "Type " + esc(t.code) + ": " : "") + esc(t.name) + "</div>" + (t.marks !== undefined ? '<div class="pa-mk">' + esc(anMarks(t.marks)) + "</div>" : "") + "</div>" + (t.q ? '<div class="pa-q"><i>The question looks like this</i>' + anText(t.q) + "</div>" : "") + '<div class="pa-h">✏️ How to write it</div>';
+    var head = '<div class="pa-type"><div class="pa-badge">' + esc(t.code) + '</div><div class="pa-tname">' + (/^[A-Z]$/.test(t.code) ? "Type " + esc(t.code) + ": " : "") + esc(t.name) + (N.from === "mixed" ? (t.src === "ms" ? " (from your mark scheme)" : " (starter notes)") : "") + "</div>" + (t.marks !== undefined ? '<div class="pa-mk">' + esc(anMarks(t.marks)) + "</div>" : "") + "</div>" + (t.q ? '<div class="pa-q"><i>The question looks like this</i>' + anText(t.q) + "</div>" : "") + '<div class="pa-h">✏️ How to write it</div>';
     t.steps.forEach(function (st, i) {
       var b = '<div class="pa-step"><b>' + esc(st.h) + '</b><ul class="pa-pts">' + st.pts.map(function (p) { return "<li>" + anText(p) + "</li>"; }).join("") + "</ul>" + (st.ex || []).map(function (e) { return '<div class="pa-ex"><em>e.g.</em>' + anText(e) + "</div>"; }).join("") + "</div>";
       B.push(i === 0 ? "\u0001" + head + b : b);
