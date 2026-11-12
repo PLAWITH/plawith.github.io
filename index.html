@@ -2899,6 +2899,527 @@ var PRACTICE_GENERIC = [
 function practiceSet(sid) { return PRACTICE_EX[sid] || PRACTICE_GENERIC; }
 function practiceEx(sid, exId) { var L = practiceSet(sid); return L.filter(function (e) { return e.id === exId; })[0] || L[0]; }
 
+/* ===== Full-notes guide: every type of question in each topic, with the method and a worked example =====
+   GUIDE[topicId] = [{ t: question type, how: [method steps], q: example question, w: [working lines], a: final answer }] */
+var GUIDE = GUIDE || {};
+Object.assign(GUIDE, {
+m1: [
+  { t: "Counting significant figures", how: ["Start counting at the first non-zero digit.", "Zeros between non-zero digits count.", "Zeros at the end of a decimal count; zeros at the start of a decimal never count."], q: "How many significant figures are in (a) 0.004 50 (b) 30 207 (c) 6.00?", w: ["(a) start at 4: 4, 5, 0 → 3 s.f. (the leading zeros don't count)", "(b) 3, 0, 2, 0, 7 → 5 s.f. (zeros between digits count)", "(c) 6, 0, 0 → 3 s.f. (end zeros in a decimal count)"], a: "(a) 3 (b) 5 (c) 3" },
+  { t: "Rounding a large number to s.f.", how: ["Find the last digit you keep.", "Look at the next digit: 5 or more rounds up.", "Fill the places up to the decimal point with zeros so the size stays the same."], q: "Round 48 372 to 2 significant figures.", w: ["Keep 4 and 8; next digit is 3 (less than 5), so 8 stays.", "Replace the remaining digits with zeros: 48 000."], a: "48 000" },
+  { t: "Rounding a small decimal to s.f.", how: ["Skip the leading zeros.", "Count the significant figures from the first non-zero digit.", "Do not add zeros after the last digit you keep."], q: "Round 0.000 638 7 to 3 significant figures.", w: ["First s.f. is 6: keep 6, 3, 8.", "Next digit is 7, so 8 rounds up to 9."], a: "0.000 639" },
+  { t: "Rounding that carries over", how: ["When a 9 rounds up, it becomes 0 and carries 1 to the left.", "Keep the zeros needed to show the number of s.f."], q: "Round 2.996 to 3 significant figures.", w: ["Keep 2, 9, 9; next digit is 6, so round up.", "2.99 + 0.01 = 3.00. Write both zeros to show 3 s.f."], a: "3.00" },
+  { t: "Rounding to decimal places", how: ["Count places after the decimal point, not from the first non-zero digit.", "Look at the next digit to decide whether to round up."], q: "Round 17.0549 to 2 decimal places.", w: ["Two places: 17.05 | 49", "Next digit is 4, so it stays 17.05."], a: "17.05" },
+  { t: "Estimating by rounding to 1 s.f.", how: ["Round every number to 1 significant figure.", "Work out the easier calculation.", "Use ≈ for an estimate."], q: "Estimate (48.7 × 3.12) ÷ 0.198.", w: ["48.7 ≈ 50, 3.12 ≈ 3, 0.198 ≈ 0.2", "(50 × 3) ÷ 0.2 = 150 ÷ 0.2 = 750"], a: "≈ 750" }
+],
+m2: [
+  { t: "Classifying numbers", how: ["Rational: can be written as p/q with whole numbers p, q (q ≠ 0). Terminating and recurring decimals are rational.", "Irrational: a decimal that never ends and never repeats, e.g. π, √2.", "A square root is rational only if the number is a perfect square (or a square of a fraction)."], q: "Classify: √49, √12, 0.125, 0.3̇, π, 7/9, √(9/16).", w: ["√49 = 7 → rational", "√12 is not a perfect square → irrational", "0.125 = 1/8 → rational; 0.3̇ = 1/3 → rational", "π → irrational; 7/9 → rational", "√(9/16) = 3/4 → rational"], a: "Irrational: √12 and π. All the others are rational." },
+  { t: "Proving a number is rational", how: ["Write it in the form p/q with whole numbers."], q: "Show that 2.35 and 1.4̇ are rational.", w: ["2.35 = 235/100 = 47/20", "1.4̇ = 1 + 4/9 = 13/9"], a: "Both can be written as fractions (47/20 and 13/9), so both are rational." },
+  { t: "Finding an irrational number between two values", how: ["Square the two values.", "Pick a whole number between the squares that is not a perfect square.", "Its square root lies between the two values."], q: "Write down an irrational number between 5 and 6.", w: ["5² = 25 and 6² = 36", "Choose 30 (not a perfect square)."], a: "√30 (any √26 … √35 works)" },
+  { t: "Sums and products of surds", how: ["Simplify first, then decide.", "Rational × irrational (non-zero) is irrational, but two irrationals can multiply to give a rational."], q: "Is (a) √2 × √8 (b) √3 + 2 rational or irrational?", w: ["(a) √2 × √8 = √16 = 4 → rational", "(b) √3 is irrational and adding 2 doesn't remove that → irrational"], a: "(a) rational (b) irrational" }
+],
+m3: [
+  { t: "One recurring digit", how: ["Let x = the decimal.", "Multiply by 10 so the recurring part lines up.", "Subtract, then solve for x and simplify."], q: "Write 0.5̇ as a fraction.", w: ["x = 0.555…", "10x = 5.555…", "10x − x: 9x = 5", "x = 5/9"], a: "5/9" },
+  { t: "Two recurring digits", how: ["Multiply by 100 because two digits repeat.", "Subtract and simplify."], q: "Write 0.4̇5̇ as a fraction.", w: ["x = 0.4545…", "100x = 45.4545…", "99x = 45", "x = 45/99 = 5/11"], a: "5/11" },
+  { t: "Three recurring digits", how: ["Multiply by 1000.", "Subtract and simplify."], q: "Write 0.1̇23̇ as a fraction.", w: ["x = 0.123123…", "1000x = 123.123…", "999x = 123", "x = 123/999 = 41/333"], a: "41/333" },
+  { t: "Mixed recurring decimal (a digit before the repeat)", how: ["Multiply so that the non-recurring part moves in front of the point.", "Multiply again so one repeat block is also in front.", "Subtract the two equations."], q: "Write 0.23̇ as a fraction.", w: ["x = 0.2333…", "10x = 2.333…", "100x = 23.333…", "100x − 10x: 90x = 21", "x = 21/90 = 7/30"], a: "7/30" },
+  { t: "Recurring decimal greater than 1", how: ["Deal with the decimal part, then add the whole number, or include it in the algebra."], q: "Write 2.1̇8̇ as a mixed number.", w: ["x = 2.1818…", "100x = 218.1818…", "99x = 216", "x = 216/99 = 24/11"], a: "24/11 = 2 2/11" },
+  { t: "Proving a decimal equals a fraction", how: ["Do the algebra fully, showing both equations and the subtraction.", "Finish with the simplified fraction the question gave."], q: "Prove that 0.8̇1̇ = 9/11.", w: ["x = 0.8181…", "100x = 81.8181…", "99x = 81", "x = 81/99 = 9/11 ✓"], a: "Shown: 0.8̇1̇ = 9/11" }
+],
+m4: [
+  { t: "Simplifying a surd", how: ["Split the number into a perfect square × another number.", "Use √(ab) = √a × √b and take the square root of the perfect square."], q: "Simplify √72.", w: ["72 = 36 × 2", "√72 = √36 × √2 = 6√2"], a: "6√2" },
+  { t: "Adding and subtracting surds", how: ["Simplify each surd first.", "Only like surds (same number under the root) can be collected."], q: "Simplify √75 − √12 + √27.", w: ["√75 = 5√3, √12 = 2√3, √27 = 3√3", "5√3 − 2√3 + 3√3 = 6√3"], a: "6√3" },
+  { t: "Multiplying surds", how: ["Multiply numbers outside together and numbers inside together.", "Simplify at the end."], q: "Simplify 3√6 × 2√10.", w: ["3 × 2 = 6, √6 × √10 = √60", "√60 = √4 × √15 = 2√15", "6 × 2√15 = 12√15"], a: "12√15" },
+  { t: "Expanding brackets with surds", how: ["Expand like normal brackets.", "Remember √a × √a = a."], q: "Expand and simplify (3 + √2)(5 − √2).", w: ["3 × 5 = 15, 3 × (−√2) = −3√2", "√2 × 5 = 5√2, √2 × (−√2) = −2", "15 − 2 − 3√2 + 5√2 = 13 + 2√2"], a: "13 + 2√2" },
+  { t: "Rationalising a single surd denominator", how: ["Multiply the top and bottom by the surd in the denominator.", "Simplify."], q: "Rationalise 10/√5.", w: ["10/√5 × √5/√5 = 10√5/5", "= 2√5"], a: "2√5" },
+  { t: "Rationalising with a conjugate", how: ["If the denominator is a + √b, multiply top and bottom by a − √b (and the other way round).", "The bottom becomes a² − b, which has no surd."], q: "Rationalise 4/(3 + √5).", w: ["Multiply by (3 − √5)/(3 − √5)", "Bottom: 3² − (√5)² = 9 − 5 = 4", "Top: 4(3 − √5)", "4(3 − √5)/4 = 3 − √5"], a: "3 − √5" }
+],
+m5: [
+  { t: "Multiplying and dividing powers", how: ["Same base, multiply: add the indices.", "Same base, divide: subtract the indices.", "Deal with numbers in front separately."], q: "Simplify 4x⁵y² × 3x²y⁴ ÷ 6x³y.", w: ["Numbers: 4 × 3 ÷ 6 = 2", "x: 5 + 2 − 3 = 4", "y: 2 + 4 − 1 = 5"], a: "2x⁴y⁵" },
+  { t: "Power of a power", how: ["Multiply the indices.", "Every factor inside the bracket is raised to the power, including the number."], q: "Simplify (3a²b³)³.", w: ["3³ = 27", "(a²)³ = a⁶, (b³)³ = b⁹"], a: "27a⁶b⁹" },
+  { t: "Zero index", how: ["Anything (except 0) to the power 0 is 1."], q: "Evaluate 7⁰ + 4 × 3⁰ − (2x)⁰.", w: ["7⁰ = 1, 3⁰ = 1, (2x)⁰ = 1", "1 + 4 − 1 = 4"], a: "4" },
+  { t: "Negative indices", how: ["a⁻ⁿ = 1/aⁿ: a negative index means 'one over'.", "For a fraction, flip it and make the index positive."], q: "Evaluate (a) 2⁻³ (b) (3/5)⁻².", w: ["(a) 2⁻³ = 1/2³ = 1/8", "(b) (3/5)⁻² = (5/3)² = 25/9"], a: "(a) 1/8 (b) 25/9" },
+  { t: "Simplifying with negative indices", how: ["Use the laws as normal, then rewrite any negative index as a fraction if asked."], q: "Simplify 10p⁻²q³ ÷ 5p³q⁻¹, giving your answer with positive indices.", w: ["10 ÷ 5 = 2", "p: −2 − 3 = −5, q: 3 − (−1) = 4", "2p⁻⁵q⁴ = 2q⁴/p⁵"], a: "2q⁴/p⁵" },
+  { t: "Solving for an unknown index", how: ["Write both sides as powers of the same base.", "Set the indices equal."], q: "Solve 2ˣ = 1/32.", w: ["1/32 = 1/2⁵ = 2⁻⁵", "So x = −5"], a: "x = −5" }
+],
+m6: [
+  { t: "Unit fraction index (roots)", how: ["a^(1/n) = ⁿ√a: the denominator is the root."], q: "Evaluate (a) 49^(1/2) (b) 125^(1/3) (c) 81^(1/4).", w: ["(a) √49 = 7", "(b) ∛125 = 5", "(c) ⁴√81 = 3"], a: "(a) 7 (b) 5 (c) 3" },
+  { t: "Fractional index m/n", how: ["Root first (denominator), then power (numerator): a^(m/n) = (ⁿ√a)^m."], q: "Evaluate 27^(2/3).", w: ["∛27 = 3", "3² = 9"], a: "9" },
+  { t: "Negative fractional index", how: ["Flip first (negative), then root, then power."], q: "Evaluate 16^(−3/4).", w: ["16^(−3/4) = 1/16^(3/4)", "⁴√16 = 2, 2³ = 8"], a: "1/8" },
+  { t: "Fraction raised to a fractional index", how: ["Apply the index to the top and the bottom separately (flip first if negative)."], q: "Evaluate (8/27)^(−2/3).", w: ["Flip: (27/8)^(2/3)", "∛27 = 3, ∛8 = 2 → (3/2)² = 9/4"], a: "9/4" },
+  { t: "Simplifying algebra with fractional indices", how: ["Use the same laws: multiply indices for a power of a power."], q: "Simplify (64x⁹)^(2/3).", w: ["64^(2/3) = (∛64)² = 4² = 16", "(x⁹)^(2/3) = x⁶"], a: "16x⁶" },
+  { t: "Writing roots as indices", how: ["√x = x^(1/2), 1/√x = x^(−1/2), ∛(x²) = x^(2/3)."], q: "Write x²√x as a single power of x.", w: ["√x = x^(1/2)", "x² × x^(1/2) = x^(2 + 1/2) = x^(5/2)"], a: "x^(5/2)" }
+],
+m7: [
+  { t: "Writing a large number in standard form", how: ["Write A × 10ⁿ with 1 ≤ A < 10.", "n = how many places the decimal point moved left."], q: "Write 6 040 000 in standard form.", w: ["A = 6.04", "The point moves 6 places."], a: "6.04 × 10⁶" },
+  { t: "Writing a small number in standard form", how: ["Move the point right until 1 ≤ A < 10; n is negative."], q: "Write 0.000 307 in standard form.", w: ["A = 3.07", "The point moves 4 places right → 10⁻⁴"], a: "3.07 × 10⁻⁴" },
+  { t: "Converting back to an ordinary number", how: ["Positive power: move the point right. Negative power: move it left."], q: "Write 4.5 × 10⁻³ as an ordinary number.", w: ["Move the point 3 places left."], a: "0.0045" },
+  { t: "Multiplying and dividing", how: ["Multiply (or divide) the numbers; add (or subtract) the powers.", "Adjust so the first number is between 1 and 10."], q: "Work out (6 × 10⁵) × (4 × 10⁻²).", w: ["6 × 4 = 24, 10⁵ × 10⁻² = 10³", "24 × 10³ = 2.4 × 10⁴"], a: "2.4 × 10⁴" },
+  { t: "Dividing with an adjustment", how: ["Divide the numbers and subtract the powers, then correct A."], q: "Work out (3 × 10⁴) ÷ (6 × 10⁻³).", w: ["3 ÷ 6 = 0.5, 10⁴ ÷ 10⁻³ = 10⁷", "0.5 × 10⁷ = 5 × 10⁶"], a: "5 × 10⁶" },
+  { t: "Adding and subtracting", how: ["Make the powers the same (or change to ordinary numbers) first."], q: "Work out 7.2 × 10⁵ − 4 × 10⁴.", w: ["4 × 10⁴ = 0.4 × 10⁵", "7.2 − 0.4 = 6.8"], a: "6.8 × 10⁵" },
+  { t: "Ordering numbers in standard form", how: ["Compare the powers first; if they are equal, compare the first numbers."], q: "Order from smallest: 3.1 × 10⁻², 9 × 10⁻³, 1.2 × 10⁻².", w: ["9 × 10⁻³ = 0.009, 1.2 × 10⁻² = 0.012, 3.1 × 10⁻² = 0.031"], a: "9 × 10⁻³, 1.2 × 10⁻², 3.1 × 10⁻²" }
+],
+a1: [
+  { t: "Vocabulary: term, expression, equation, formula, identity", how: ["Expression: no equals sign (3x + 2).", "Equation: true for particular values (3x + 2 = 11).", "Formula: links quantities (A = lw).", "Identity: true for every value (2(x + 1) ≡ 2x + 2)."], q: "Is each one an expression, equation, formula or identity? (a) 5y − 3 (b) 5y − 3 = 12 (c) v = u + at (d) 3(a + b) ≡ 3a + 3b", w: ["(a) no equals sign → expression", "(b) solvable for y → equation", "(c) links v, u, a and t → formula", "(d) true for all a and b → identity"], a: "(a) expression (b) equation (c) formula (d) identity" },
+  { t: "Writing expressions from words", how: ["Turn each phrase into symbols: 'more than' is +, 'less than' is −, 'times' is ×.", "Use brackets when something is done to a whole amount."], q: "A pen costs p rupees and a notebook costs 3 rupees more than the pen. Write an expression for the cost of 4 pens and 2 notebooks.", w: ["Notebook = p + 3", "4p + 2(p + 3) = 4p + 2p + 6"], a: "6p + 6" },
+  { t: "Collecting like terms", how: ["Only terms with exactly the same letters and powers can be combined."], q: "Simplify 3a² + 5ab − a² − 2ab + 4.", w: ["a² terms: 3a² − a² = 2a²", "ab terms: 5ab − 2ab = 3ab"], a: "2a² + 3ab + 4" },
+  { t: "Substitution with negatives", how: ["Put brackets round negative numbers when you substitute.", "Follow BIDMAS: powers before multiplying."], q: "Find 3x² − 2xy when x = −2 and y = 5.", w: ["3(−2)² = 3 × 4 = 12", "2(−2)(5) = −20", "12 − (−20) = 32"], a: "32" }
+],
+a2: [
+  { t: "Expanding a single bracket", how: ["Multiply every term inside by the term outside, signs included."], q: "Expand −3x(2x − 5).", w: ["−3x × 2x = −6x²", "−3x × −5 = +15x"], a: "−6x² + 15x" },
+  { t: "Expanding and simplifying two brackets", how: ["Expand each bracket, then collect like terms.", "Watch the sign in front of the second bracket."], q: "Expand and simplify 4(2y − 1) − 3(y − 5).", w: ["8y − 4 − 3y + 15"], a: "5y + 11" },
+  { t: "Expanding double brackets", how: ["Multiply each term in the first bracket by each term in the second (FOIL).", "Collect the middle terms."], q: "Expand (x − 7)(x + 3).", w: ["x² + 3x − 7x − 21"], a: "x² − 4x − 21" },
+  { t: "Double brackets with coefficients", how: ["Same method; keep track of the numbers and signs."], q: "Expand (3x − 2)(2x − 5).", w: ["6x² − 15x − 4x + 10"], a: "6x² − 19x + 10" },
+  { t: "Squaring a bracket", how: ["Write it as two brackets: (a + b)² = (a + b)(a + b). Don't just square each term."], q: "Expand (2x + 3)².", w: ["(2x + 3)(2x + 3) = 4x² + 6x + 6x + 9"], a: "4x² + 12x + 9" },
+  { t: "Expanding three brackets", how: ["Expand two brackets first, then multiply the result by the third."], q: "Expand (x + 1)(x + 2)(x − 3).", w: ["(x + 1)(x + 2) = x² + 3x + 2", "(x² + 3x + 2)(x − 3) = x³ − 3x² + 3x² − 9x + 2x − 6"], a: "x³ − 7x − 6" }
+],
+a3: [
+  { t: "Expanding with (a + b)² and (a − b)²", how: ["(a + b)² = a² + 2ab + b²", "(a − b)² = a² − 2ab + b²"], q: "Expand (4m − 3n)².", w: ["a = 4m, b = 3n", "(4m)² − 2(4m)(3n) + (3n)²"], a: "16m² − 24mn + 9n²" },
+  { t: "Difference of two squares", how: ["(a + b)(a − b) = a² − b²", "To factorise, spot two square terms with a minus between them."], q: "Factorise 25x² − 16y².", w: ["25x² = (5x)², 16y² = (4y)²"], a: "(5x + 4y)(5x − 4y)" },
+  { t: "Using identities to calculate", how: ["Rewrite the numbers so an identity fits, e.g. 103² = (100 + 3)²."], q: "Without a calculator, find (a) 103² (b) 98 × 102.", w: ["(a) (100 + 3)² = 10 000 + 600 + 9 = 10 609", "(b) (100 − 2)(100 + 2) = 100² − 2² = 10 000 − 4 = 9996"], a: "(a) 10 609 (b) 9996" },
+  { t: "Finding a missing value with an identity", how: ["Expand one side and compare it with the other side term by term."], q: "Find a and b if (x + a)² ≡ x² + 10x + b.", w: ["(x + a)² = x² + 2ax + a²", "2a = 10 → a = 5", "b = a² = 25"], a: "a = 5, b = 25" },
+  { t: "Using a² + b² from (a + b) and ab", how: ["Rearrange (a + b)² = a² + 2ab + b² to a² + b² = (a + b)² − 2ab."], q: "If x + y = 9 and xy = 14, find x² + y².", w: ["x² + y² = 9² − 2(14) = 81 − 28"], a: "53" },
+  { t: "Proving an identity", how: ["Expand and simplify one side until it matches the other."], q: "Show that (n + 1)² − (n − 1)² ≡ 4n.", w: ["(n² + 2n + 1) − (n² − 2n + 1)", "= 4n ✓"], a: "Shown" }
+],
+a4: [
+  { t: "One-step and two-step rearranging", how: ["Undo the operations in reverse order, doing the same to both sides."], q: "Make u the subject of v = u + at.", w: ["Subtract at from both sides."], a: "u = v − at" },
+  { t: "Subject inside a fraction", how: ["Multiply out the denominator first, then undo the rest."], q: "Make x the subject of y = (2x + 7)/3.", w: ["3y = 2x + 7", "3y − 7 = 2x"], a: "x = (3y − 7)/2" },
+  { t: "Subject with a power", how: ["Isolate the power, then take the root of both sides."], q: "Make r the subject of A = πr².", w: ["r² = A/π"], a: "r = √(A/π)" },
+  { t: "Subject inside a root", how: ["Isolate the root, then square both sides."], q: "Make L the subject of T = 2π√(L/g).", w: ["T/(2π) = √(L/g)", "T²/(4π²) = L/g"], a: "L = gT²/(4π²)" },
+  { t: "Subject appearing twice", how: ["Get all terms with the subject on one side.", "Factorise the subject out, then divide."], q: "Make x the subject of ax + b = cx + d.", w: ["ax − cx = d − b", "x(a − c) = d − b"], a: "x = (d − b)/(a − c)" },
+  { t: "Subject in the denominator", how: ["Multiply through by the denominator first."], q: "Make t the subject of s = d/t.", w: ["st = d"], a: "t = d/s" }
+],
+a5: [
+  { t: "Equations with unknowns on both sides", how: ["Move the letter terms to one side and the numbers to the other."], q: "Solve 7x − 4 = 3x + 16.", w: ["7x − 3x = 16 + 4", "4x = 20"], a: "x = 5" },
+  { t: "Equations with brackets", how: ["Expand the brackets first."], q: "Solve 3(2x − 1) = 2(x + 5) + 3.", w: ["6x − 3 = 2x + 10 + 3", "4x = 16"], a: "x = 4" },
+  { t: "Equations with fractions", how: ["Multiply every term by the lowest common denominator."], q: "Solve (x + 2)/3 − (x − 1)/4 = 2.", w: ["× 12: 4(x + 2) − 3(x − 1) = 24", "4x + 8 − 3x + 3 = 24", "x + 11 = 24"], a: "x = 13" },
+  { t: "Forming and solving an equation", how: ["Choose a letter, write the equation from the words, solve, and answer in context."], q: "The angles of a triangle are x, 2x and x + 20 degrees. Find x.", w: ["x + 2x + x + 20 = 180", "4x = 160"], a: "x = 40 (angles 40°, 80°, 60°)" },
+  { t: "Solving a linear inequality", how: ["Solve like an equation.", "If you multiply or divide by a negative number, flip the inequality sign."], q: "Solve 5 − 3x > 17.", w: ["−3x > 12", "Divide by −3 and flip: x < −4"], a: "x < −4" },
+  { t: "Double inequality and listing integers", how: ["Do the same thing to all three parts.", "List the whole numbers that fit, checking the ends."], q: "Solve −3 ≤ 2x + 1 < 9 and list the integer solutions.", w: ["−4 ≤ 2x < 8", "−2 ≤ x < 4"], a: "−2, −1, 0, 1, 2, 3" }
+],
+a6: [
+  { t: "Drawing a single inequality", how: ["Closed (filled) circle for ≤ or ≥; open circle for < or >.", "Arrow points the way the values go."], q: "Show x < 2 on a number line.", w: ["Open circle at 2 (2 is not included).", "Arrow pointing left."], a: "Open circle at 2, arrow to the left" },
+  { t: "Drawing a double inequality", how: ["Mark both ends with the correct circles and join them with a line."], q: "Show −1 < x ≤ 4.", w: ["Open circle at −1, closed circle at 4, joined by a line."], a: "Open at −1, filled at 4, line between" },
+  { t: "Reading an inequality from a diagram", how: ["Look at each circle: filled means 'or equal to'.", "Write the inequality from left to right."], q: "A number line has a filled circle at −2 joined to an open circle at 3. Write the inequality.", w: ["Filled at −2 → −2 ≤ x; open at 3 → x < 3"], a: "−2 ≤ x < 3" },
+  { t: "Solve, then represent and list", how: ["Solve the inequality first, then draw it.", "Integer values: whole numbers on the line that are inside the region."], q: "Solve 4x − 3 ≥ 9, show it on a number line and give the smallest integer value.", w: ["4x ≥ 12 → x ≥ 3", "Filled circle at 3, arrow to the right"], a: "x ≥ 3; smallest integer 3" }
+],
+g1: [
+  { t: "Sum of interior angles", how: ["Sum = (n − 2) × 180°, where n is the number of sides."], q: "Find the sum of the interior angles of a nonagon (9 sides).", w: ["(9 − 2) × 180 = 7 × 180"], a: "1260°" },
+  { t: "One interior angle of a regular polygon", how: ["Divide the sum by n, or work out 180° − exterior angle."], q: "Find each interior angle of a regular octagon.", w: ["Exterior = 360 ÷ 8 = 45°", "Interior = 180 − 45"], a: "135°" },
+  { t: "Exterior angle of a regular polygon", how: ["Exterior angles always add to 360°; each = 360° ÷ n."], q: "Find each exterior angle of a regular 12-sided polygon.", w: ["360 ÷ 12"], a: "30°" },
+  { t: "Number of sides from an angle", how: ["Find the exterior angle (180° − interior if needed).", "n = 360° ÷ exterior angle."], q: "Each interior angle of a regular polygon is 156°. How many sides does it have?", w: ["Exterior = 180 − 156 = 24°", "n = 360 ÷ 24"], a: "15 sides" },
+  { t: "Missing angle in an irregular polygon", how: ["Find the angle sum, then subtract the known angles."], q: "A pentagon has angles 100°, 115°, 95°, 120° and x. Find x.", w: ["Sum = 3 × 180 = 540°", "x = 540 − (100 + 115 + 95 + 120) = 540 − 430"], a: "x = 110°" },
+  { t: "Checking whether a regular polygon is possible", how: ["The number of sides must be a whole number."], q: "Can a regular polygon have an interior angle of 130°?", w: ["Exterior = 50°", "360 ÷ 50 = 7.2, not a whole number"], a: "No" }
+],
+g2: [
+  { t: "Angles in a triangle", how: ["Angles in a triangle add to 180°."], q: "A triangle has angles 47° and 68°. Find the third.", w: ["180 − 47 − 68"], a: "65°" },
+  { t: "Isosceles triangles", how: ["The two base angles are equal.", "Give the reason: 'base angles of an isosceles triangle are equal'."], q: "An isosceles triangle has a base angle of 72°. Find the other two angles.", w: ["Other base angle = 72°", "Apex = 180 − 72 − 72 = 36°"], a: "72° and 36°" },
+  { t: "Exterior angle of a triangle", how: ["An exterior angle equals the sum of the two opposite interior angles."], q: "Two interior angles are 38° and 57°. Find the exterior angle at the third vertex.", w: ["38 + 57"], a: "95°" },
+  { t: "Angles in a quadrilateral", how: ["Angles in a quadrilateral add to 360°."], q: "A quadrilateral has angles 85°, 110° and 95°. Find the fourth.", w: ["360 − 85 − 110 − 95"], a: "70°" },
+  { t: "Special quadrilaterals", how: ["Parallelogram: opposite angles equal, co-interior angles add to 180°.", "Kite: one pair of equal opposite angles.", "Rhombus: diagonals cross at 90° and bisect the angles."], q: "In a parallelogram one angle is 3x and the next is x + 20. Find x and all four angles.", w: ["Co-interior angles: 3x + x + 20 = 180", "4x = 160 → x = 40"], a: "x = 40; angles 120°, 60°, 120°, 60°" },
+  { t: "Missing angles with reasons", how: ["Write the reason next to every step (angles on a straight line = 180°, vertically opposite angles are equal, etc.)."], q: "Triangle ABC has angle A = 50° and AB = AC. The side BC is extended to D. Find angle ACD.", w: ["Angle B = angle C = (180 − 50) ÷ 2 = 65° (base angles of an isosceles triangle)", "Angle ACD = 180 − 65 = 115° (angles on a straight line)"], a: "115°" }
+],
+g3: [
+  { t: "Finding the hypotenuse", how: ["c² = a² + b²; the hypotenuse is opposite the right angle.", "Add the squares, then square root."], q: "Find the hypotenuse when the other sides are 9 cm and 12 cm.", w: ["c² = 81 + 144 = 225", "c = √225"], a: "15 cm" },
+  { t: "Finding a shorter side", how: ["Subtract: a² = c² − b²."], q: "A right-angled triangle has hypotenuse 13 cm and one side 5 cm. Find the other side.", w: ["a² = 169 − 25 = 144"], a: "12 cm" },
+  { t: "Answer that isn't whole (rounding)", how: ["Leave the square root on your calculator, then round to the accuracy asked."], q: "Find the hypotenuse when the sides are 6 cm and 7 cm, to 1 d.p.", w: ["c² = 36 + 49 = 85", "c = √85 = 9.219…"], a: "9.2 cm" },
+  { t: "Word problems", how: ["Draw a sketch and mark the right angle.", "Decide whether you need the hypotenuse or a shorter side."], q: "A 10 m ladder leans against a wall with its foot 6 m from the wall. How high up the wall does it reach?", w: ["Ladder = hypotenuse = 10", "h² = 10² − 6² = 100 − 36 = 64"], a: "8 m" },
+  { t: "Testing for a right angle", how: ["Square the longest side and compare with the sum of the squares of the other two."], q: "Is a triangle with sides 8, 15 and 17 right-angled?", w: ["17² = 289", "8² + 15² = 64 + 225 = 289 ✓"], a: "Yes, because 8² + 15² = 17²" },
+  { t: "Distance between two points", how: ["Make a right-angled triangle from the horizontal and vertical differences."], q: "Find the distance between (1, 2) and (7, 10).", w: ["Across: 7 − 1 = 6, up: 10 − 2 = 8", "d² = 36 + 64 = 100"], a: "10 units" }
+],
+g4: [
+  { t: "Three rules of bearings", how: ["Measure from north.", "Measure clockwise.", "Always write three figures (e.g. 045°)."], q: "Write as bearings: (a) due east (b) south-west (c) 8° east of north.", w: ["(a) 90° clockwise from north → 090°", "(b) 180 + 45 = 225°", "(c) 008°"], a: "(a) 090° (b) 225° (c) 008°" },
+  { t: "Back bearings", how: ["If the bearing is less than 180°, add 180°.", "If it is 180° or more, subtract 180°."], q: "The bearing of B from A is 064°. Find the bearing of A from B.", w: ["64 + 180"], a: "244°" },
+  { t: "Bearing from angles in a diagram", how: ["Draw a north line at the point you are measuring from.", "Use angle facts (parallel north lines, angles on a straight line) to find the clockwise angle."], q: "From A, the line to C is 30° west of south. Find the bearing of C from A.", w: ["South is 180°", "30° further round clockwise (towards west): 180 + 30"], a: "210°" },
+  { t: "Bearings with Pythagoras", how: ["Sketch the journey with north arrows and right angles.", "Use Pythagoras for the straight-line distance."], q: "A boat sails 5 km due north, then 12 km due east. How far is it from its start?", w: ["d² = 5² + 12² = 25 + 144 = 169"], a: "13 km" },
+  { t: "Scale drawings", how: ["Convert distances with the scale, then measure the bearing with a protractor from north."], q: "Scale 1 cm : 2 km. A ship sails 7 km on a bearing of 120°. How long is the line on the map?", w: ["7 ÷ 2 = 3.5 cm"], a: "3.5 cm drawn at 120° from north" }
+],
+f1: [
+  { t: "Is the mapping a function?", how: ["A function sends every input to exactly ONE output.", "Two inputs may share an output; one input must not have two outputs."], q: "Which is a function? A: {1→4, 2→4, 3→9}  B: {9→3, 9→−3, 4→2}", w: ["A: each input has one output → function", "B: 9 maps to two outputs → not a function"], a: "A is a function; B is not" },
+  { t: "Completing a mapping diagram", how: ["Apply the rule to each input."], q: "Draw the mapping for f(x) = 2x − 1 with inputs {0, 1, 2, 3}.", w: ["0→−1, 1→1, 2→3, 3→5"], a: "0→−1, 1→1, 2→3, 3→5" },
+  { t: "Finding the rule from a mapping", how: ["Look at how the outputs change as the inputs go up by 1."], q: "A mapping has 1→5, 2→8, 3→11, 4→14. Find the rule.", w: ["Outputs go up by 3, so 3x", "3(1) = 3, need 5 → +2"], a: "f(x) = 3x + 2" },
+  { t: "Type of mapping", how: ["One-to-one: each output comes from one input.", "Many-to-one: some outputs come from more than one input."], q: "What type of mapping is {−2→4, −1→1, 1→1, 2→4}?", w: ["4 comes from −2 and 2"], a: "Many-to-one (and it is a function)" }
+],
+f2: [
+  { t: "Range from a listed domain", how: ["Substitute every value of the domain; the outputs form the range."], q: "f(x) = x² + 1, domain {−2, −1, 0, 1, 2}. Find the range.", w: ["f(−2) = 5, f(−1) = 2, f(0) = 1, f(1) = 2, f(2) = 5"], a: "Range {1, 2, 5}" },
+  { t: "Range from an interval domain", how: ["For a linear function, find the outputs at both ends of the interval."], q: "f(x) = 4x − 3 for 1 ≤ x ≤ 5. Find the range.", w: ["f(1) = 1, f(5) = 17"], a: "1 ≤ f(x) ≤ 17" },
+  { t: "Values that must be excluded", how: ["You can't divide by zero: exclude values that make the denominator 0.", "You can't take a real square root of a negative number."], q: "State the domain of (a) f(x) = 5/(x + 2) (b) g(x) = √(x − 3).", w: ["(a) x + 2 ≠ 0 → x ≠ −2", "(b) x − 3 ≥ 0 → x ≥ 3"], a: "(a) all x except −2 (b) x ≥ 3" },
+  { t: "Range of a squared function", how: ["A square is never negative, so x² ≥ 0."], q: "Find the range of f(x) = x² − 4 for all real x.", w: ["x² ≥ 0, so x² − 4 ≥ −4"], a: "f(x) ≥ −4" }
+],
+f3: [
+  { t: "Applying the vertical line test", how: ["Imagine moving a vertical line across the graph.", "If it ever cuts the graph more than once, it is NOT a function."], q: "Which are functions? (a) a straight line y = 2x + 1 (b) a circle (c) a parabola y = x² (d) a vertical line x = 3", w: ["(a) cuts once → function", "(b) cuts twice in the middle → not a function", "(c) cuts once → function", "(d) the whole line is vertical → not a function"], a: "(a) and (c) are functions" },
+  { t: "Sideways parabola", how: ["Graphs like x = y² open sideways, so a vertical line cuts them twice."], q: "Does x = y² represent y as a function of x?", w: ["At x = 4, y = 2 and y = −2"], a: "No: one input gives two outputs" },
+  { t: "Explaining your answer", how: ["Name a specific x value where the line meets the graph twice."], q: "Explain why x² + y² = 9 is not a function.", w: ["The line x = 0 meets the graph at (0, 3) and (0, −3)."], a: "One input (x = 0) has two outputs, so it fails the test." }
+],
+f4: [
+  { t: "Classifying by form", how: ["Constant: f(x) = c. Linear: highest power 1. Quadratic: x². Cubic: x³. Reciprocal: k/x."], q: "Classify: (a) f(x) = 7 (b) g(x) = 2 − 5x (c) h(x) = x² − 3x (d) k(x) = 4/x (e) p(x) = x³ + 1", w: ["(a) constant (b) linear (c) quadratic (d) reciprocal (e) cubic"], a: "As listed" },
+  { t: "One-to-one or many-to-one", how: ["Look for two different inputs with the same output."], q: "Is f(x) = x² one-to-one?", w: ["f(3) = 9 and f(−3) = 9"], a: "No, it is many-to-one" },
+  { t: "Onto or into", how: ["Onto: every value in the codomain is used as an output.", "Into: some values in the codomain are never reached."], q: "f: {1, 2, 3} → {2, 4, 6, 8}, f(x) = 2x. Onto or into?", w: ["Outputs are 2, 4, 6; 8 is never reached"], a: "Into" },
+  { t: "Matching graphs to types", how: ["Linear: straight line. Quadratic: U or ∩ shape. Cubic: S shape. Reciprocal: two curves that never touch the axes."], q: "Which type has a graph shaped like a U?", w: [], a: "Quadratic" }
+],
+f5: [
+  { t: "Evaluating f(a)", how: ["Replace every x with the number, using brackets for negatives."], q: "f(x) = 3x² − 2x. Find f(−2).", w: ["3(−2)² − 2(−2) = 12 + 4"], a: "16" },
+  { t: "Solving f(x) = k", how: ["Set the rule equal to the value and solve."], q: "g(x) = 5x − 7. Solve g(x) = 18.", w: ["5x − 7 = 18 → 5x = 25"], a: "x = 5" },
+  { t: "Substituting an expression", how: ["Put the whole expression in brackets in place of x, then simplify."], q: "f(x) = 2x + 3. Find f(x − 1) and f(2x).", w: ["f(x − 1) = 2(x − 1) + 3 = 2x + 1", "f(2x) = 2(2x) + 3 = 4x + 3"], a: "2x + 1 and 4x + 3" },
+  { t: "Combining function values", how: ["Work out each value, then combine."], q: "f(x) = x² and g(x) = x + 4. Find f(3) − 2g(1).", w: ["f(3) = 9, g(1) = 5", "9 − 10"], a: "−1" }
+],
+f6: [
+  { t: "Composite of numbers", how: ["fg(x) means f(g(x)): do g first, then f."], q: "f(x) = 2x + 1, g(x) = x². Find fg(3) and gf(3).", w: ["fg(3): g(3) = 9, f(9) = 19", "gf(3): f(3) = 7, g(7) = 49"], a: "fg(3) = 19, gf(3) = 49" },
+  { t: "Composite expression", how: ["Replace x in the outer function with the whole inner function."], q: "f(x) = 3x − 2, g(x) = x + 5. Find fg(x).", w: ["f(x + 5) = 3(x + 5) − 2 = 3x + 15 − 2"], a: "fg(x) = 3x + 13" },
+  { t: "Order matters", how: ["Work out both orders and compare."], q: "f(x) = x + 2, g(x) = 3x. Find fg(x) and gf(x). Are they equal?", w: ["fg(x) = 3x + 2", "gf(x) = 3(x + 2) = 3x + 6"], a: "No: 3x + 2 ≠ 3x + 6" },
+  { t: "Solving a composite equation", how: ["Find the composite first, then solve."], q: "f(x) = 2x − 1, g(x) = x + 3. Solve fg(x) = 15.", w: ["fg(x) = 2(x + 3) − 1 = 2x + 5", "2x + 5 = 15"], a: "x = 5" },
+  { t: "Composite with itself", how: ["ff(x) means apply f twice."], q: "f(x) = 4x − 3. Find ff(x).", w: ["f(4x − 3) = 4(4x − 3) − 3 = 16x − 15"], a: "ff(x) = 16x − 15" }
+]
+});
+
+/* Full-notes guide: Science and Digital Literacy (see guide-math.js for the format) */
+var GUIDE = GUIDE || {};
+Object.assign(GUIDE, {
+s1: [
+  { t: "Electron arrangement from atomic number", how: ["Fill shells 2, 8, 8 (for the first 20 elements).", "Number of shells = period; electrons in the outer shell = group."], q: "Give the electron arrangement, group and period of aluminium (atomic number 13).", w: ["13 electrons: 2, 8, 3", "3 shells → period 3; 3 outer electrons → group III"], a: "2,8,3; group III; period 3" },
+  { t: "Working out valency", how: ["Groups I–IV: valency = number of outer electrons.", "Groups V–VII: valency = 8 − outer electrons.", "Group 0 (noble gases): valency 0."], q: "State the valency of (a) potassium 2,8,8,1 (b) nitrogen 2,5 (c) argon 2,8,8.", w: ["(a) 1 outer electron → valency 1", "(b) 8 − 5 = 3", "(c) full outer shell → 0"], a: "(a) 1 (b) 3 (c) 0" },
+  { t: "Writing a formula from valencies", how: ["Swap the valencies and use them as the numbers of each atom.", "Simplify if possible."], q: "Write the formula of the compound of aluminium (valency 3) and oxygen (valency 2).", w: ["Swap: Al₂O₃"], a: "Al₂O₃" },
+  { t: "Trends across a period", how: ["Left to right: metals change to non-metals.", "Atoms get smaller (more protons pull the electrons in)."], q: "Describe how the elements change across period 3 from sodium to argon.", w: ["Na, Mg, Al are metals; Si is a metalloid; P, S, Cl are non-metals; Ar is a noble gas."], a: "Metals become non-metals; atomic radius decreases; outer electrons increase from 1 to 8." },
+  { t: "Trends down a group", how: ["Down a group, atoms get bigger (more shells).", "Elements in the same group have the same number of outer electrons, so react similarly."], q: "Why do lithium, sodium and potassium have similar reactions?", w: ["They are all in group I."], a: "They each have one electron in their outer shell." }
+],
+s2: [
+  { t: "Group I reactivity trend", how: ["Reactivity increases down group I.", "Reason: the outer electron is further from the nucleus, so it is lost more easily."], q: "Explain why potassium reacts more vigorously with water than sodium.", w: ["Potassium has more shells than sodium.", "Its outer electron is further from the nucleus and less strongly attracted."], a: "Potassium loses its outer electron more easily, so it is more reactive." },
+  { t: "Group I with water", how: ["metal + water → metal hydroxide + hydrogen", "Observations: floats, fizzes, moves around, melts (sodium), lilac flame (potassium)."], q: "Write a word equation for sodium reacting with water and give two observations.", w: ["sodium + water → sodium hydroxide + hydrogen"], a: "Fizzes; floats and moves around; melts into a ball. The solution turns alkaline (universal indicator turns purple)." },
+  { t: "Predicting from a trend", how: ["Use the pattern in the table to place a new element."], q: "Rubidium is below potassium. Predict its reaction with water and its melting point.", w: ["Reactivity increases down the group; melting point decreases."], a: "Reacts even more violently (may explode); lower melting point than potassium." },
+  { t: "Group VII trends", how: ["Down group VII: colour gets darker, melting/boiling points increase, reactivity decreases.", "F₂ pale yellow gas, Cl₂ green gas, Br₂ red-brown liquid, I₂ grey-black solid."], q: "Describe the trend in state and colour of the halogens.", w: [], a: "From gas to liquid to solid; colour gets darker going down the group." },
+  { t: "Displacement reactions", how: ["A more reactive halogen displaces a less reactive one from its salt.", "Order: chlorine > bromine > iodine."], q: "Will chlorine react with potassium bromide? Write a word equation if so.", w: ["Chlorine is more reactive than bromine, so yes."], a: "chlorine + potassium bromide → potassium chloride + bromine (solution turns orange)" }
+],
+s3: [
+  { t: "Charge on an ion from the group", how: ["Metals lose electrons → positive ions (group I: +1, II: +2, III: +3).", "Non-metals gain electrons → negative ions (group VII: −1, VI: −2, V: −3)."], q: "Give the ions formed by (a) calcium (b) chlorine (c) aluminium (d) nitrogen.", w: ["(a) group II → Ca²⁺", "(b) group VII → Cl⁻", "(c) group III → Al³⁺", "(d) group V → N³⁻"], a: "Ca²⁺, Cl⁻, Al³⁺, N³⁻" },
+  { t: "Electron arrangement of an ion", how: ["Positive ion: remove electrons. Negative ion: add electrons.", "The ion has the same arrangement as a noble gas."], q: "Give the electron arrangement of (a) Na⁺ (b) S²⁻.", w: ["(a) Na 2,8,1 → loses 1 → 2,8", "(b) S 2,8,6 → gains 2 → 2,8,8"], a: "(a) 2,8 (b) 2,8,8" },
+  { t: "Protons and electrons in an ion", how: ["The number of protons never changes.", "Electrons = protons − charge (for a positive ion)."], q: "How many protons and electrons does Mg²⁺ have? (Mg atomic number 12)", w: ["Protons = 12", "Electrons = 12 − 2 = 10"], a: "12 protons, 10 electrons" },
+  { t: "Naming ions", how: ["Metal ions keep the element name (sodium ion).", "Simple non-metal ions end in -ide (chloride, oxide, sulfide)."], q: "Name the ions O²⁻ and K⁺.", w: [], a: "Oxide ion and potassium ion" }
+],
+s4: [
+  { t: "Describing ionic bonding", how: ["The metal atom transfers its outer electrons to the non-metal atom.", "Both get full outer shells; the oppositely charged ions attract."], q: "Describe how sodium chloride is formed.", w: ["Na (2,8,1) loses one electron → Na⁺ (2,8)", "Cl (2,8,7) gains that electron → Cl⁻ (2,8,8)"], a: "Electron transferred from sodium to chlorine; Na⁺ and Cl⁻ are held together by strong electrostatic attraction." },
+  { t: "Dot-and-cross diagrams", how: ["Show only the outer shells.", "Use dots for one atom's electrons and crosses for the other's.", "Put the ions in square brackets with the charge outside."], q: "Draw a dot-and-cross diagram for magnesium oxide.", w: ["[Mg]²⁺ with an empty outer shell (its 2 electrons have moved)", "[O]²⁻ with 8 outer electrons: 6 dots + 2 crosses"], a: "[Mg]²⁺ [O]²⁻ with oxygen's full shell showing two crosses" },
+  { t: "Ionic formulae", how: ["Balance the charges so the total is zero."], q: "Write the formulae of (a) calcium chloride (b) aluminium oxide.", w: ["(a) Ca²⁺ needs two Cl⁻ → CaCl₂", "(b) 2 × Al³⁺ = +6, 3 × O²⁻ = −6 → Al₂O₃"], a: "CaCl₂ and Al₂O₃" },
+  { t: "Properties of ionic compounds", how: ["High melting points: strong attractions in a giant lattice need lots of energy to break.", "Conduct electricity only when molten or dissolved: the ions are then free to move."], q: "Explain why molten sodium chloride conducts electricity but solid sodium chloride does not.", w: [], a: "In the solid the ions are fixed in the lattice; when molten the ions can move and carry charge." }
+],
+s5: [
+  { t: "Describing a covalent bond", how: ["A covalent bond is a shared pair of electrons between two non-metal atoms.", "Each atom shares enough electrons to get a full outer shell."], q: "Describe the bonding in a hydrogen molecule, H₂.", w: [], a: "The two hydrogen atoms share one pair of electrons (a single covalent bond), so each has 2 outer electrons." },
+  { t: "Number of bonds an atom forms", how: ["Bonds = electrons needed to fill the shell: H 1, O 2, N 3, C 4."], q: "How many covalent bonds do carbon and oxygen form?", w: ["C has 4 outer electrons → needs 4", "O has 6 → needs 2"], a: "Carbon 4, oxygen 2" },
+  { t: "Dot-and-cross for molecules", how: ["Draw overlapping outer shells with the shared pairs in the overlap.", "Show lone pairs too."], q: "Describe the dot-and-cross diagram for water, H₂O.", w: ["O shares one pair with each H.", "O also has two lone pairs."], a: "Two shared pairs (O–H bonds) and two lone pairs on oxygen" },
+  { t: "Double and triple bonds", how: ["Two shared pairs = double bond; three = triple bond."], q: "What type of bonds are in carbon dioxide, O=C=O?", w: [], a: "Two double covalent bonds (carbon shares 2 pairs with each oxygen)." },
+  { t: "Simple molecular versus giant covalent", how: ["Simple molecules (water, CO₂): low melting points; weak forces between molecules.", "Giant covalent (diamond, graphite): very high melting points; many strong covalent bonds to break."], q: "Explain why diamond has a much higher melting point than methane.", w: [], a: "Diamond is a giant structure of strong covalent bonds that must all break; methane is made of small molecules with weak forces between them." }
+],
+s6: [
+  { t: "Word and symbol equations", how: ["carbon dioxide + water → glucose + oxygen (light energy, chlorophyll)", "6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂"], q: "Write the balanced symbol equation for photosynthesis.", w: [], a: "6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂" },
+  { t: "Uses of glucose", how: ["Respiration (energy), converted to starch for storage, cellulose for cell walls, proteins (with nitrates), fats and oils."], q: "Give three ways a plant uses the glucose it makes.", w: [], a: "Respiration; stored as starch; made into cellulose for cell walls (also proteins, fats)." },
+  { t: "Testing a leaf for starch (method)", how: ["Boil in water (kills the cells, softens the leaf).", "Warm in ethanol in a water bath (removes chlorophyll).", "Rinse in water (softens the leaf).", "Add iodine: blue-black = starch present; orange-brown = none."], q: "Describe how to test a leaf for starch and explain each step.", w: [], a: "Boil, decolourise in hot ethanol, rinse, add iodine: blue-black shows starch." },
+  { t: "Safety and reasons in the test", how: ["Ethanol is flammable, so heat it in a water bath, not over a flame."], q: "Why is the ethanol heated in a water bath?", w: [], a: "Ethanol is flammable; a water bath keeps it away from the flame." },
+  { t: "Variegated leaves and destarching", how: ["Destarch a plant by keeping it in the dark for 48 hours.", "Only green parts (with chlorophyll) make starch."], q: "A variegated leaf is tested for starch. Predict and explain the result.", w: [], a: "Green parts turn blue-black; white parts stay orange-brown, because only the parts with chlorophyll photosynthesise." }
+],
+s7: [
+  { t: "Naming the limiting factors", how: ["Light intensity, carbon dioxide concentration and temperature.", "The factor in shortest supply limits the rate."], q: "Name three factors that affect the rate of photosynthesis.", w: [], a: "Light intensity, carbon dioxide concentration, temperature" },
+  { t: "Reading a graph", how: ["Where the line rises, the factor on the x-axis is limiting.", "Where it levels off, something else is limiting."], q: "The rate rises with light intensity and then levels off. Explain both parts.", w: [], a: "At first light is limiting, so more light raises the rate. Later another factor (CO₂ or temperature) is limiting, so more light makes no difference." },
+  { t: "Temperature", how: ["Rate increases with temperature up to an optimum.", "Above it the enzymes are denatured and the rate falls quickly."], q: "Explain why the rate drops sharply above about 40 °C.", w: [], a: "The enzymes that control photosynthesis are denatured, so they no longer work." },
+  { t: "Planning an investigation (pondweed)", how: ["Independent variable: e.g. distance of the lamp.", "Dependent: number of bubbles (oxygen) per minute.", "Control: temperature, CO₂ (same water), same plant, same time."], q: "How could you investigate the effect of light intensity on pondweed?", w: [], a: "Place a lamp at different distances, count bubbles per minute at each, keep temperature and CO₂ constant, repeat and average." },
+  { t: "Greenhouses", how: ["Farmers raise all three factors to increase the yield."], q: "Suggest two ways a greenhouse can increase photosynthesis.", w: [], a: "Heaters to keep a warm temperature; artificial lights; paraffin heaters to add CO₂." }
+],
+s8: [
+  { t: "Labelling the layers", how: ["From top: waxy cuticle, upper epidermis, palisade mesophyll, spongy mesophyll, lower epidermis with stomata and guard cells. Veins contain xylem and phloem."], q: "List the layers of a leaf from the top surface.", w: [], a: "Cuticle, upper epidermis, palisade mesophyll, spongy mesophyll, lower epidermis (with stomata)" },
+  { t: "Adaptations for photosynthesis", how: ["Palisade cells: many chloroplasts, near the top for light.", "Thin, broad leaf: large surface, short distance for gases.", "Transparent epidermis lets light through."], q: "Explain how the palisade layer is adapted.", w: [], a: "Tall, tightly packed cells near the upper surface with many chloroplasts to absorb the most light." },
+  { t: "Adaptations for gas exchange", how: ["Air spaces in spongy mesophyll let gases diffuse.", "Stomata let CO₂ in and O₂ out; guard cells open and close them."], q: "How does carbon dioxide reach the palisade cells?", w: [], a: "It diffuses in through the stomata, through the air spaces in the spongy layer, to the palisade cells." },
+  { t: "Stomata on the lower surface", how: ["The lower surface is shaded and cooler, so less water is lost."], q: "Why are most stomata on the lower surface?", w: [], a: "To reduce water loss by evaporation, as the lower surface is cooler and out of direct sunlight." }
+],
+s9: [
+  { t: "Xylem and phloem", how: ["Xylem: water and minerals, roots → leaves, dead hollow cells, one direction.", "Phloem: sugars (sucrose), leaves → rest of plant, living cells, both directions."], q: "Compare xylem and phloem.", w: [], a: "Xylem carries water and minerals upward in dead tubes; phloem carries sugars both ways in living cells." },
+  { t: "Describing transpiration", how: ["Water evaporates from mesophyll cells and diffuses out through stomata.", "This pulls water up the xylem (transpiration stream)."], q: "Describe the path of water from soil to air.", w: [], a: "Root hair cells (osmosis) → root cortex → xylem → leaf mesophyll → evaporates into air spaces → out through stomata." },
+  { t: "Factors affecting the rate", how: ["Increase: higher temperature, more wind, lower humidity, more light (stomata open).", "Explain each one using evaporation and diffusion."], q: "Explain why transpiration is faster on a hot, dry, windy day.", w: [], a: "Heat speeds up evaporation; dry air and wind keep the concentration of water vapour outside low, so water diffuses out faster." },
+  { t: "Using a potometer", how: ["Measure how far the air bubble moves in a set time.", "Rate = distance moved ÷ time."], q: "A bubble moves 30 mm in 5 minutes. Find the rate of water uptake.", w: ["30 ÷ 5"], a: "6 mm per minute" },
+  { t: "Root hair cells", how: ["Long, thin extension → large surface area for absorbing water and minerals."], q: "How is a root hair cell adapted?", w: [], a: "It has a long projection that increases the surface area for absorbing water (osmosis) and minerals (active transport)." }
+],
+s10: [
+  { t: "Function of each mineral", how: ["Nitrates: make proteins for growth.", "Phosphates: roots and respiration.", "Potassium: enzymes for photosynthesis and respiration; flowers and fruit.", "Magnesium: to make chlorophyll."], q: "State why plants need nitrates and magnesium.", w: [], a: "Nitrates to make proteins (amino acids); magnesium to make chlorophyll." },
+  { t: "Deficiency symptoms", how: ["No nitrate: stunted growth, yellow older leaves.", "No phosphate: poor roots, purple young leaves.", "No potassium: yellow leaves with dead spots.", "No magnesium: yellow leaves with green veins."], q: "A plant is stunted with yellow lower leaves. Which mineral is lacking?", w: [], a: "Nitrate" },
+  { t: "Explaining a symptom", how: ["Link the mineral to its job."], q: "Explain why a lack of magnesium makes leaves yellow.", w: [], a: "Magnesium is needed to make chlorophyll; without it less chlorophyll forms, so the leaves turn yellow and photosynthesise less." },
+  { t: "Fertilisers", how: ["NPK fertilisers replace nitrogen, phosphorus and potassium taken from the soil by crops."], q: "Why do farmers add NPK fertiliser to fields?", w: [], a: "To replace minerals removed by crops, so plants grow well and yields are high." }
+],
+s11: [
+  { t: "Processes that remove CO₂ from the air", how: ["Photosynthesis is the main one; oceans also absorb CO₂."], q: "Name the process that removes carbon dioxide from the air.", w: [], a: "Photosynthesis" },
+  { t: "Processes that return CO₂ to the air", how: ["Respiration (plants, animals, decomposers) and combustion."], q: "Give three processes that release carbon dioxide.", w: [], a: "Respiration, decomposition (respiration by microorganisms), combustion of fuels" },
+  { t: "Following a carbon atom", how: ["Describe each step and name the process."], q: "Explain how carbon in a leaf can end up in the air.", w: [], a: "The leaf falls and decomposers feed on it; their respiration releases the carbon as CO₂. Or an animal eats it and respires." },
+  { t: "Fossil fuels", how: ["Dead organisms buried and compressed over millions of years form coal, oil and gas; burning releases the carbon quickly."], q: "How did carbon become locked in coal?", w: [], a: "Plants died, were buried before decomposing, and were compressed over millions of years." },
+  { t: "Human impacts", how: ["Burning fossil fuels and deforestation raise CO₂, which increases the greenhouse effect."], q: "Explain two ways humans have increased CO₂ in the air.", w: [], a: "Burning fossil fuels releases stored carbon; cutting down forests means less photosynthesis (and burning trees adds CO₂)." }
+],
+s12: [
+  { t: "Naming forces", how: ["Contact forces: friction, air resistance, tension, normal reaction, upthrust.", "Non-contact: gravity (weight), magnetic, electrostatic."], q: "Name the forces on a parachutist falling at steady speed.", w: [], a: "Weight (down) and air resistance (up), which are equal" },
+  { t: "Calculating weight", how: ["Weight (N) = mass (kg) × g (10 N/kg on Earth).", "Convert grams to kilograms first."], q: "Find the weight of a 500 g book.", w: ["500 g = 0.5 kg", "W = 0.5 × 10"], a: "5 N" },
+  { t: "Resultant force", how: ["Same direction: add. Opposite directions: subtract and give the direction of the bigger force."], q: "A car has a 3000 N driving force and 1200 N of friction. Find the resultant force.", w: ["3000 − 1200"], a: "1800 N forwards" },
+  { t: "Effect of forces", how: ["Balanced (resultant 0): stays still or moves at a steady speed.", "Unbalanced: speeds up, slows down or changes direction."], q: "What happens to a cyclist when the forward force equals the friction?", w: [], a: "The resultant is zero, so the cyclist moves at a constant speed (or stays still)." },
+  { t: "Force diagrams", how: ["Draw arrows from the centre of the object, length showing size, labelled with name and value."], q: "Describe the force diagram for a book resting on a table.", w: [], a: "Weight arrow down and normal reaction arrow up, equal in length" },
+  { t: "Mass and weight on other planets", how: ["Mass stays the same; weight changes with g."], q: "An astronaut has a mass of 70 kg. Find the weight on the Moon (g = 1.6 N/kg).", w: ["70 × 1.6"], a: "112 N (mass still 70 kg)" }
+],
+s13: [
+  { t: "Calculating density", how: ["density = mass ÷ volume (ρ = m/V).", "Units: g/cm³ or kg/m³."], q: "A metal block has mass 270 g and volume 100 cm³. Find its density.", w: ["270 ÷ 100"], a: "2.7 g/cm³" },
+  { t: "Finding mass or volume", how: ["Rearrange: m = ρ × V, V = m ÷ ρ."], q: "Gold has density 19.3 g/cm³. Find the mass of 5 cm³.", w: ["19.3 × 5"], a: "96.5 g" },
+  { t: "Volume of a regular object", how: ["Cuboid: length × width × height."], q: "A cuboid is 4 cm × 2 cm × 3 cm with mass 60 g. Find its density.", w: ["V = 24 cm³", "60 ÷ 24"], a: "2.5 g/cm³" },
+  { t: "Volume of an irregular object (displacement)", how: ["Read the water level before and after adding the object.", "Volume = difference (1 ml = 1 cm³)."], q: "Water rises from 50 ml to 72 ml when a stone of mass 66 g is added. Find the density.", w: ["V = 72 − 50 = 22 cm³", "66 ÷ 22"], a: "3 g/cm³" },
+  { t: "Converting units", how: ["1 g/cm³ = 1000 kg/m³."], q: "Write 0.8 g/cm³ in kg/m³.", w: ["0.8 × 1000"], a: "800 kg/m³" }
+],
+s14: [
+  { t: "Stating the law", how: ["Energy cannot be created or destroyed, only transferred from one store to another."], q: "State the law of conservation of energy.", w: [], a: "Energy cannot be created or destroyed; it is only transferred between stores." },
+  { t: "Describing energy transfers", how: ["Name the starting store, the way it is transferred and the end stores."], q: "Describe the energy changes when a ball is dropped.", w: [], a: "Gravitational potential store → kinetic store as it falls → some to the thermal store of the air and ground (and sound) when it lands." },
+  { t: "Using conservation in a calculation", how: ["Total energy in = total energy out."], q: "A motor uses 500 J. It gives 350 J of kinetic energy. How much is wasted?", w: ["500 − 350"], a: "150 J (mainly as heat and sound)" },
+  { t: "Efficiency", how: ["efficiency = useful energy out ÷ total energy in (× 100 for %)."], q: "A bulb uses 200 J and gives out 30 J of light. Find its efficiency.", w: ["30 ÷ 200 = 0.15"], a: "15%" },
+  { t: "Sankey diagrams", how: ["The width of each arrow shows the amount of energy."], q: "A Sankey diagram shows 100 J in, 60 J useful. What is the width of the wasted arrow?", w: ["100 − 60"], a: "40 J" },
+  { t: "Reducing waste", how: ["Lubrication reduces friction; insulation reduces heat loss."], q: "Suggest a way to make a machine more efficient.", w: [], a: "Oil the moving parts to reduce friction (so less energy is wasted as heat)." }
+],
+s15: [
+  { t: "Comparing densities", how: ["An object floats if its density is less than the liquid's; it sinks if greater.", "Water = 1 g/cm³."], q: "A block has mass 450 g and volume 500 cm³. Will it float in water?", w: ["ρ = 450 ÷ 500 = 0.9 g/cm³", "0.9 < 1"], a: "Yes, it floats" },
+  { t: "Floating in different liquids", how: ["Compare with that liquid's density, not with water."], q: "An object of density 0.85 g/cm³ is placed in oil of density 0.8 g/cm³. Float or sink?", w: ["0.85 > 0.8"], a: "It sinks" },
+  { t: "Upthrust", how: ["Upthrust is the upward force from a liquid.", "Floating: upthrust = weight."], q: "A floating boat weighs 4000 N. What is the upthrust?", w: [], a: "4000 N (balanced forces)" },
+  { t: "Why a steel ship floats", how: ["Its hollow shape includes air, so the average density of the whole ship is less than water's."], q: "Explain why a steel ship floats but a steel nail sinks.", w: [], a: "The ship's average density (steel + air inside) is less than water; the solid nail's density is greater." },
+  { t: "Layers of liquids", how: ["The densest liquid sinks to the bottom."], q: "Honey (1.4 g/cm³), water (1.0) and oil (0.9) are poured into a jar. In what order do they settle?", w: [], a: "Bottom to top: honey, water, oil" }
+],
+s16: [
+  { t: "Explaining conduction in particles", how: ["Particles at the hot end vibrate more and pass the vibrations to neighbours."], q: "Explain how heat travels along a metal rod.", w: [], a: "Particles at the hot end vibrate more and pass energy to neighbouring particles; free electrons also move and carry energy quickly." },
+  { t: "Why metals conduct best", how: ["Metals have free (delocalised) electrons that carry energy fast."], q: "Why is copper a better conductor than glass?", w: [], a: "Copper has free electrons that transfer energy quickly; glass does not." },
+  { t: "Conductors and insulators", how: ["Conductors: metals. Insulators: plastic, wood, air, wool.", "Air is a poor conductor because its particles are far apart."], q: "Why do saucepans have plastic handles?", w: [], a: "Plastic is an insulator, so heat does not travel to your hand." },
+  { t: "Everyday applications", how: ["Trapped air is a good insulator (double glazing, wool, feathers)."], q: "Why does double glazing reduce heat loss?", w: [], a: "The air (or vacuum) gap between the panes is a poor conductor." },
+  { t: "Describing an experiment", how: ["Attach pins with wax to rods of different metals and heat one end; the pins fall off first on the best conductor."], q: "How could you compare conduction in copper, iron and aluminium rods?", w: [], a: "Heat one end of each rod equally; time how long until wax-stuck pins fall off; quickest = best conductor." }
+],
+s17: [
+  { t: "Explaining a convection current", how: ["Fluid near the heat expands, becomes less dense and rises.", "Cooler, denser fluid sinks to take its place, making a current."], q: "Explain how a heater warms a room.", w: [], a: "Air near the heater warms, expands, becomes less dense and rises; cooler denser air sinks and flows to the heater, forming a convection current." },
+  { t: "Why convection needs a fluid", how: ["Particles must be free to move, so it only happens in liquids and gases."], q: "Why doesn't convection happen in solids?", w: [], a: "Particles in a solid can't move from place to place; they only vibrate." },
+  { t: "Position of heaters and coolers", how: ["Heaters low (hot air rises), coolers high (cold air sinks)."], q: "Why is the freezer compartment at the top of a fridge?", w: [], a: "Cold air is denser and sinks, so it cools the whole fridge." },
+  { t: "Sea and land breezes", how: ["Day: land heats faster, air rises over land, cool sea air moves in (sea breeze).", "Night: the reverse (land breeze)."], q: "Explain a sea breeze.", w: [], a: "In the day the land warms faster; warm air rises over the land, and cooler air from the sea flows in to replace it." },
+  { t: "Experiment with potassium permanganate", how: ["A crystal in water heated on one side shows purple streams rising above the heat and sinking on the other side."], q: "Describe what you see when water with a permanganate crystal is heated at one corner.", w: [], a: "Purple colour rises above the heat, moves across the top and sinks at the other side, showing a convection current." }
+],
+s18: [
+  { t: "What thermal radiation is", how: ["Infrared waves; needs no particles, so it can cross a vacuum."], q: "How does heat from the Sun reach Earth?", w: [], a: "By infrared radiation, which can travel through the vacuum of space." },
+  { t: "Absorbers and emitters", how: ["Dark, matt surfaces are the best absorbers and emitters.", "Light, shiny surfaces are poor absorbers and good reflectors."], q: "Which cools faster: a black or a silver kettle of hot water? Explain.", w: [], a: "The black one, because dark matt surfaces are better emitters of infrared." },
+  { t: "Applications", how: ["Solar panels are black; houses in hot countries are white; emergency blankets are shiny."], q: "Why are solar water heaters painted black?", w: [], a: "Black is the best absorber of infrared, so the water heats up more." },
+  { t: "Leslie cube experiment", how: ["Measure radiation from each face (matt black, shiny black, matt white, shiny silver) with an infrared detector at the same distance."], q: "Predict the results of a Leslie cube experiment.", w: [], a: "Matt black emits most; shiny silver emits least." },
+  { t: "Vacuum flask", how: ["Vacuum stops conduction and convection; silvered walls reduce radiation; stopper reduces convection and evaporation."], q: "Explain how a vacuum flask keeps a drink hot.", w: [], a: "The vacuum stops conduction and convection, the silvered walls reflect infrared back, and the stopper stops heat loss by convection." }
+],
+
+d1: [
+  { t: "Bases and place values", how: ["Binary base 2 (digits 0–1), octal base 8 (0–7), decimal base 10, hexadecimal base 16 (0–9, A–F).", "Each place is a power of the base."], q: "Write the place values of the first four places in binary and hexadecimal.", w: ["Binary: 8, 4, 2, 1", "Hex: 4096, 256, 16, 1"], a: "Binary 8 4 2 1; hex 4096 256 16 1" },
+  { t: "Hexadecimal to decimal", how: ["Multiply each digit by its place value and add. A=10 … F=15."], q: "Convert 3C₁₆ to decimal.", w: ["3 × 16 = 48, C = 12", "48 + 12"], a: "60" },
+  { t: "Octal to decimal", how: ["Place values 64, 8, 1."], q: "Convert 145₈ to decimal.", w: ["1 × 64 + 4 × 8 + 5 × 1 = 64 + 32 + 5"], a: "101" },
+  { t: "Binary to hexadecimal", how: ["Group bits in fours from the right; convert each group."], q: "Convert 10111010₂ to hexadecimal.", w: ["1011 | 1010", "1011 = 11 = B, 1010 = 10 = A"], a: "BA₁₆" },
+  { t: "Binary to octal", how: ["Group bits in threes from the right; add zeros on the left if needed."], q: "Convert 110101₂ to octal.", w: ["110 | 101", "110 = 6, 101 = 5"], a: "65₈" },
+  { t: "Hexadecimal or octal to binary", how: ["Write each digit as 4 bits (hex) or 3 bits (octal)."], q: "Convert 7E₁₆ to binary.", w: ["7 = 0111, E = 14 = 1110"], a: "01111110₂" }
+],
+d2: [
+  { t: "Using place values", how: ["Write 128 64 32 16 8 4 2 1 above the bits.", "Add the values under each 1."], q: "Convert 10110101₂ to decimal.", w: ["128 + 32 + 16 + 4 + 1"], a: "181" },
+  { t: "Short binary numbers", how: ["Line the bits up from the right."], q: "Convert 1101₂ to decimal.", w: ["8 + 4 + 1"], a: "13" },
+  { t: "Largest value with n bits", how: ["Largest = 2ⁿ − 1 (all ones)."], q: "What is the largest number an 8-bit binary number can store?", w: ["11111111₂ = 255"], a: "255" },
+  { t: "Checking answers", how: ["Odd numbers end in 1; even numbers end in 0."], q: "Without converting, is 1011010₂ odd or even?", w: ["It ends in 0"], a: "Even" }
+],
+d3: [
+  { t: "Repeated division by 2", how: ["Divide by 2, writing each remainder.", "Read the remainders from the bottom up."], q: "Convert 45 to binary.", w: ["45 ÷ 2 = 22 r1", "22 ÷ 2 = 11 r0", "11 ÷ 2 = 5 r1", "5 ÷ 2 = 2 r1", "2 ÷ 2 = 1 r0", "1 ÷ 2 = 0 r1", "Read up: 101101"], a: "101101₂" },
+  { t: "Subtracting powers of 2", how: ["Put 1 under the largest place value that fits, subtract, and repeat."], q: "Convert 156 to 8-bit binary.", w: ["156 − 128 = 28 → 1 under 128", "64 and 32 don't fit → 0, 0", "28 − 16 = 12 → 1", "12 − 8 = 4 → 1", "4 − 4 = 0 → 1 under 4", "2 and 1 → 0, 0"], a: "10011100₂" },
+  { t: "Padding to 8 bits", how: ["Add zeros on the left to make 8 bits; the value doesn't change."], q: "Write 9 as an 8-bit binary number.", w: ["9 = 1001"], a: "00001001" },
+  { t: "Decimal to hexadecimal", how: ["Divide by 16; the remainder is the last digit (10–15 → A–F)."], q: "Convert 200 to hexadecimal.", w: ["200 ÷ 16 = 12 r 8", "12 = C"], a: "C8₁₆" }
+],
+d4: [
+  { t: "Why computers use binary", how: ["Circuits have two states (on/off), shown by 1 and 0."], q: "Why do computers store data in binary?", w: [], a: "Electronic circuits have two states, on and off, which match the digits 1 and 0." },
+  { t: "Uses of hexadecimal", how: ["Colour codes (#FF0000), MAC addresses, memory addresses, error codes."], q: "Give two uses of hexadecimal.", w: [], a: "HTML colour codes and MAC addresses (also memory addresses and error codes)" },
+  { t: "Why programmers prefer hex", how: ["Shorter, easier to read and fewer mistakes; each hex digit is exactly 4 bits."], q: "Give two reasons programmers use hex instead of binary.", w: [], a: "It is shorter and easier to read, so fewer mistakes; it converts directly to binary (4 bits per digit)." },
+  { t: "Reading a colour code", how: ["#RRGGBB: two hex digits each for red, green and blue (00 = none, FF = full)."], q: "What colour is #00FF00?", w: ["Red 00, green FF, blue 00"], a: "Pure green" },
+  { t: "Uses of octal", how: ["File permissions in Linux (e.g. 755) and older computer systems."], q: "Where is octal used?", w: [], a: "File permissions on Unix/Linux systems (e.g. chmod 755)" }
+],
+d5: [
+  { t: "Output with print()", how: ["Text in quotes is printed as it is; commas add spaces."], q: "What does print('Score:', 5 + 3) display?", w: [], a: "Score: 8" },
+  { t: "Input is always a string", how: ["input() returns text; convert with int() or float() before doing maths."], q: "Fix: age = input('Age? ')  then  print(age + 1).", w: ["age is a string, so + 1 gives a TypeError"], a: "age = int(input('Age? '))" },
+  { t: "Data types", how: ["int (whole numbers), float (decimals), str (text in quotes), bool (True/False)."], q: "State the type of: 7, 7.0, '7', True.", w: [], a: "int, float, str, bool" },
+  { t: "String operations", how: ["+ joins strings; * repeats a string."], q: "What is printed by x = 'ha'; print(x * 3)?", w: [], a: "hahaha" },
+  { t: "Variable names", how: ["Start with a letter or _, no spaces, not a keyword, case-sensitive."], q: "Which are valid names: total, 2nd, my score, my_score, if?", w: [], a: "total and my_score" },
+  { t: "Types of error", how: ["Syntax error: breaks the rules (missing bracket or colon).", "Runtime error: crashes while running (dividing by zero).", "Logic error: runs but gives the wrong answer."], q: "Classify: (a) print('hi' (b) x = 5/0 (c) average = a + b / 2", w: ["(a) missing bracket → syntax", "(b) crashes → runtime", "(c) wrong order, should be (a + b) / 2 → logic"], a: "(a) syntax (b) runtime (c) logic" }
+],
+d6: [
+  { t: "Arithmetic operators", how: ["+ − * /; // whole-number division; % remainder; ** power.", "/ always gives a float."], q: "Evaluate 17 // 5, 17 % 5 and 17 / 5.", w: [], a: "3, 2, 3.4" },
+  { t: "Precedence", how: ["Brackets, then **, then * / // %, then + −."], q: "Evaluate 10 − 2 * 3 ** 2.", w: ["3 ** 2 = 9", "2 * 9 = 18", "10 − 18"], a: "−8" },
+  { t: "Comparison operators", how: ["== equal, != not equal, <, >, <=, >=; the result is True or False."], q: "What is (7 != 7) and what is (4 <= 4)?", w: [], a: "False and True" },
+  { t: "Logical operators", how: ["and: both must be True. or: at least one. not: reverses."], q: "x = 6. Evaluate x > 3 and x < 5; x > 3 or x < 5; not x > 3.", w: ["True and False → False", "True or False → True", "not True → False"], a: "False, True, False" },
+  { t: "Assignment operators", how: ["x += 3 means x = x + 3 (also -=, *=, /=)."], q: "x = 4; x *= 3; x -= 2. What is x?", w: ["4 × 3 = 12, 12 − 2 = 10"], a: "10" }
+],
+d7: [
+  { t: "Writing an if statement", how: ["if condition: then an indented block. Don't forget the colon."], q: "Write code that prints 'Pass' if mark is 40 or more.", w: [], a: "if mark >= 40:\n    print('Pass')" },
+  { t: "if-else", how: ["else runs when the condition is False."], q: "Write code to print 'Even' or 'Odd' for a number n.", w: [], a: "if n % 2 == 0:\n    print('Even')\nelse:\n    print('Odd')" },
+  { t: "Tracing if-elif-else", how: ["Check conditions from the top; only the first True one runs."], q: "temp = 25\nif temp > 30: print('Hot')\nelif temp > 20: print('Warm')\nelse: print('Cold')\nWhat is printed?", w: ["25 > 30 is False", "25 > 20 is True → 'Warm'"], a: "Warm" },
+  { t: "Order of conditions", how: ["Put the strictest condition first, or later ones are never reached."], q: "Why is this wrong? if m >= 50: grade = 'C'  elif m >= 80: grade = 'A'", w: [], a: "An 85 is caught by m >= 50 first, so it never reaches the A branch. Test >= 80 first." },
+  { t: "Finding the error", how: ["Look for a missing colon, wrong indentation, or = instead of ==."], q: "Fix: if x = 5\n print('five')", w: [], a: "if x == 5:\n    print('five')" }
+],
+d8: [
+  { t: "Why use loops", how: ["Loops repeat code without writing it again: shorter, easier to change, fewer errors."], q: "Give two advantages of using a loop.", w: [], a: "Less code to write; easier to change the number of repeats (fewer mistakes)." },
+  { t: "for or while", how: ["for: when you know how many times (count-controlled).", "while: repeat until a condition changes (condition-controlled)."], q: "Which loop suits: (a) printing 10 lines (b) asking for a password until it's correct?", w: [], a: "(a) for loop (b) while loop" },
+  { t: "Rewriting repeated code", how: ["Spot the repeated line and how many times it happens."], q: "Rewrite five print('Hello') lines with a loop.", w: [], a: "for i in range(5):\n    print('Hello')" },
+  { t: "Tracing a while loop", how: ["Check the condition, run the body, update, repeat."], q: "n = 1\nwhile n < 20:\n    n = n * 3\nprint(n)", w: ["1 → 3 → 9 → 27 (stops, 27 is not < 20)"], a: "27" },
+  { t: "Infinite loops", how: ["A while loop must change something so its condition eventually becomes False."], q: "Why does this never end? x = 1\nwhile x > 0:\n    print(x)", w: [], a: "x never changes, so x > 0 is always True." }
+],
+d9: [
+  { t: "Looping over a range", how: ["for i in range(n) gives 0 up to n − 1."], q: "What does this print? for i in range(1, 4): print(i * i)", w: ["i = 1, 2, 3 → 1, 4, 9"], a: "1\n4\n9" },
+  { t: "Times tables", how: ["Use the loop variable inside the print."], q: "Write a loop to print 7 × 1 = 7 up to 7 × 10 = 70.", w: [], a: "for i in range(1, 11):\n    print('7 ×', i, '=', 7 * i)" },
+  { t: "Running total (accumulator)", how: ["Start a total at 0 before the loop; add to it inside the loop; print after."], q: "Write code to add the numbers 1 to 100.", w: [], a: "total = 0\nfor i in range(1, 101):\n    total += i\nprint(total)   # 5050" },
+  { t: "Looping over a string", how: ["for ch in word visits each character."], q: "Write code to count the vowels in a word.", w: [], a: "count = 0\nfor ch in word:\n    if ch in 'aeiou':\n        count += 1\nprint(count)" },
+  { t: "Tracing output", how: ["Make a table of the variable values for each pass."], q: "x = 0\nfor i in range(3):\n    x = x + i\nprint(x)", w: ["i = 0 → x = 0; i = 1 → x = 1; i = 2 → x = 3"], a: "3" }
+],
+d10: [
+  { t: "One argument", how: ["range(stop): 0 up to stop − 1."], q: "List the values of range(5).", w: [], a: "0, 1, 2, 3, 4" },
+  { t: "Two arguments", how: ["range(start, stop): start up to stop − 1."], q: "List the values of range(3, 8).", w: [], a: "3, 4, 5, 6, 7" },
+  { t: "Three arguments (step)", how: ["range(start, stop, step): count in steps; stop is never included."], q: "List the values of range(2, 15, 4).", w: [], a: "2, 6, 10, 14" },
+  { t: "Counting down", how: ["Use a negative step and a stop that is smaller than the start."], q: "Write a range that gives 10, 8, 6, 4, 2.", w: [], a: "range(10, 0, -2)" },
+  { t: "How many values", how: ["List them, or use (stop − start) ÷ step rounded up."], q: "How many numbers does range(1, 20, 5) produce?", w: ["1, 6, 11, 16"], a: "4" },
+  { t: "Empty ranges", how: ["If the step goes the wrong way, there are no values."], q: "What does range(5, 1) produce?", w: ["The step is +1 but 5 > 1"], a: "Nothing (an empty range)" }
+]
+});
+
+/* Full-notes guide: English, Humanities, Hindi and Global Perspectives (see guide-math.js for the format) */
+var GUIDE = GUIDE || {};
+Object.assign(GUIDE, {
+e1: [
+  { t: "Retrieval: find a detail", how: ["Scan for the key word from the question.", "Give a short, exact answer; you can quote or use your own words."], q: "Text: 'The museum, which opened in 1998, welcomes over 200 000 visitors a year.' When did the museum open?", w: [], a: "In 1998." },
+  { t: "In your own words", how: ["Don't copy the text's words; rewrite the meaning simply.", "Give one point for each mark."], q: "Text: 'The streets were deserted and silent.' Explain in your own words what the streets were like. [2]", w: [], a: "There was nobody around (empty) and there was no noise at all (quiet)." },
+  { t: "Inference: what is suggested", how: ["Read between the lines: what does the writer imply?", "Back it up with a short quotation."], q: "Text: 'Rahul checked his watch for the fifth time and tapped his foot.' How does Rahul feel? Give evidence.", w: [], a: "Impatient or anxious: he 'checked his watch for the fifth time' and 'tapped his foot', which shows he is waiting restlessly." },
+  { t: "Fact or opinion", how: ["Fact: can be checked. Opinion: a belief or judgement (look for words like best, terrible, should)."], q: "Which is an opinion? (a) The tower is 324 m tall. (b) The tower is the most beautiful sight in Paris.", w: [], a: "(b): 'most beautiful' is a personal judgement." },
+  { t: "Language analysis (PEE)", how: ["Point: name the technique or effect.", "Evidence: a short quotation.", "Explain: what it makes the reader think or feel, zooming in on key words."], q: "Text: 'Every year, millions of tonnes of plastic choke our oceans.' How does the writer make the problem seem serious?", w: [], a: "The writer uses a statistic, 'millions of tonnes', to show the huge scale. The verb 'choke' personifies the oceans as struggling to breathe, making readers feel the harm is violent and urgent." },
+  { t: "Structure", how: ["Comment on the headline, opening, order of ideas, shifts in focus and ending, and say WHY the writer chose them."], q: "Why might an article begin with a short story about one family before giving statistics?", w: [], a: "The anecdote hooks the reader and makes the issue personal and emotional, so the statistics that follow have more impact." },
+  { t: "Purpose, audience and form", how: ["Purpose: inform, persuade, entertain, advise, argue.", "Audience: who it's for (age, interests).", "Form: article, leaflet, speech, blog."], q: "A leaflet says 'Join our club! Free snacks every Friday for students aged 11–14.' Identify the purpose and audience.", w: [], a: "Purpose: to persuade people to join. Audience: students aged 11 to 14." }
+],
+e2: [
+  { t: "Article", how: ["Headline (and subheading), a hooking opening, paragraphs with topic sentences, a strong conclusion.", "Use techniques like rhetorical questions, statistics and anecdotes."], q: "Write the opening of an article for the school magazine titled 'Why Every Student Should Learn to Cook'.", w: [], a: "Why Every Student Should Learn to Cook\nIt's easier than you think and tastier than takeaway!\nImagine coming home starving and, instead of waiting thirty minutes for a delivery, making a delicious meal in ten. Cooking is not just a chore: it is a life skill that saves money, keeps you healthy and might even impress your friends." },
+  { t: "Speech", how: ["Greet the audience, state your view early, use direct address (you, we), rhetorical questions and a memorable ending."], q: "Write the opening of a speech to your class persuading them to use less plastic.", w: [], a: "Good morning, classmates and teachers. How many plastic bottles did you throw away last week? One? Five? Ten? Every one of them will outlive us all. Today I want to show you that small changes, made by all of us, can make a big difference." },
+  { t: "Report", how: ["Title, introduction (purpose), sub-headings, formal factual tone, findings and recommendations.", "No emotional language."], q: "Write the introduction for a report to the principal about the school canteen.", w: [], a: "Report on the School Canteen\nIntroduction\nThe purpose of this report is to present students' views on the school canteen, based on a survey of 120 students in Grade 8, and to recommend improvements." },
+  { t: "Review", how: ["Say what it is, describe it briefly, give strengths and weaknesses, then a rating or recommendation."], q: "Write the final paragraph of a review of a new café.", w: [], a: "Overall, Bean There is a cheerful spot with excellent smoothies, although the slow service on busy weekends can be frustrating. I would give it four stars out of five and recommend it for a relaxed afternoon with friends." },
+  { t: "Using persuasive techniques (AFOREST)", how: ["Alliteration, Facts, Opinions, Rhetorical questions, Emotive language, Statistics, Triples.", "Use a range, but naturally."], q: "Write one sentence that uses a triple and emotive language about litter in the park.", w: [], a: "Our park, once peaceful, green and beautiful, is now drowning in filthy, careless litter." },
+  { t: "Planning a writing task", how: ["Note the form, purpose and audience.", "Plan 4–5 paragraphs: opening, three main points, conclusion."], q: "Plan an article arguing for a longer lunch break.", w: [], a: "Opening: hook (question). P1: time to eat properly (health). P2: time to rest, so better concentration (evidence). P3: time for clubs and friends. Counter-argument: less lesson time, answered. Conclusion: call to action." }
+],
+e3: [
+  { t: "Layout", how: ["Sender's address, date, receiver's designation and address, subject line, salutation, body, close, signature and name (follow the layout taught in class)."], q: "List the parts of a formal letter in order.", w: [], a: "Sender's address → date → receiver's name/designation and address → subject → salutation → body paragraphs → complimentary close → signature and name" },
+  { t: "Salutation and close", how: ["Dear Sir/Madam → Yours faithfully.", "Dear Mr/Ms + name → Yours sincerely."], q: "Which close goes with 'Dear Ms Kapoor'?", w: [], a: "Yours sincerely" },
+  { t: "Subject line", how: ["A short, clear phrase saying what the letter is about."], q: "Write a subject line for a letter asking the principal for a school recycling programme.", w: [], a: "Subject: Request to start a recycling programme in school" },
+  { t: "Opening paragraph", how: ["State who you are and why you are writing, straight away."], q: "Write the opening of a complaint to a company about a damaged laptop.", w: [], a: "I am writing to complain about a laptop (order number 45821) that I purchased from your website on 2 November 2026, which arrived with a cracked screen." },
+  { t: "Body and request", how: ["Give details and reasons in separate paragraphs.", "End with a clear, polite request and thanks."], q: "Write the final paragraph of the complaint.", w: [], a: "I would be grateful if you could replace the laptop or issue a full refund within fourteen days. I look forward to your prompt reply. Thank you for your attention to this matter." },
+  { t: "Formal tone", how: ["No contractions (I'm → I am), slang or exclamation marks.", "Use polite phrases: I would be grateful if…, I would like to request…"], q: "Make this formal: 'Hey, the bus is always late and it's really annoying!'", w: [], a: "I wish to bring to your attention that the school bus is frequently late, which causes considerable inconvenience to students." },
+  { t: "Letter to the editor", how: ["Address: The Editor, [newspaper]. Give your opinion on a public issue with reasons and suggestions."], q: "Write the opening of a letter to the editor about stray dogs in your area.", w: [], a: "Through the columns of your esteemed newspaper, I wish to draw the attention of the authorities to the growing number of stray dogs in Sector 15, which has become a serious concern for residents." }
+],
+e4: [
+  { t: "Layout", how: ["Your address, date, 'Dear [name],', paragraphs, friendly close (Love / Best wishes / Your friend), first name."], q: "Write the greeting and closing for a letter to your grandmother.", w: [], a: "Dear Nani, … Lots of love, Aarav" },
+  { t: "Friendly opening", how: ["Ask how they are or reply to their news."], q: "Write an opening for a letter to a friend who has just moved to a new city.", w: [], a: "Hi Meera! I hope you're settling into your new home in Pune. I miss you so much already. School just isn't the same without you!" },
+  { t: "Sharing news with details", how: ["Use an anecdote, feelings, exclamations and questions to keep it lively."], q: "Write a paragraph telling your cousin about a school trip.", w: [], a: "Guess what? Last week our class went to the science museum! The best part was the planetarium. We lay back and watched the stars spin above us. I couldn't stop grinning. Have you ever been to one?" },
+  { t: "Closing paragraph", how: ["Mention plans to meet, send greetings, and ask them to reply."], q: "Write the last paragraph of a letter inviting a friend for the holidays.", w: [], a: "I really hope you can come and stay for a few days in December. Say hello to your parents for me, and write back soon to tell me all your news!" },
+  { t: "Changing formal to informal", how: ["Use contractions, a chatty tone, first names and personal feelings."], q: "Make this informal: 'I am writing to inform you that I have been selected for the team.'", w: [], a: "I've got some amazing news: I made it onto the team!" }
+],
+h1: [
+  { t: "Explain a principle", how: ["Define it and say how Gandhi used it."], q: "What is satyagraha?", w: [], a: "Satyagraha means 'insistence on truth'. It was a method of struggle using non-violent resistance to injustice: protesters refused to obey unfair laws, accepted punishment and tried to change the opponent's heart." },
+  { t: "Early satyagrahas", how: ["Name the place, year and who it helped."], q: "Describe the Champaran Satyagraha.", w: [], a: "In 1917 in Champaran, Bihar, Gandhi supported indigo farmers who were forced by planters to grow indigo on poor terms. His inquiry and protest won them relief." },
+  { t: "Swadeshi and khadi", how: ["Link the symbol to self-reliance and to hurting British trade."], q: "Why did Gandhi promote the charkha?", w: [], a: "Spinning khadi made Indians self-reliant, gave work to the poor, and reduced demand for British cloth, which hurt British trade." },
+  { t: "Source of ideas", how: ["Hind Swaraj (1909); influence of Tolstoy, Ruskin, Thoreau; his experience in South Africa."], q: "Where did Gandhi set out his ideas, and who influenced him?", w: [], a: "In Hind Swaraj (1909). He was influenced by Tolstoy, Ruskin and Thoreau, and by his struggles in South Africa." },
+  { t: "Exam-style 'Why' question", how: ["Give two or three explained reasons, each linked to the people affected."], q: "Why did Gandhi's methods attract ordinary people to the national movement?", w: [], a: "Non-violence meant anyone, including women and the poor, could take part safely. Simple actions such as spinning or boycotting cloth could be done at home. He used local grievances (indigo farmers, peasants, workers), so people saw the movement as solving their own problems." }
+],
+h2: [
+  { t: "Causes", how: ["Rowlatt Act (1919), Jallianwala Bagh massacre (13 April 1919), Khilafat issue."], q: "Give three causes of the Non-Cooperation Movement.", w: [], a: "The Rowlatt Act allowed imprisonment without trial; the Jallianwala Bagh massacre caused outrage; Muslims were angered by the treatment of the Khalifa (Khilafat issue)." },
+  { t: "The programme", how: ["Boycott (titles, schools, courts, councils, foreign cloth) and swadeshi (khadi, national schools)."], q: "What were Indians asked to do during the movement?", w: [], a: "Give up British titles; boycott government schools, law courts, councils and foreign cloth; use khadi and join national schools like Jamia Millia Islamia." },
+  { t: "How it spread", how: ["Different groups took part for different reasons: students, lawyers, peasants, workers, tribal people."], q: "How did the movement spread among different groups?", w: [], a: "Students left government schools, lawyers such as C. R. Das and Motilal Nehru gave up practice, merchants stopped trading in foreign goods, and peasants and tribal groups joined with their own demands." },
+  { t: "Withdrawal", how: ["Chauri Chaura, 5 February 1922; Gandhi wanted the struggle to stay non-violent."], q: "Why was the movement called off?", w: [], a: "At Chauri Chaura (UP) a crowd set fire to a police station, killing about 22 policemen. Gandhi withdrew the movement because it had turned violent." },
+  { t: "Significance (evaluate)", how: ["Give both sides, then a judgement."], q: "'The Non-Cooperation Movement was a failure.' Do you agree?", w: [], a: "It did not win swaraj and was withdrawn early. However, it was the first mass movement, involving millions of people, reduced foreign cloth imports and built national institutions. Overall it was a success because it made the freedom struggle a mass movement." }
+],
+h3: [
+  { t: "A regional example", how: ["Name the group, place, leader and grievance."], q: "Describe the role of Alluri Sitarama Raju.", w: [], a: "He led tribal people in the Gudem Hills of Andhra Pradesh against forest laws that stopped them grazing and collecting wood. He used guerrilla warfare, unlike Gandhi's non-violence, and was executed in 1924." },
+  { t: "Peasants", how: ["Awadh: high rents and begar (forced labour); Baba Ramchandra."], q: "Why did peasants in Awadh join the movement?", w: [], a: "They were angry about high rents and forced labour for landlords; they saw swaraj as relief from these." },
+  { t: "Workers", how: ["Assam tea-garden workers left plantations believing 'Gandhi Raj' would give them land."], q: "How did Assam's plantation workers understand swaraj?", w: [], a: "As the freedom to move in and out of the plantations and return to their villages, which the Inland Emigration Act of 1859 denied them." },
+  { t: "Leaders from the North-East and North-West", how: ["Rani Gaidinliu (Naga region), Khan Abdul Ghaffar Khan (Frontier Gandhi, Khudai Khidmatgars)."], q: "Who was Rani Gaidinliu?", w: [], a: "A Naga leader who led a revolt against British rule as a teenager and was imprisoned in 1932." },
+  { t: "Why 'swaraj' meant different things", how: ["Each group linked it to its own grievances."], q: "Explain why different groups understood swaraj differently.", w: [], a: "Each group connected the national call with its own problems: peasants wanted lower rents, tribal people wanted forest rights, workers wanted freedom of movement. So swaraj meant relief from their own particular hardship." }
+],
+h4: [
+  { t: "Why salt", how: ["Everyone used it, rich and poor; the tax and government monopoly were unfair."], q: "Why did Gandhi choose salt?", w: [], a: "Salt was a basic need of every Indian, rich or poor, so the tax affected everyone. The British monopoly on salt made the injustice easy to understand and the law easy to break." },
+  { t: "Describing the Dandi March", how: ["Sabarmati to Dandi, 12 March to 6 April 1930, 78 volunteers, about 240 miles in 24 days."], q: "Describe the Salt March.", w: [], a: "Gandhi and 78 volunteers walked about 240 miles from Sabarmati Ashram to Dandi in 24 days (12 March to 6 April 1930). At Dandi he made salt from seawater, breaking the law." },
+  { t: "Background", how: ["Lahore session, December 1929: Purna Swaraj; 26 January 1930 Independence Day; Gandhi's 11 demands to Irwin."], q: "What happened before the Salt March?", w: [], a: "The Congress demanded Purna Swaraj at Lahore (1929), celebrated 26 January 1930 as Independence Day, and Gandhi sent the Viceroy Irwin eleven demands, which were ignored." },
+  { t: "Impact and spread", how: ["Civil Disobedience: salt made everywhere, foreign cloth boycotted, taxes refused; Vedaranyam, Dharasana."], q: "What was the impact of the Salt March?", w: [], a: "It launched the Civil Disobedience Movement across India: people made salt, boycotted foreign cloth and refused taxes; women took part in large numbers; it drew world attention and led to the Gandhi–Irwin Pact (1931)." },
+  { t: "Significance (evaluate)", how: ["Weigh the gains against the limits."], q: "How important was the Salt March?", w: [], a: "Very important: it united people of every class and region, involved women widely, and gained international sympathy. However, it did not win independence and the Second Round Table Conference failed. Its main importance was in uniting Indians." }
+],
+h5: [
+  { t: "Causes", how: ["Second World War; failure of the Cripps Mission (1942); fear of a Japanese invasion; rising prices and shortages."], q: "Why was the Quit India Movement launched in 1942?", w: [], a: "The Cripps Mission failed to offer real independence; India had been dragged into the war without consent; prices and shortages caused anger; leaders felt the British should leave at once." },
+  { t: "Key events", how: ["8 August 1942: resolution at Gowalia Tank, Bombay; 'Do or Die'; 9 August: leaders arrested."], q: "Describe the start of the Quit India Movement.", w: [], a: "On 8 August 1942 the AICC passed the Quit India resolution in Bombay and Gandhi gave the call 'Do or Die'. The next morning Gandhi, Nehru and other leaders were arrested." },
+  { t: "Leaderless movement", how: ["Aruna Asaf Ali, Usha Mehta's Congress Radio, Jayaprakash Narayan; parallel governments."], q: "How did the movement continue after leaders were arrested?", w: [], a: "Younger leaders such as Aruna Asaf Ali led it; Usha Mehta ran a secret radio; parallel governments were set up in Satara, Tamluk and Ballia; people attacked symbols of British rule." },
+  { t: "Repression", how: ["Over 90 000 arrested, around 1000 killed."], q: "How did the British respond?", w: [], a: "With severe repression: over 90 000 people were arrested, around 1000 killed in police firing, and villages fined or bombed." },
+  { t: "Significance (evaluate)", how: ["Give both sides and conclude."], q: "Why is Quit India seen as a turning point?", w: [], a: "It showed the British that Indians would accept nothing less than full independence and that ruling India was no longer possible. Although it was crushed, it made independence a matter of time (achieved in 1947)." }
+],
+hi1: [
+  { t: "दिनचर्या लिखना (writing your routine)", how: ["कर्ता + कर्म + क्रिया क्रम का प्रयोग करें।", "समय और आवृत्ति के शब्द जोड़ें।"], q: "अपनी सुबह के बारे में तीन वाक्य लिखिए।", w: [], a: "मैं हर रोज़ सुबह छह बजे उठता हूँ। मैं नहाकर नाश्ता करता हूँ। साढ़े सात बजे मैं बस से स्कूल जाता हूँ।" },
+  { t: "लिंग के अनुसार क्रिया (verb agreement)", how: ["लड़का/पुरुष: -ता है; लड़की/स्त्री: -ती है; बहुवचन: -ते हैं।"], q: "सही रूप लिखिए: मेरी बहन रोज़ गाना (गाना)।", w: [], a: "मेरी बहन रोज़ गाना गाती है।" },
+  { t: "समय बताना (telling the time)", how: ["सवा (¼ past), साढ़े (½ past), पौने (¼ to), बजे।"], q: "हिंदी में लिखिए: 8:15, 4:30, 9:45", w: [], a: "सवा आठ बजे, साढ़े चार बजे, पौने दस बजे" },
+  { t: "परसर्ग (postpositions)", how: ["में (in), पर (on), से (from/by), को (to), के साथ (with)।"], q: "रिक्त स्थान भरिए: मैं बस ___ स्कूल जाता हूँ। किताब मेज़ ___ है।", w: [], a: "से; पर" },
+  { t: "प्रश्नों के उत्तर (answering questions)", how: ["प्रश्न के शब्द उत्तर में दोहराएँ और पूरा वाक्य लिखें।"], q: "प्रश्न: तुम शाम को क्या करते हो?", w: [], a: "मैं शाम को पार्क में दोस्तों के साथ खेलता हूँ और फिर गृहकार्य करता हूँ।" }
+],
+hi2: [
+  { t: "परिवार का वर्णन (describing family)", how: ["संख्या बताएँ, फिर हर सदस्य के बारे में एक बात।"], q: "अपने परिवार के बारे में तीन वाक्य लिखिए।", w: [], a: "मेरे परिवार में पाँच लोग हैं। मेरे पिताजी डॉक्टर हैं और मेरी माँ शिक्षिका हैं। मेरी छोटी बहन बहुत चंचल है।" },
+  { t: "पसंद बताना (likes)", how: ["मुझे … पसंद है। / मुझे … करना अच्छा लगता है।"], q: "अपने शौक के बारे में दो वाक्य लिखिए।", w: [], a: "मुझे क्रिकेट खेलना बहुत पसंद है। खाली समय में मुझे कहानियाँ पढ़ना अच्छा लगता है।" },
+  { t: "विशेषण का मेल (adjective agreement)", how: ["-आ वाले विशेषण बदलते हैं: अच्छा/अच्छी/अच्छे।", "सुंदर, होशियार जैसे विशेषण नहीं बदलते।"], q: "सही विशेषण लिखिए: मेरी ___ (अच्छा) सहेली; मेरे ___ (छोटा) भाई।", w: [], a: "अच्छी; छोटे" },
+  { t: "मित्र का वर्णन (describing a friend)", how: ["नाम, रूप, स्वभाव और साथ में की जाने वाली बातें।"], q: "अपने सबसे अच्छे मित्र का वर्णन कीजिए।", w: [], a: "मेरे सबसे अच्छे मित्र का नाम अर्जुन है। वह लंबा और होशियार है। वह हमेशा मेरी मदद करता है। हम साथ में फ़ुटबॉल खेलते हैं।" },
+  { t: "त्योहार का वर्णन (a festival)", how: ["कब, कैसे मनाते हैं, क्या खाते हैं, आपको क्यों पसंद है।"], q: "दीवाली के बारे में चार वाक्य लिखिए।", w: [], a: "दीवाली रोशनी का त्योहार है। हम घर को दीयों से सजाते हैं। हम मिठाइयाँ खाते हैं और लक्ष्मी पूजा करते हैं। मुझे यह त्योहार बहुत पसंद है क्योंकि पूरा परिवार साथ होता है।" }
+],
+hi3: [
+  { t: "प्रारूप (format)", how: ["दिनांक, दिन, समय (ऊपर) → प्रिय डायरी, → मुख्य भाग → नाम।"], q: "डायरी लेखन का प्रारूप लिखिए।", w: [], a: "दिनांक: 12 नवंबर 2026 / दिन: गुरुवार / समय: रात 9 बजे\nप्रिय डायरी,\n(मुख्य भाग)\n(नाम)" },
+  { t: "भूतकाल का प्रयोग (past tense)", how: ["मैं गया/गई, हमने खेला, मुझे अच्छा लगा।"], q: "भूतकाल में बदलिए: मैं बाज़ार जाता हूँ।", w: [], a: "मैं बाज़ार गया।" },
+  { t: "भावनाएँ व्यक्त करना (feelings)", how: ["खुश, उदास, उत्साहित, हैरान, परेशान, गर्व।"], q: "परीक्षा में अच्छे अंक मिलने पर अपनी भावना एक वाक्य में लिखिए।", w: [], a: "आज मुझे बहुत गर्व और खुशी महसूस हुई जब मुझे गणित में पूरे अंक मिले।" },
+  { t: "पूरी डायरी प्रविष्टि (a full entry)", how: ["क्या हुआ, कैसा लगा, और अंत में एक सीख या विचार।"], q: "विद्यालय की पिकनिक के बारे में डायरी लिखिए (शुरुआत और अंत)।", w: [], a: "प्रिय डायरी,\nआज का दिन बहुत मज़ेदार था! हम विद्यालय की ओर से चिड़ियाघर गए। … \nआज मैंने सीखा कि दोस्तों के साथ हर पल खास होता है। यह दिन मैं कभी नहीं भूलूँगी।\nसिया" },
+  { t: "उदास दिन की डायरी (a difficult day)", how: ["भावना ईमानदारी से लिखें और अंत में आगे क्या करेंगे, लिखें।"], q: "मैच हारने के बाद की डायरी का अंत लिखिए।", w: [], a: "आज मैं बहुत उदास हूँ, पर मैंने तय किया है कि कल से और मेहनत करूँगा। अगली बार हम ज़रूर जीतेंगे।" }
+],
+hi4: [
+  { t: "प्रारूप (format)", how: ["प्रेषक का पता → दिनांक → संबोधन → अभिवादन → कुशल-क्षेम → मुख्य विषय → समापन → नाम।"], q: "अनौपचारिक पत्र का प्रारूप क्रम से लिखिए।", w: [], a: "प्रेषक का पता, दिनांक, संबोधन (प्रिय मित्र …), अभिवादन (सप्रेम नमस्ते), कुशल-क्षेम, मुख्य विषय, समापन, तुम्हारा मित्र, नाम" },
+  { t: "मित्र को पत्र (to a friend)", how: ["प्रिय + नाम, सप्रेम नमस्ते, तुम्हारा मित्र।"], q: "मित्र को दीवाली पर बुलाने के पत्र की शुरुआत लिखिए।", w: [], a: "प्रिय मित्र रोहन,\nसप्रेम नमस्ते।\nमैं यहाँ कुशल हूँ और आशा करता हूँ कि तुम भी वहाँ कुशल होगे। इस बार दीवाली पर मैं तुम्हें अपने घर बुलाना चाहता हूँ।" },
+  { t: "बड़ों को पत्र (to an elder)", how: ["आदरणीय/पूज्य, सादर प्रणाम, आपका/आपकी प्रिय …"], q: "दादीजी को पत्र का संबोधन, अभिवादन और समापन लिखिए।", w: [], a: "पूज्य दादीजी, सादर प्रणाम। … आपकी प्रिय पोती, अनन्या" },
+  { t: "मुख्य विषय (the main message)", how: ["एक अनुच्छेद में पूरी बात, विवरण और भावना के साथ।"], q: "मित्र को अपने जन्मदिन की पार्टी के बारे में बताइए।", w: [], a: "पिछले रविवार मेरा जन्मदिन था। मम्मी ने मेरा पसंदीदा चॉकलेट केक बनाया। हमने खूब नाचा और खेल खेले। तुम्हारी बहुत याद आई!" },
+  { t: "समापन (closing)", how: ["घर में सबको नमस्ते, जल्दी पत्र लिखना।"], q: "पत्र का अंतिम अनुच्छेद लिखिए।", w: [], a: "घर में सबको मेरा नमस्ते कहना। पत्र का उत्तर जल्दी देना।\nतुम्हारा मित्र,\nआरव" }
+],
+hi5: [
+  { t: "मौसम (weather)", how: ["Pictures first: say धूप, बारिश, ठंड, बादल in your head.", "Listen for the key word."], q: "You hear: 'आज बहुत धूप है।' Pictures: rain / sun / snow.", w: [], a: "The sun picture (धूप = sunshine)." },
+  { t: "समय और संख्या (times and numbers)", how: ["Listen for बजे and the number words; watch for सवा, साढ़े, पौने."], q: "You hear: 'बस साढ़े तीन बजे आएगी।' Clocks show 3:00 / 3:30 / 4:30.", w: [], a: "3:30 (साढ़े तीन)" },
+  { t: "नकारात्मक वाक्य (negatives)", how: ["नहीं reverses the meaning: pick what IS, not what isn't."], q: "You hear: 'मुझे चाय नहीं, दूध चाहिए।' Pictures: tea / milk / juice.", w: [], a: "Milk (दूध)" },
+  { t: "रंग और कपड़े (colours and clothes)", how: ["Two details may be needed: the colour AND the item."], q: "You hear: 'उसने नीली कमीज़ पहनी है।' Pictures: blue shirt / blue sweater / red shirt.", w: [], a: "The blue shirt (नीली = blue, कमीज़ = shirt)" },
+  { t: "जगह (places)", how: ["बाज़ार (market), पार्क, स्कूल, अस्पताल, पुस्तकालय."], q: "You hear: 'हम किताबें लेने पुस्तकालय जा रहे हैं।' Pictures: market / library / park.", w: [], a: "Library (पुस्तकालय)" }
+],
+hi6: [
+  { t: "प्रश्न पहले पढ़ें (read questions first)", how: ["Underline the question word: क्या, कब, कहाँ, कौन, क्यों, कितने."], q: "Question: 'रीना कहाँ गई?' What kind of answer are you listening for?", w: [], a: "A place (कहाँ = where)." },
+  { t: "बदलता निर्णय (change of mind)", how: ["पहले … लेकिन फिर: the answer is what happens after फिर."], q: "You hear: 'पहले हम सिनेमा जाने वाले थे, लेकिन फिर हम चिड़ियाघर गए।' Where did they go?", w: [], a: "The zoo (चिड़ियाघर)" },
+  { t: "संख्या (how many)", how: ["Add or note every number mentioned."], q: "You hear: 'मेरे पास तीन किताबें थीं, और दादी ने दो और दीं।' How many books now?", w: ["3 + 2"], a: "5 (पाँच)" },
+  { t: "कारण (why)", how: ["Listen for क्योंकि (because)."], q: "You hear: 'वह आज स्कूल नहीं आया क्योंकि उसे बुखार था।' Why was he absent?", w: [], a: "He had a fever (बुखार)." },
+  { t: "विकल्पों में भ्रम (distractors)", how: ["Several options are mentioned; choose the one that answers this exact question."], q: "You hear: 'माँ ने सेब और केले खरीदे, पर आम नहीं खरीदे।' Which fruit was NOT bought?", w: [], a: "Mangoes (आम)" }
+],
+gp1: [
+  { t: "Fact, opinion, prediction, value judgement", how: ["Fact: can be checked. Opinion: personal view. Prediction: about the future (will). Value judgement: good/bad/should."], q: "Classify: (a) 'Rice is grown in 100+ countries.' (b) 'Rice tastes best with dal.' (c) 'Rice prices will rise next year.' (d) 'Governments should support rice farmers.'", w: [], a: "(a) fact (b) opinion (c) prediction (d) value judgement" },
+  { t: "Identify and explain an opinion", how: ["Quote it exactly, then explain using the signal word and say it can't be proven."], q: "Text: 'Online learning is far more boring than lessons in class.' Explain why this is an opinion. [2]", w: [], a: "It is the writer's personal judgement ('more boring'). Whether something is boring can't be checked or proven, and others may disagree." },
+  { t: "Primary or secondary", how: ["Primary: you collected it (survey, interview). Secondary: someone else collected it (articles, reports)."], q: "Which is primary: a survey you run, or a government report on literacy?", w: [], a: "The survey you run is primary; the report is secondary." },
+  { t: "Quantitative or qualitative", how: ["Quantitative: numbers. Qualitative: descriptions, words, experiences."], q: "Is '62% of students walk to school' quantitative or qualitative?", w: [], a: "Quantitative (numerical data)" }
+],
+gp2: [
+  { t: "Identify the issue and its nature", how: ["Say what the issue is and whether it is local, national or global, with evidence."], q: "Source: a farmer says, 'Our river is drying up because factories upstream take all the water.' Identify the issue and its nature.", w: [], a: "Issue: water shortage caused by factories using river water. It is local (one river and community), with links to the national issue of water management." },
+  { t: "Speaker's perspective", how: ["What does the speaker think, and why might they think it (their background)?"], q: "What is the farmer's perspective?", w: [], a: "The farmer thinks factories are to blame for the river drying up and the government should limit their water use; as a farmer whose crops depend on the river, she is directly affected." },
+  { t: "Causes, consequences and solutions in the source", how: ["Pick out what the speaker says causes the issue, what results, and what should be done."], q: "Identify a cause, a consequence and a solution the farmer might give.", w: [], a: "Cause: factories taking water upstream. Consequence: crops fail and farmers lose income. Solution: limit how much water factories can take." },
+  { t: "Values, evidence and reasoning", how: ["Values: what the speaker cares about (fairness, family, environment).", "Evidence: facts or examples used.", "Reasoning: how the evidence links to the conclusion."], q: "Identify a value and comment on the farmer's evidence.", w: [], a: "Value: fairness, as farmers should get a fair share of water. Evidence: personal experience of the river drying; it is real but needs data on water use to be stronger." }
+],
+gp3: [
+  { t: "Choosing and stating your cause", how: ["Pick one cause from the sources and state it clearly as your judgement."], q: "Sources say pollution in a city is caused by traffic, factories and burning crops. Write your opening judgement.", w: [], a: "I think the most significant cause of air pollution in the city is traffic." },
+  { t: "Reason with evidence: scale of impact", how: ["Show it affects many people or a large area, with a figure from the source."], q: "Give a scale-of-impact reason for traffic.", w: [], a: "Traffic has the largest scale of impact: Source 1 says vehicles produce 40% of the city's pollution, more than any other cause, and it affects every neighbourhood." },
+  { t: "Reason with evidence: long term", how: ["Show the impact continues or grows over time."], q: "Give a long-term reason.", w: [], a: "It is long term: Source 2 says the number of cars is rising by 8% each year, so this cause will keep growing, unlike crop burning, which happens only a few weeks a year." },
+  { t: "Reason with good reasoning: vicious circle or domino effect", how: ["Explain step by step how it leads to further problems."], q: "Give a reasoning-based point.", w: [], a: "It creates a domino effect: pollution causes breathing illness, which means more hospital visits and missed work, which harms the economy." },
+  { t: "Conclusion", how: ["Sum up why it is more significant than the others."], q: "Write a concluding sentence.", w: [], a: "Overall, traffic is the most significant cause because it produces the most pollution, all year round, and its effects keep spreading." },
+  { t: "Most significant consequence", how: ["Same method: one consequence, three reasons (two with evidence, one with reasoning)."], q: "Sources give consequences of deforestation: loss of habitat, flooding and climate change. Write an opening and one evidenced reason.", w: [], a: "I think the most significant consequence of deforestation is climate change. It has the largest scale of impact: Source 2 states that deforestation produces about 10% of global CO₂ emissions, which affects people all over the world." }
+],
+gp4: [
+  { t: "Choosing a range of methods", how: ["For each method give: the method, the source of evidence, the type of evidence, a strength and a weakness."], q: "Claim: 'Students who sleep less get lower marks.' Suggest one primary method.", w: [], a: "A questionnaire for Grade 8 students (source) asking hours of sleep and recent test marks, giving quantitative data. Strength: reaches many students and the answers are easy to compare. Weakness: students might not report honestly." },
+  { t: "Adding secondary research", how: ["Name a reliable type of source and say why it helps."], q: "Suggest a secondary method for the same claim.", w: [], a: "Look at large-scale studies by health organisations or universities on sleep and school results. Strength: large samples and expert researchers, so reliable. Weakness: may be from other countries, so not directly relevant." },
+  { t: "Interview or case study", how: ["Use it for depth: who you would interview and what you'd learn."], q: "Suggest a qualitative method.", w: [], a: "Interview teachers about how tired students perform in class: gives in-depth experience, but answers may be biased and are hard to generalise." },
+  { t: "Linking back to the claim", how: ["Say what result would support or challenge the claim."], q: "What evidence would support the claim?", w: [], a: "If students who sleep fewer hours consistently have lower average marks across a large sample, the claim is supported." }
+],
+gp5: [
+  { t: "Identify the purpose", how: ["Say what the research was trying to find out."], q: "Source: a student interviewed one shop manager (with permission) to find out how plastic bag bans affect shops. State the purpose.", w: [], a: "To find out how a plastic bag ban affects shops." },
+  { t: "Explain a strength", how: ["Name the strength, quote or point to the source, and explain why it helps the purpose."], q: "Explain one strength of this research.", w: [], a: "It is ethical, because the manager gave permission. It is also primary research from someone directly affected, so it gives authentic, first-hand evidence about the effect on shops." },
+  { t: "Explain a weakness", how: ["Name it and explain how it limits the conclusion."], q: "Explain one weakness.", w: [], a: "Only one manager was interviewed, so the results can't be generalised to all shops; the manager may also be biased." },
+  { t: "Suggest an improvement", how: ["Link each improvement to a weakness."], q: "Suggest an improvement.", w: [], a: "Interview managers from several types of shops, and add a survey of customers, to get a larger and more varied sample." },
+  { t: "Judgement", how: ["Weigh the strengths against the weaknesses."], q: "Write a concluding judgement.", w: [], a: "Overall the research is useful as a starting point because it is ethical and first-hand, but it is not reliable enough to draw conclusions about all shops because the sample is so small." }
+]
+});
+
 /* ===== Profiles: the built-in syllabus is the default; visitors can add their own (stored only in their browser) ===== */
 var PROFILE_REG_KEY = "ecc.profiles", BASE_KEY = "ecc.nov2026.v1";
 var RULES = { id: "default", name: "November 2026 exams", start: "2026-11-01", end: "2026-11-30", restWeekdays: [4], dailyMax: 90, custom: false, label: "November 2026 · IST" };
@@ -4333,6 +4854,8 @@ function pgResources() {
   var h = head("Study Resources", "Hand-written revision notes, definitions, formulas and worked examples for every topic") + restNote;
   h += '<div class="row wrap" style="margin-bottom:14px"><div class="seg" style="flex-wrap:wrap">' + EXAM_ORDER.map(function (x) { return '<button data-act="resSubj" data-s="' + x.id + '" class="' + (x.id === s.id ? "on" : "") + '">' + esc(x.short) + "</button>"; }).join("") + '</div><div class="grow"></div><input class="input" style="max-width:260px" placeholder="Search topics and notes" id="res-q" data-on="resQ" value="' + esc(UI.resQ) + '" aria-label="Search notes"></div>';
   if (RULES.custom) { var miss = TOPICS.filter(function (t) { return t.subj === s.id && !hasMaterials(t.id); }).length; if (miss) h += '<div class="notice" style="margin-bottom:12px"><div class="grow">' + miss + " topic" + (miss > 1 ? "s" : "") + " in " + esc(s.name) + " don't have notes yet. Pip can write them with AI (notes, questions and flashcards)." + aiNeedsNote() + '</div><button class="btn sm primary" data-act="aiSubject" data-s="' + s.id + '"' + (AI.ready && !AI.busySubj ? "" : " disabled") + ">" + (AI.busySubj === s.id ? "Writing… " + esc(AI.prog || "") : "✨ Make them all") + "</button></div>"; }
+  /* one PDF with every topic of this subject */
+  if (s.units.some(function (u) { return u.topics.some(function (t) { return t.n; }); })) h += '<div class="card flat book-card" style="margin-bottom:14px"><div class="row wrap" style="gap:12px">' + doodle("book", 46) + '<div class="grow"><h3>' + esc(s.name) + ': complete notes</h3><p class="small muted">One PDF with every topic in the syllabus: notes, definitions, formulas, a worked example for every type of question, practice questions with answers, your own notes and the Answer Notes.</p></div><div class="row wrap" style="gap:8px"><button class="btn primary" data-act="bookPdf"' + (BK.busy ? " disabled" : "") + ">" + (BK.busy === s.id ? "Making the PDF… page " + esc(BK.prog || "") : ic("download") + "Download PDF") + '</button><button class="btn" data-act="bookPrint">Print</button></div></div></div>';
   h += '<div class="row small muted" style="margin-bottom:12px;gap:14px"><span>' + revCount + " of " + tot + " topics marked revised</span><span style=\"width:160px\">" + bar(pct(revCount, tot), s.color) + "</span></div>";
   var shown = 0;
   s.units.forEach(function (u) {
@@ -5837,6 +6360,123 @@ ACT.notesPdf = async function (el) {
 };
 
 ACT.rubricOpen = function (el) { var id = el.getAttribute("data-id"); if (UI.focus) closeFocus(); UI.notesSubj = "gp"; go("notes"); setTimeout(function () { var t = document.getElementById(id); if (t) t.scrollIntoView({ block: "start" }); }, 450); };
+
+/* ===== Complete notes: one PDF per subject with everything in the syllabus =====
+   Cover and contents, then every unit and topic: notes, definitions, key facts, formulas, worked examples,
+   "Every type of question" (the method and a worked example for each type, from GUIDE), points to remember,
+   practice questions with answers and your own notes. The subject's Answer Notes come at the end.
+   It reuses the Answer Notes page builder (anPaginate) so the PDF looks like the rest of the site. */
+function bkCSS() {
+  return ".bk-cover{padding-top:120px;text-align:center}.bk-cover h1{font-family:'Schoolbell','Patrick Hand',cursive;font-size:52px;line-height:1.1;margin:0}.bk-cover h1 span{background:linear-gradient(transparent 55%,var(--c) 55%,var(--c) 90%,transparent 90%);padding:0 8px}" +
+    ".bk-cover .bk-big{font-family:'Schoolbell',cursive;font-size:30px;margin:10px 0 0}.bk-cover p{font-size:18px;color:#5d5766;margin:6px 0}.bk-stats{display:inline-flex;gap:18px;margin-top:26px;border:2px solid #2d2a32;border-radius:14px 10px 16px 9px;padding:8px 18px;background:#fff;font-size:16px}" +
+    ".bk-toc-h{font-family:'Schoolbell',cursive;font-size:28px;margin:0 0 4px}.bk-toc-u{font-family:'Schoolbell',cursive;font-size:19px;margin:10px 0 2px;border-bottom:2px solid var(--c)}.bk-toc-t{display:flex;gap:8px;margin:1px 0 1px 10px}.bk-toc-t span:first-child{color:#8a8492;min-width:34px}" +
+    ".bk-unit{padding-top:200px;text-align:center}.bk-unit small{display:block;font-size:18px;color:#6d6775}.bk-unit h1{font-family:'Schoolbell',cursive;font-size:44px;line-height:1.15;margin:8px 0 0}.bk-unit h1 span{background:linear-gradient(transparent 55%,var(--c) 55%,var(--c) 90%,transparent 90%);padding:0 8px}.bk-unit ol{text-align:left;display:inline-block;margin:24px 0 0;font-size:17px}" +
+    ".bk-th{margin:14px 0 6px;padding:8px 12px;border:2.5px solid #2d2a32;border-radius:12px 9px 14px 8px;background:#fff}.bk-th h2{font-family:'Schoolbell',cursive;font-weight:400;font-size:25px;line-height:1.15;margin:0}.bk-th h2 i{font-style:normal;color:#8a8492;margin-right:8px}.bk-th p{margin:3px 0 0;color:#5d5766;font-size:14.5px}" +
+    ".bk-sum{margin:6px 0 4px}.bk-h{font-family:'Schoolbell','Patrick Hand',cursive;font-size:20px;margin:12px 0 3px;display:flex;align-items:center;gap:8px}.bk-h:after{content:'';flex:1;border-bottom:2px dashed #c9c2d4}" +
+    ".bk-li{margin:1px 0 1px 18px;display:list-item}.bk-def{margin:2px 0 2px 4px}.bk-def b{font-family:'Schoolbell',cursive;font-weight:400;font-size:16.5px;margin-right:6px}" +
+    ".bk-f{display:inline-block;margin:3px 0;padding:3px 12px;border:2px solid #2d2a32;border-radius:9px 12px 8px 11px;background:#eaf6ff;font-size:16px}" +
+    ".bk-we{border-left:4px solid var(--c);padding:2px 0 2px 10px;margin:6px 0}.bk-we .q{font-weight:600}.bk-pre{white-space:pre-wrap}" +
+    ".bk-ty{border:2px solid #2d2a32;border-radius:12px 9px 13px 8px;background:#fff;padding:6px 12px 8px;margin:8px 0}.bk-ty h3{font-family:'Schoolbell',cursive;font-weight:400;font-size:19px;margin:0 0 2px}.bk-ty h3 i{font-style:normal;display:inline-block;min-width:24px;height:24px;line-height:22px;text-align:center;border:2px solid #2d2a32;border-radius:50%;background:var(--c);color:#fff;font-size:14px;margin-right:6px}" +
+    ".bk-how{margin:2px 0 4px 18px;padding:0;font-size:14.5px;color:#4d4756}.bk-how li{margin:0}.bk-eq{background:#fff3a8;border:1.5px solid #e0c64a;border-radius:4px 10px 6px 12px;padding:4px 10px;margin:4px 0}.bk-eq em{font-style:normal;font-family:'Schoolbell',cursive;color:#a07d00;margin-right:6px}" +
+    ".bk-w{margin:3px 0 0 12px;font-size:15px}.bk-w div{white-space:pre-wrap}.bk-a{margin-top:4px;font-weight:600}.bk-a em{font-style:normal;font-family:'Schoolbell',cursive;font-weight:400;color:#2e8b57;margin-right:6px}" +
+    ".bk-pq{margin:5px 0;padding-left:30px;position:relative}.bk-pq>i{position:absolute;left:0;top:0;font-style:normal;font-family:'Schoolbell',cursive;font-size:17px;color:#8a8492}.bk-pq ol{margin:2px 0 2px 20px;padding:0}.bk-pq .ans{color:#2e8b57}.bk-pq .ms{font-size:14px;color:#4d4756}" +
+    ".bk-mine{background:#ffe1ea;border:1.5px solid #f39ab4;border-radius:10px 5px 12px 6px;padding:4px 10px;margin:6px 0;white-space:pre-wrap}" +
+    ".bk-sep{height:16px}";
+}
+function bkTopics(s) { var out = []; s.units.forEach(function (u) { u.topics.forEach(function (t) { out.push(t); }); }); return out; }
+function bkGuideCount(s) { var n = 0; bkTopics(s).forEach(function (t) { n += (typeof GUIDE !== "undefined" && GUIDE[t.id] || []).length; }); return n; }
+function bkText(t) { return esc(t).replace(/\n/g, "<br>"); }
+/* every block is small, so pages break cleanly between them */
+function bkBlocks(sid) {
+  var s = SUBJ[sid], B = [], tops = bkTopics(s), num = {}, k = 0;
+  tops.forEach(function (t) { num[t.id] = ++k; });
+  var nTypes = bkGuideCount(s), nQs = QUIZ.filter(function (q) { return q.subj === sid; }).length;
+  /* cover */
+  B.push('<div class="bk-cover"><h1><span>' + esc(s.name) + '</span></h1><div class="bk-big">Complete notes</div><p>Everything in the syllabus, from the first topic to the last</p>' +
+    (s.exam ? "<p>Exam: " + esc(fmtD(s.exam, true)) + " " + s.exam.slice(0, 4) + (s.marks ? " · " + s.marks + " marks" : "") + (s.duration ? " · " + s.duration + " minutes" : "") + "</p>" : "") +
+    '<div class="bk-stats"><span><b>' + s.units.length + "</b> unit" + (s.units.length > 1 ? "s" : "") + "</span><span><b>" + tops.length + "</b> topics</span>" + (nTypes ? "<span><b>" + nTypes + "</b> question types worked through</span>" : "") + (nQs ? "<span><b>" + nQs + "</b> practice questions</span>" : "") + "</div></div>");
+  /* contents */
+  B.push(""); /* anPaginate only honours page breaks after the first two blocks */
+  B.push('\u0001<div class="bk-toc-h">Contents</div>');
+  s.units.forEach(function (u) {
+    B.push('<div class="bk-toc-u">' + esc(u.name) + "</div>");
+    u.topics.forEach(function (t) { B.push('<div class="bk-toc-t"><span>' + num[t.id] + "</span><span>" + esc(t.t) + "</span></div>"); });
+  });
+  if (typeof anGet === "function" && ANSWER_NOTES.some(function (n) { return n.subj === sid; }) && !RULES.custom) B.push('<div class="bk-toc-u">Answer Notes: how to write each type of exam answer</div>');
+  /* units and topics */
+  s.units.forEach(function (u, ui) {
+    B.push('\u0001<div class="bk-unit"><small>Unit ' + (ui + 1) + " of " + s.units.length + "</small><h1><span>" + esc(u.name) + "</span></h1><ol>" + u.topics.map(function (t) { return "<li>" + esc(t.t) + "</li>"; }).join("") + "</ol></div>");
+    u.topics.forEach(function (t, ti) { bkTopic(B, t, num[t.id], ti > 0); });
+  });
+  /* answer notes at the end */
+  if (typeof anBlocks === "function" && !RULES.custom && ANSWER_NOTES.some(function (n) { return n.subj === sid; })) {
+    var an = anBlocks(sid); if (an.length) { an[0] = "\u0001" + an[0].replace(/^\u0001/, ""); B = B.concat(an); }
+  }
+  return B;
+}
+function bkTopic(B, t, n, gap) {
+  var N = t.n || {}, G = (typeof GUIDE !== "undefined" && GUIDE[t.id]) || [];
+  B.push((gap ? '<div class="bk-sep"></div>' : "") + '<div class="bk-th"><h2><i>' + n + "</i>" + esc(t.t) + "</h2>" + (N.o ? "<p>Goal: " + esc(N.o) + "</p>" : "") + "</div>" + (N.s ? '<div class="bk-h">Summary</div><div class="bk-sum">' + bkText(N.s) + "</div>" : (t.n ? "" : '<div class="bk-sum">No notes have been written for this topic yet.</div>')));
+  var list = function (title, items, fn) { if (!items || !items.length) return; items.forEach(function (x, i) { B.push((i ? "" : '<div class="bk-h">' + title + "</div>") + fn(x)); }); };
+  list("Important definitions", N.d, function (d) { return '<div class="bk-def"><b>' + esc(d[0]) + "</b>" + esc(d[1]) + "</div>"; });
+  list("Key facts", N.k, function (x) { return '<div class="bk-li">' + bkText(x) + "</div>"; });
+  list("Formulas and patterns", N.f, function (x) { return '<div class="bk-f">' + esc(x) + "</div>"; });
+  list("Worked examples from the notes", N.e, function (e) { return '<div class="bk-we"><div class="q bk-pre">' + esc(e[0]) + '</div><div class="bk-pre">' + esc(e[1]) + "</div></div>"; });
+  list("Every type of question, worked through", G, function (g) {
+    var i = G.indexOf(g) + 1;
+    return '<div class="bk-ty"><h3><i>' + i + "</i>" + esc(g.t) + "</h3>" + (g.how && g.how.length ? '<ul class="bk-how">' + g.how.map(function (h) { return "<li>" + esc(h) + "</li>"; }).join("") + "</ul>" : "") +
+      '<div class="bk-eq"><em>Example</em><span class="bk-pre">' + esc(g.q) + "</span></div>" + (g.w && g.w.length ? '<div class="bk-w">' + g.w.map(function (w) { return "<div>" + esc(w) + "</div>"; }).join("") + "</div>" : "") +
+      '<div class="bk-a"><em>Answer</em><span class="bk-pre">' + esc(g.a) + "</span></div></div>";
+  });
+  list("Points to remember", N.r, function (x) { return '<div class="bk-li">' + bkText(x) + "</div>"; });
+  var qs = QUIZ.filter(function (q) { return q.t === t.id; });
+  list("Practice questions with answers", qs, function (q) {
+    var i = qs.indexOf(q) + 1, h = '<div class="bk-pq"><i>' + i + ".</i><div class=\"bk-pre\">" + esc(q.q) + (q.m > 1 ? " [" + q.m + "]" : "") + "</div>";
+    if (q.y === "mcq") h += '<ol type="A">' + q.o.map(function (o) { return "<li>" + esc(o) + "</li>"; }).join("") + '</ol><div class="ans">Answer: ' + "ABCDEF"[q.a] + ") " + esc(q.o[q.a]) + "</div>" + (q.x ? '<div class="ms bk-pre">' + esc(q.x) + "</div>" : "");
+    else if (q.y === "short") h += '<div class="ans">Answer: ' + esc(q.a.join(" / ")) + "</div>" + (q.x ? '<div class="ms bk-pre">' + esc(q.x) + "</div>" : "");
+    else h += '<div class="ms bk-pre"><b>Mark scheme:</b> ' + esc(q.x || "") + "</div>";
+    return h + "</div>";
+  });
+  var mine = S.notes && S.notes[t.id] && S.notes[t.id].text; if (mine && mine.trim()) B.push('<div class="bk-h">My notes</div><div class="bk-mine">' + esc(mine.trim()) + "</div>");
+}
+function bkHost(visible, color) { var h = anHost(visible, color); var st = document.createElement("style"); st.textContent = bkCSS(); h.appendChild(st); return h; }
+async function bookPDF(sid, onStep) {
+  try { if (!window.html2canvas) await loadScript(AN_LIBS.h2c); if (!(window.jspdf && window.jspdf.jsPDF)) await loadScript(AN_LIBS.jspdf); }
+  catch (e) { throw { message: "Saving as PDF needs an internet connection the first time. Connect and try again, or use Print." }; }
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) { }
+  var s = SUBJ[sid], host = bkHost(false, s.color), pages = anPaginate(bkBlocks(sid), host, s.name + " · Complete notes");
+  var doc = new window.jspdf.jsPDF({ unit: "pt", format: "a4", compress: true });
+  try {
+    for (var i = 0; i < pages.length; i++) {
+      if (onStep) onStep(i + 1, pages.length);
+      var c = await window.html2canvas(pages[i], { scale: 1.6, backgroundColor: "#fffdf6", logging: false });
+      if (i) doc.addPage();
+      doc.addImage(c.toDataURL("image/jpeg", 0.82), "JPEG", 0, 0, 595.28, 841.89);
+      c.width = c.height = 0;
+    }
+  } finally { host.remove(); }
+  return doc.output("blob");
+}
+function bookPrint(sid) {
+  var s = SUBJ[sid], host = bkHost(true, s.color); host.className = "an-print";
+  anPaginate(bkBlocks(sid), host, s.name + " · Complete notes");
+  document.body.classList.add("an-printing");
+  var done = function () { document.body.classList.remove("an-printing"); host.remove(); window.removeEventListener("afterprint", done); };
+  window.addEventListener("afterprint", done);
+  setTimeout(function () { try { window.print(); } catch (e) { toast("Printing isn't available here. Use Download PDF.", "bad"); } setTimeout(function () { if (document.body.classList.contains("an-printing")) done(); }, 60000); }, 300);
+}
+var BK = { busy: null };
+ACT.bookPdf = async function () {
+  var sid = UI.resSubj, s = SUBJ[sid]; if (BK.busy) return;
+  BK.busy = sid; BK.prog = ""; render();
+  try {
+    var blob = await bookPDF(sid, function (i, n) { BK.prog = i + " / " + n; var b = $("[data-act=bookPdf]"); if (b) b.textContent = "Making the PDF… page " + BK.prog; });
+    var r = await saveFile(s.short.replace(/\s+/g, "-") + "-complete-notes.pdf", blob);
+    if (r === "saved") toast("Complete " + s.name + " notes saved as a PDF. 📚", "good"); else if (r === "declined") toast("Save was cancelled.", "info");
+  } catch (e) { toast((e && e.message) || "Couldn't make the PDF.", "bad"); }
+  BK.busy = null; render();
+};
+ACT.bookPrint = function () { bookPrint(UI.resSubj); };
 
 /* ===== Checking AI-written questions before a student ever sees them =====
    An AI can mark the wrong option as correct, "think aloud" inside an explanation, or send the same question twice.
