@@ -3978,6 +3978,64 @@ fr12: [
 ]
 });
 
+/* ===== Writing prompts for the English letter-writing booklet =====
+   Each prompt: who it is to, the situation and the bullet points to cover (as in the exam). Model letters show the layout from the notes. */
+var LETTER_PROMPTS = {
+formal: [
+  { to: "The Principal", t: "Request for a school recycling programme", q: "Your school throws away a lot of paper and plastic. Write a letter to the principal asking for a recycling programme.", b: ["what you have noticed about waste in school", "how a recycling programme could work", "how students could help", "what you would like the principal to do"] },
+  { to: "The Editor of a local newspaper", t: "Stray dogs in your area", q: "Write a letter to the editor of your local newspaper about the growing number of stray dogs in your locality.", b: ["the problem and where it happens", "how it affects residents, especially children and the elderly", "a humane solution you suggest", "who should take action"] },
+  { to: "The Customer Service Manager of an online store", t: "Complaint about a damaged product", q: "You ordered a pair of headphones online and they arrived damaged. Write a letter of complaint.", b: ["what you ordered, when and the order number", "what was wrong with the product", "how this has inconvenienced you", "what you want the company to do and by when"] },
+  { to: "The Municipal Commissioner", t: "Poor condition of roads", q: "The roads near your school are full of potholes. Write a letter to the Municipal Commissioner.", b: ["where the roads are and their condition", "the dangers to students and drivers", "any incidents that have happened", "the action you request"] },
+  { to: "The Principal", t: "Permission for an inter-school quiz", q: "Your class wants to take part in an inter-school quiz competition. Write to the principal asking for permission.", b: ["details of the competition (date, place, organiser)", "why taking part would benefit students", "how you will prepare without missing lessons", "what you need from the school"] },
+  { to: "The Librarian of your city library", t: "Request for more books for teenagers", q: "Write to the librarian of your city library suggesting more books and activities for teenagers.", b: ["how often you use the library", "what is missing for readers of your age", "two or three specific suggestions", "how this would help young people"] },
+  { to: "The Station Master", t: "Lost bag on a train", q: "You left your school bag on a train. Write to the Station Master asking for help to find it.", b: ["the train, date, time and coach", "a description of the bag and its contents", "why it is important to you", "how you can be contacted"] },
+  { to: "The Head of the Residents' Welfare Association", t: "A park for children", q: "There is no safe play area in your housing society. Write to the head of the Residents' Welfare Association.", b: ["the problem children face now", "where a play area could be made", "what equipment or facilities are needed", "how residents could help pay for or maintain it"] },
+  { to: "The Principal", t: "Healthier food in the canteen", q: "Write a letter to the principal suggesting healthier food in the school canteen.", b: ["what the canteen sells now", "why this is a problem for students' health", "your suggestions for new items", "how the change could be introduced"] },
+  { to: "The Manager of a sports academy", t: "Enquiry about summer coaching", q: "Write to the manager of a sports academy asking for details of their summer coaching camp.", b: ["which sport you are interested in and your level", "the information you need (dates, timings, fees, equipment)", "any special requirements", "how they can reply to you"] },
+  { to: "The Editor of a national newspaper", t: "Too much screen time among teenagers", q: "Write a letter to the editor expressing your views on the amount of time teenagers spend on screens.", b: ["what you have observed", "the effects on health and studies", "what parents and schools could do", "your overall opinion"] },
+  { to: "The Traffic Police Commissioner", t: "Traffic near your school", q: "Heavy traffic outside your school makes it unsafe at home time. Write to the Traffic Police Commissioner.", b: ["when and where the problem happens", "the risks to students", "your suggestions (signals, zebra crossing, police)", "the urgency of the matter"] }
+],
+informal: [
+  { to: "your best friend", t: "Your school trip", q: "Write a letter to your best friend telling them about a recent school trip.", b: ["where you went and with whom", "the best moment of the trip", "something funny or unexpected that happened", "an invitation to go somewhere together"] },
+  { to: "your grandmother", t: "Thank-you for a birthday gift", q: "Your grandmother sent you a birthday gift. Write to thank her.", b: ["what the gift was and why you love it", "how you celebrated your birthday", "news about school and family", "when you hope to see her"] },
+  { to: "a cousin who lives abroad", t: "Diwali at home", q: "Write to your cousin who lives abroad describing how your family celebrated Diwali.", b: ["the preparations", "the food and the celebrations", "the moment you enjoyed most", "how you missed them and ask about their festival"] },
+  { to: "a friend who has moved to a new city", t: "Keeping in touch", q: "Your friend has moved to a new city. Write to them.", b: ["how things are at school without them", "a question about their new home and school", "some news of your own", "a plan to meet in the holidays"] },
+  { to: "your friend", t: "Congratulations on winning a competition", q: "Your friend has won a state-level painting competition. Write a letter to congratulate them.", b: ["how you heard the news and how you felt", "why they deserved to win", "a memory of their talent", "a suggestion to celebrate together"] },
+  { to: "your younger brother or sister at boarding school", t: "Advice on exams", q: "Your younger brother or sister is nervous about exams. Write to give advice.", b: ["understanding how they feel", "three practical study tips", "advice on rest and health", "encouragement for the future"] },
+  { to: "your friend", t: "Invitation to your birthday party", q: "Write to your friend inviting them to your birthday party.", b: ["date, time and place", "what you have planned", "who else is coming", "ask them to reply and anything they should bring"] },
+  { to: "your pen friend in another country", t: "Life in your city", q: "Write to your pen friend describing life in your city.", b: ["what your city is famous for", "a typical day for you", "your favourite place and why", "questions about their city"] },
+  { to: "your uncle", t: "A new hobby", q: "Write to your uncle telling him about a new hobby you have started.", b: ["what the hobby is and how you began", "what you have learnt so far", "a challenge you faced", "ask for his advice or experience"] },
+  { to: "your friend", t: "Apologising for missing their event", q: "You missed your friend's school play. Write to apologise.", b: ["why you could not come", "how you felt about missing it", "questions about how it went", "how you will make it up to them"] },
+  { to: "your friend", t: "Your summer holiday plans", q: "Write to your friend about your plans for the summer holidays.", b: ["where you are going and with whom", "what you will do there", "what you are most excited about", "ask about their plans"] },
+  { to: "your aunt", t: "Your new school", q: "You have just joined a new school. Write to your aunt about it.", b: ["your first impressions", "your teachers and new friends", "a subject or activity you enjoy", "something you find difficult and how you are coping"] }
+]
+};
+var MODEL_LETTERS = [
+{ kind: "Formal", title: "Request for a school recycling programme", lines: [
+  "12, Green Park Colony", "Sector 15, Gurugram", "16 November 2026", "",
+  "The Principal", "Delhi Public School", "Sector 45, Gurugram", "",
+  "Subject: Request to start a recycling programme in school", "",
+  "Dear Sir/Madam,", "",
+  "I am Ananya Rao, a student of Grade 8B. I am writing to request that our school start a recycling programme for paper and plastic waste.",
+  "Every day, large amounts of paper and plastic bottles are thrown into ordinary dustbins. In our class alone, we fill two bins with scrap paper each week. Most of this could be recycled instead of going to a landfill.",
+  "A simple programme could work well. Separate bins for paper, plastic and other waste could be placed on each floor, and a local recycling company could collect them every week. The money earned could be used for school gardening or library books.",
+  "Students would be happy to help. Our eco-club could make posters, remind classes to sort their waste and keep a record of how much is recycled each month.",
+  "I would be grateful if you could consider this proposal and allow the eco-club to present it at the next assembly. Thank you for your time and consideration.", "",
+  "Yours faithfully,", "Ananya Rao", "Grade 8B"] },
+{ kind: "Informal", title: "Telling a friend about a school trip", lines: [
+  "45, Lake View Apartments", "Pune", "16 November 2026", "",
+  "Dear Meera,", "",
+  "I hope you're settling into your new school and that Bengaluru is treating you well! I miss our lunch breaks so much. Nobody laughs at my jokes the way you did!",
+  "Guess what? Last Friday our class went on a trip to the Science Park. The best part was the planetarium show: we lay back in huge chairs and watched the whole night sky spin above us. I honestly felt like an astronaut!",
+  "The funniest moment was when Rohan tried the 'human gyroscope' and came out walking in zig-zags for five whole minutes. Even Ms Iyer couldn't stop laughing.",
+  "You'd love the place, so let's go together when you visit in December. I'll ask Mum to book tickets. Write back soon and tell me all about your new friends!", "",
+  "Lots of love,", "Aarav"] }
+];
+var LETTER_CHECK = {
+formal: ["Sender's address and date", "Receiver's designation and address", "Subject line", "Dear Sir/Madam → Yours faithfully, or Dear Mr/Ms … → Yours sincerely", "Paragraph 1 states the purpose", "Every bullet point covered, each in its own paragraph", "Formal tone: no contractions, slang or exclamation marks", "A clear, polite request at the end"],
+informal: ["Your address and date", "Dear + first name", "A friendly opening that asks after them", "Every bullet point covered, in paragraphs", "Lively details: an anecdote, feelings, a question", "A warm close: Love, / Best wishes, + your first name"]
+};
+
 /* ===== Profiles: the built-in syllabus is the default; visitors can add their own (stored only in their browser) ===== */
 var PROFILE_REG_KEY = "ecc.profiles", BASE_KEY = "ecc.nov2026.v1";
 var RULES = { id: "default", name: "November 2026 exams", start: "2026-11-01", end: "2026-11-30", restWeekdays: [4], dailyMax: 90, custom: false, label: "November 2026 · IST" };
@@ -5455,6 +5513,7 @@ function pgResources() {
   if (RULES.custom) { var miss = TOPICS.filter(function (t) { return t.subj === s.id && !hasMaterials(t.id); }).length; if (miss) h += '<div class="notice" style="margin-bottom:12px"><div class="grow">' + miss + " topic" + (miss > 1 ? "s" : "") + " in " + esc(s.name) + " don't have notes yet. Pip can write them with AI (notes, questions and flashcards)." + aiNeedsNote() + '</div><button class="btn sm primary" data-act="aiSubject" data-s="' + s.id + '"' + (AI.ready && !AI.busySubj ? "" : " disabled") + ">" + (AI.busySubj === s.id ? "Writing… " + esc(AI.prog || "") : "✨ Make them all") + "</button></div>"; }
   /* one PDF with every topic of this subject */
   if (s.units.some(function (u) { return u.topics.some(function (t) { return t.n; }); })) h += '<div class="card flat book-card" style="margin-bottom:14px"><div class="row wrap" style="gap:12px">' + doodle("book", 46) + '<div class="grow"><h3>' + esc(s.name) + ': complete notes</h3><p class="small muted">One PDF with every topic in the syllabus: notes, definitions, formulas, a worked example for every type of question, practice questions with answers, your own notes and the Answer Notes.</p></div><div class="row wrap" style="gap:8px"><button class="btn primary" data-act="bookPdf"' + (BK.busy ? " disabled" : "") + ">" + (BK.busy === s.id ? "Making the PDF… page " + esc(BK.prog || "") : ic("download") + "Download PDF") + '</button><button class="btn" data-act="bookPrint">Print</button></div></div></div>';
+  if (QUIZ.some(function (q) { return q.subj === s.id; })) h += '<div class="card flat book-card" style="margin-bottom:14px"><div class="row wrap" style="gap:12px">' + doodle("pencil", 46) + '<div class="grow"><h3>' + esc(s.name) + ': practice worksheet</h3><p class="small muted">Printable worksheet for every topic: a worked example, then practice questions with lines, boxes or squared space to write in, and an answer key at the back.' + (s.id === "eng" ? " Plus a letter-writing booklet: 24 formal and informal prompts with ruled pages and two model letters." : "") + '</p></div><div class="row wrap" style="gap:8px"><button class="btn primary" data-act="wsPdf" data-k="ws">' + ic("download") + 'Worksheet PDF</button><button class="btn" data-act="wsPrint" data-k="ws">Print</button>' + (s.id === "eng" ? '<button class="btn primary" data-act="wsPdf" data-k="letters">' + ic("download") + 'Letter prompts PDF</button><button class="btn" data-act="wsPrint" data-k="letters">Print</button>' : "") + "</div></div></div>";
   h += '<div class="row small muted" style="margin-bottom:12px;gap:14px"><span>' + revCount + " of " + tot + " topics marked revised</span><span style=\"width:160px\">" + bar(pct(revCount, tot), s.color) + "</span></div>";
   var shown = 0;
   s.units.forEach(function (u) {
@@ -5473,7 +5532,7 @@ function topicNotes(t) {
   h += notesHTML(t);
   if (!n) return h + "</div></div></div>";
   h += '<div class="note-sec"><h4>My notes</h4><textarea class="input" id="note-' + t.id + '" placeholder="Write your own notes, mnemonics or questions for your teacher…">' + esc(note ? note.text : "") + '</textarea><div class="row wrap" style="margin-top:8px"><button class="btn sm primary" data-act="saveNote" data-tid="' + t.id + '">Save notes</button>' + (note && note.text ? '<button class="btn sm ghost" data-act="clearNote" data-tid="' + t.id + '">Clear</button><span class="tiny faint">Saved ' + new Date(note.at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) + "</span>" : "") + "</div></div>";
-  h += '<div class="row wrap"><button class="btn sm ' + (rv ? "" : "primary") + '" data-act="toggleRevised" data-tid="' + t.id + '">' + ic("check") + (rv ? "Revised · undo" : "Mark as revised") + '</button><button class="btn sm" data-act="quizTopic" data-tid="' + t.id + '">Practise this topic</button><button class="btn sm" data-act="flashSubj" data-s="' + t.subj + '">Flashcards</button></div>';
+  h += '<div class="row wrap"><button class="btn sm ' + (rv ? "" : "primary") + '" data-act="toggleRevised" data-tid="' + t.id + '">' + ic("check") + (rv ? "Revised · undo" : "Mark as revised") + '</button><button class="btn sm" data-act="quizTopic" data-tid="' + t.id + '">Practise this topic</button><button class="btn sm" data-act="flashSubj" data-s="' + t.subj + '">Flashcards</button>' + (QUIZ.some(function (q) { return q.t === t.id; }) || (typeof GUIDE !== "undefined" && GUIDE[t.id]) ? '<button class="btn sm" data-act="wsPrint" data-k="ws" data-t="' + t.id + '">Print worksheet</button>' : "") + "</div>";
   return h + "</div></div></div>";
 }
 
@@ -7077,6 +7136,132 @@ ACT.bookPdf = async function () {
   BK.busy = null; render();
 };
 ACT.bookPrint = function () { bookPrint(UI.resSubj); };
+
+/* ===== Practice worksheets and writing booklets (printable PDFs) =====
+   Worksheet: a page per unit, then per topic a worked example (from GUIDE) and practice questions with space to write
+   (answer lines, working space, multiple-choice bubbles), with an answer key at the back.
+   Letter booklet: checklists and model letters, then formal and informal prompts, each followed by ruled lines. */
+function wsCSS() {
+  return ".ws-head{display:flex;gap:16px;align-items:flex-end;margin:6px 0 10px;font-size:16px}.ws-head span{flex:1;border-bottom:2px solid #2d2a32;padding-bottom:2px}.ws-head span.sm{flex:0 0 120px}" +
+    ".ws-title{font-family:'Schoolbell',cursive;font-size:34px;line-height:1.1;margin:0}.ws-title span{background:linear-gradient(transparent 55%,var(--c) 55%,var(--c) 90%,transparent 90%);padding:0 6px}.ws-intro{color:#5d5766;margin:4px 0 0}" +
+    ".ws-topic{margin:14px 0 6px;padding:6px 12px;border:2.5px solid #2d2a32;border-radius:12px 9px 14px 8px;background:#fff;display:flex;gap:10px;align-items:baseline}.ws-topic h2{font-family:'Schoolbell',cursive;font-weight:400;font-size:23px;margin:0;flex:1}.ws-topic i{font-style:normal;color:#8a8492}.ws-topic small{color:#6d6775}" +
+    ".ws-q{display:grid;grid-template-columns:30px 1fr;gap:4px;margin:8px 0 4px}.ws-q>b{font-family:'Schoolbell',cursive;font-weight:400;font-size:19px;color:#5d5766}.ws-q .mk{float:right;color:#6d6775;margin-left:10px}" +
+    ".ws-opts{display:grid;grid-template-columns:1fr 1fr;gap:3px 18px;margin-top:3px}.ws-opts div{display:flex;gap:8px;align-items:baseline}.ws-opts i{flex:none;width:17px;height:17px;border:2px solid #2d2a32;border-radius:50%;font-style:normal;font-size:11px;line-height:13px;text-align:center}" +
+    ".ws-lines{margin:3px 0 4px 34px;background:#fff;border-top:1.5px solid #9eb0c9;background-image:repeating-linear-gradient(transparent 0 29px,#9eb0c9 29px 30px)}.ws-lines.cont,.ws-grid.cont{margin-top:-4px;border-top:0}.lt-pg .ws-lines{margin-left:0}" +
+    ".lt-cont{font-family:'Schoolbell',cursive;font-size:17px;color:#6d6775;margin:0 0 4px}" +
+    ".ws-grid{margin:3px 0 4px 34px;border:1.5px solid #c9c2d4;border-radius:6px;background-color:#fff;background-image:linear-gradient(#e2e8f2 1px,transparent 1px),linear-gradient(90deg,#e2e8f2 1px,transparent 1px);background-size:15px 15px}" +
+    ".ws-key-h{font-family:'Schoolbell',cursive;font-size:30px;margin:0 0 6px}.ws-key{display:grid;grid-template-columns:44px 1fr;gap:2px 6px;margin:3px 0;font-size:14.5px}.ws-key b{font-family:'Schoolbell',cursive;font-weight:400;font-size:16px;color:#5d5766}.ws-key .ks{color:#4d4756}" +
+    ".ws-kt{font-family:'Schoolbell',cursive;font-size:19px;margin:10px 0 2px;border-bottom:2px solid var(--c)}" +
+    ".lt-model .lt-p{margin:0 0 9px}.lt-model{background:#fff;border:2px solid #2d2a32;border-radius:12px 9px 13px 8px;padding:10px 16px;margin:6px 0}.lt-model div{min-height:20px}.lt-tag{display:inline-block;font-family:'Schoolbell',cursive;font-size:15px;padding:0 10px;border:2px solid #2d2a32;border-radius:999px;background:var(--c);color:#fff;margin-right:8px}" +
+    ".lt-check{columns:2;column-gap:24px;margin:4px 0;padding-left:22px}.lt-check li{break-inside:avoid;list-style:none;position:relative}.lt-check li:before{content:'';position:absolute;left:-22px;top:4px;width:13px;height:13px;border:2px solid #2d2a32;border-radius:3px}" +
+    ".lt-prompt{background:#fff;border:2.5px solid #2d2a32;border-radius:12px 9px 14px 8px;padding:8px 14px;margin:4px 0 6px}.lt-prompt h2{font-family:'Schoolbell',cursive;font-weight:400;font-size:22px;margin:0}.lt-prompt h2 i{font-style:normal;color:#8a8492;margin-right:6px}.lt-prompt p{margin:3px 0}.lt-prompt ul{margin:2px 0 0 18px;padding:0}.lt-prompt .to{color:#6d6775;font-size:14px}";
+}
+function wsLines(n, grid) { var B = [], left = n, first = true; while (left > 0) { var k = Math.min(left, 8); B.push('<div class="' + (grid ? "ws-grid" : "ws-lines") + (first ? "" : " cont") + '" style="height:' + (grid ? k * 30 - 1 : k * 30) + 'px"></div>'); left -= k; first = false; } return B; }
+/* after the pages are laid out, ruled areas marked ws-fill grow to the bottom of their page */
+function wsFill(host) {
+  host.querySelectorAll(".ws-fill").forEach(function (el) { var b = el.closest(".an-pbody"), h = b.getBoundingClientRect().bottom - el.getBoundingClientRect().top - 8; el.style.height = Math.max(60, Math.floor(h / 30) * 30) + "px"; });
+}
+function wsHeader(title, sub) { return '<h1 class="ws-title"><span>' + esc(title) + '</span></h1><p class="ws-intro">' + esc(sub) + '</p><div class="ws-head"><span>Name:</span><span class="sm">Class:</span><span class="sm">Date:</span><span class="sm">Score:</span></div>'; }
+/* how much room a question needs */
+function wsSpace(q, sid) {
+  var grid = sid === "math" || sid === "dl" && /binary|convert|decimal|hex|octal|\d/.test(q.q);
+  if (q.y === "short") return { n: grid ? 3 : 2, grid: grid };
+  if (q.y === "struct") return { n: Math.min(10, Math.max(4, (q.m || 3) * 2)), grid: grid };
+  if (q.y === "exam") return { n: Math.min(24, Math.max(6, (q.m || 5) * 2)), grid: false };
+  if (q.y === "guide") { var L = String(q.a).length + (q.w || []).join(" ").length; return { n: Math.max(grid ? 4 : 2, Math.min(10, Math.ceil(L / 55) + 1)), grid: grid }; }
+  return { n: 0 };
+}
+/* one worksheet for a subject (or a single topic when tid is given) */
+function wsBlocks(sid, tid) {
+  var s = SUBJ[sid], B = [], key = [], n = 0, units = s.units;
+  if (tid) units = units.map(function (u) { return { name: u.name, topics: u.topics.filter(function (t) { return t.id === tid; }) }; }).filter(function (u) { return u.topics.length; });
+  B.push(wsHeader(s.name + (tid ? ": " + TOPIC[tid].t : ": practice worksheet"), "Read the worked example, then try every question in the space given. Show your working. The answers are at the back, so check yourself only when you have finished."));
+  units.forEach(function (u, ui) {
+    if (!tid) B.push((ui ? "\u0001" : "") + '<div class="bk-h" style="font-size:24px">' + esc(u.name) + "</div>");
+    u.topics.forEach(function (t) {
+      var G = (typeof GUIDE !== "undefined" && GUIDE[t.id]) || [], qs = QUIZ.filter(function (q) { return q.t === t.id; });
+      if (!G.length && !qs.length) return;
+      var head = '<div class="ws-topic"><h2>' + esc(t.t) + "</h2><small>" + ((G.length ? G.length - 1 : 0) + qs.length) + " questions</small></div>"; /* kept on the same page as what follows */
+      key.push({ topic: t.t, items: [] }); var K = key[key.length - 1].items;
+      if (G.length) {
+        var g = G[0];
+        B.push(head + '<div class="bk-ty"><h3><i>★</i>Worked example: ' + esc(g.t) + "</h3>" + (g.how && g.how.length ? '<ul class="bk-how">' + g.how.map(function (h) { return "<li>" + esc(h) + "</li>"; }).join("") + "</ul>" : "") + '<div class="bk-eq"><em>Question</em><span class="bk-pre">' + esc(g.q) + "</span></div>" + (g.w && g.w.length ? '<div class="bk-w">' + g.w.map(function (w) { return "<div>" + esc(w) + "</div>"; }).join("") + "</div>" : "") + '<div class="bk-a"><em>Answer</em><span class="bk-pre">' + esc(g.a) + "</span></div></div>");
+      }
+      var items = G.slice(1).map(function (g) { return { y: "guide", q: g.q, a: g.a, w: g.w, ty: g.t }; }).concat(qs);
+      items.forEach(function (q, qi) {
+        n++;
+        var h = (!G.length && !qi ? head : "") + '<div class="ws-q"><b>' + n + '.</b><div>' + (q.y === "guide" ? '<span style="color:#6d6775">' + esc(q.ty) + ": </span>" : "") + '<span class="bk-pre">' + esc(q.q) + "</span>" + (q.m > 1 ? '<span class="mk">[' + q.m + "]</span>" : "");
+        if (q.y === "mcq") h += '<div class="ws-opts">' + q.o.map(function (o, j) { return "<div><i>" + "ABCDEF"[j] + "</i><span>" + esc(o) + "</span></div>"; }).join("") + "</div>";
+        B.push(h + "</div></div>");
+        var sp = wsSpace(q, sid); if (sp.n) B = B.concat(wsLines(sp.n, sp.grid));
+        K.push({ n: n, a: q.y === "mcq" ? "ABCDEF"[q.a] + ") " + q.o[q.a] : q.y === "short" ? q.a.join(" / ") : q.y === "guide" ? q.a : "", x: q.y === "guide" ? (q.w || []).join("; ") : q.y === "mcq" || q.y === "short" ? q.x || "" : "Mark scheme: " + (q.x || "") });
+      });
+    });
+  });
+  /* answer key */
+  B.push(""); B.push('\u0001<h1 class="ws-key-h">Answer key</h1><p class="ws-intro">Mark your answers, then go back to the notes for anything you got wrong.</p>');
+  key.forEach(function (k) {
+    if (!k.items.length) return;
+    k.items.forEach(function (it, i) { B.push((i ? "" : '<div class="ws-kt">' + esc(k.topic) + "</div>") + '<div class="ws-key"><b>' + it.n + '.</b><div><span class="bk-pre">' + esc(it.a) + "</span>" + (it.x ? '<div class="ks bk-pre">' + esc(it.x) + "</div>" : "") + "</div></div>"); });
+  });
+  return B;
+}
+/* English letter-writing booklet */
+function letterBlocks() {
+  var B = [], n = 0;
+  B.push(wsHeader("Letter writing: practice booklet", "Two model letters, a checklist for each kind of letter, then " + (LETTER_PROMPTS.formal.length + LETTER_PROMPTS.informal.length) + " prompts, each with lines to write your letter."));
+  ["formal", "informal"].forEach(function (k) { B.push('<div class="bk-h">' + (k === "formal" ? "Formal letter checklist" : "Informal letter checklist") + '</div><ul class="lt-check">' + LETTER_CHECK[k].map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("") + "</ul>"); });
+  MODEL_LETTERS.forEach(function (m) {
+    B.push('\u0001<div class="bk-h"><span class="lt-tag">' + m.kind + "</span>Model letter: " + esc(m.title) + "</div>");
+    var chunk = [], out = function () { if (chunk.length) B.push('<div class="lt-model">' + chunk.join("") + "</div>"); chunk = []; };
+    m.lines.forEach(function (l, i) { chunk.push('<div' + (l.length > 60 ? ' class="lt-p"' : "") + ">" + esc(l) + "</div>"); if (chunk.length >= 9 && l === "") out(); });
+    out();
+  });
+  ["formal", "informal"].forEach(function (k) {
+    LETTER_PROMPTS[k].forEach(function (p, i) {
+      n++;
+      B.push((i || k === "informal" || true ? "\u0001" : "") + '<div class="lt-prompt"><h2><i>' + n + ".</i>" + (k === "formal" ? "Formal" : "Informal") + " letter: " + esc(p.t) + '</h2><div class="to">To: ' + esc(p.to) + "</div><p>" + esc(p.q) + "</p><div>In your letter, include:</div><ul>" + p.b.map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("") + '</ul><div class="to">Write about 150–200 words. Use the ' + k + " letter checklist.</div></div>");
+      B.push('<div class="ws-lines ws-fill"></div>');
+      B.push('\u0001<div class="lt-cont">' + n + ". " + esc(p.t) + ' (continued)</div><div class="ws-lines ws-fill"></div>');
+    });
+  });
+  return B;
+}
+/* make the PDF or print, like the complete notes */
+function wsHost(color, visible) { var h = bkHost(!!visible, color); var st = document.createElement("style"); st.textContent = wsCSS(); h.appendChild(st); return h; }
+async function wsPDF(blocks, color, footer, onStep) {
+  try { if (!window.html2canvas) await loadScript(AN_LIBS.h2c); if (!(window.jspdf && window.jspdf.jsPDF)) await loadScript(AN_LIBS.jspdf); }
+  catch (e) { throw { message: "Saving as PDF needs an internet connection the first time. Connect and try again, or use Print." }; }
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) { }
+  var host = wsHost(color), pages = anPaginate(blocks, host, footer); wsFill(host); var doc = new window.jspdf.jsPDF({ unit: "pt", format: "a4", compress: true });
+  try { for (var i = 0; i < pages.length; i++) { if (onStep) onStep(i + 1, pages.length); var c = await window.html2canvas(pages[i], { scale: 1.6, backgroundColor: "#fffdf6", logging: false }); if (i) doc.addPage(); doc.addImage(c.toDataURL("image/jpeg", 0.82), "JPEG", 0, 0, 595.28, 841.89); c.width = c.height = 0; } }
+  finally { host.remove(); }
+  return doc.output("blob");
+}
+function wsPrint(blocks, color, footer) {
+  var host = wsHost(color, true); host.className = "an-print";
+  anPaginate(blocks, host, footer); wsFill(host);
+  document.body.classList.add("an-printing");
+  var done = function () { document.body.classList.remove("an-printing"); host.remove(); window.removeEventListener("afterprint", done); };
+  window.addEventListener("afterprint", done);
+  setTimeout(function () { try { window.print(); } catch (e) { toast("Printing isn't available here. Use Download PDF.", "bad"); } setTimeout(function () { if (document.body.classList.contains("an-printing")) done(); }, 60000); }, 300);
+}
+function wsJob(kind, sid, tid) {
+  var s = SUBJ[sid];
+  if (kind === "letters") return { blocks: letterBlocks(), color: s.color, footer: "English · Letter-writing practice", file: "English-letter-writing-practice.pdf", label: "Letter-writing booklet" };
+  return { blocks: wsBlocks(sid, tid), color: s.color, footer: s.name + " · Practice worksheet", file: s.short.replace(/\s+/g, "-") + (tid ? "-" + TOPIC[tid].t.replace(/[^A-Za-z0-9]+/g, "-").slice(0, 40) : "") + "-worksheet.pdf", label: "Worksheet" };
+}
+ACT.wsPdf = async function (el) {
+  if (BK.busy) return; var kind = el.getAttribute("data-k"), tid = el.getAttribute("data-t") || null, sid = tid ? TOPIC[tid].subj : UI.resSubj, J = wsJob(kind, sid, tid);
+  BK.busy = kind + sid + (tid || ""); var lab = el.innerHTML; el.disabled = true;
+  try {
+    var blob = await wsPDF(J.blocks, J.color, J.footer, function (i, n) { el.textContent = "Making the PDF… page " + i + " / " + n; });
+    var r = await saveFile(J.file, blob);
+    if (r === "saved") toast(J.label + " saved as a PDF. ✏️", "good"); else if (r === "declined") toast("Save was cancelled.", "info");
+  } catch (e) { toast((e && e.message) || "Couldn't make the PDF.", "bad"); }
+  BK.busy = null; el.disabled = false; el.innerHTML = lab;
+};
+ACT.wsPrint = function (el) { var kind = el.getAttribute("data-k"), tid = el.getAttribute("data-t") || null, sid = tid ? TOPIC[tid].subj : UI.resSubj, J = wsJob(kind, sid, tid); wsPrint(J.blocks, J.color, J.footer); };
 
 /* ===== Checking AI-written questions before a student ever sees them =====
    An AI can mark the wrong option as correct, "think aloud" inside an explanation, or send the same question twice.
