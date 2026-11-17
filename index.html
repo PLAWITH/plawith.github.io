@@ -1455,6 +1455,29 @@ html.formal .note-sec.rubric { border-top: 1px solid var(--line-2); } html.forma
 @media (max-width: 520px) { .lang-pick { grid-template-columns: 1fr; } }
 html.formal .lang-pick .btn b { font: 600 18px var(--serif); }
 
+/* ---------- PDF preview ---------- */
+body.px-open { overflow: hidden; }
+body.px-open .toasts { z-index: 400; }
+.px-view { position: fixed; inset: 0; z-index: 250; display: flex; flex-direction: column; background: rgba(38, 35, 44, .86); animation: fade .15s ease; }
+.px-bar { display: flex; align-items: center; gap: 10px 14px; padding: 10px 14px; background-color: var(--panel); background-image: var(--grain); border-bottom: 2px solid var(--line-2); flex-wrap: wrap; }
+.px-t { flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; }
+.px-t b { font-family: var(--display); font-weight: 400; font-size: 21px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.px-n { font-size: 13.5px; color: var(--muted); }
+.px-acts { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.px-ms { display: inline-flex; gap: 6px; align-items: center; font-size: 15px; color: var(--text); margin-right: 4px; cursor: pointer; }
+.px-ms input { width: 18px; height: 18px; accent-color: var(--accent); }
+.px-scroll { flex: 1; overflow: auto; padding: 18px 12px 48px; overscroll-behavior: contain; }
+.px-pages { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.px-pg { position: relative; flex: none; overflow: hidden; background: #fffdf6; box-shadow: 0 8px 26px rgba(0, 0, 0, .4); content-visibility: auto; }
+.px-pg > .an-page { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.px-lay { position: fixed; left: -12000px; top: 0; }
+@media (max-width: 640px) {
+  .px-acts .btn span { display: none; }
+  .px-acts .btn { padding: 8px 11px; }
+  .px-bar { padding: 8px 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .px-view { animation: none; } }
+
 </style>
 <script>
 /* before the first paint: pick the look for the opening animation (device settings only) */
@@ -4036,6 +4059,419 @@ formal: ["Sender's address and date", "Receiver's designation and address", "Sub
 informal: ["Your address and date", "Dear + first name", "A friendly opening that asks after them", "Every bullet point covered, in paragraphs", "Lively details: an anecdote, feelings, a question", "A warm close: Love, / Best wishes, + your first name"]
 };
 
+/* ===== Mock papers (part 1): Maths, Science, Digital Literacy =====
+   Every question here was written for this site, to match the marks, time and question types of each exam.
+   Question: { q, m (marks), L (answer lines), g (squared space), o (options), code, html, box (drawing space, px), a (mark scheme) }
+   A question can have parts p: [{ l, q, m, L, g, o, code, html, box, a }]. */
+var MOCK = MOCK || {};
+function mkNumLine(lo, hi) {
+  var w = 560, n = hi - lo, step = (w - 40) / n, s = '<svg viewBox="0 0 ' + w + ' 54" width="' + w + '" height="54" style="display:block;margin:4px 0 0 34px"><line x1="10" y1="22" x2="' + (w - 10) + '" y2="22" stroke="#2d2a32" stroke-width="2"/>';
+  s += '<path d="M' + (w - 10) + ' 22 l-9 -5 v10z M10 22 l9 -5 v10z" fill="#2d2a32"/>';
+  for (var i = 0; i <= n; i++) { var x = 20 + i * step; s += '<line x1="' + x + '" y1="15" x2="' + x + '" y2="29" stroke="#2d2a32" stroke-width="2"/><text x="' + x + '" y="47" font-size="14" text-anchor="middle" fill="#2d2a32">' + (lo + i) + "</text>"; }
+  return s + "</svg>";
+}
+MOCK.math = {
+  time: "1 hour 5 minutes", marks: 50,
+  instr: ["Answer all questions.", "Show all your working. Marks are given for correct working even when the final answer is wrong.", "You may use a calculator unless the question says otherwise.", "Give answers that are not exact to 3 significant figures, unless the question asks for something else."],
+  secs: [{ qs: [
+    { p: [{ l: "a", q: "Round 36 847 to 2 significant figures.", m: 1, L: 1, a: "37 000" },
+          { l: "b", q: "Round 0.004 058 2 to 3 significant figures.", m: 1, L: 1, a: "0.004 06" }] },
+    { q: "Here is a list of numbers:\n√9    √7    0.3̇    π    22/7    −4\nWrite down all the irrational numbers in the list.", m: 2, L: 1, a: "√7 and π.\n1 mark each. Take 1 mark off for each extra number written (minimum 0). √9 = 3 and 22/7 are rational." },
+    { q: "Write the recurring decimal 0.4̇5̇ (= 0.454545…) as a fraction in its simplest form. Show your working.", m: 3, L: 5, g: true, a: "x = 0.4545…  →  100x = 45.4545…   (M1)\n99x = 45   (M1)\nx = 45/99 = 5/11   (A1)" },
+    { p: [{ l: "a", q: "Simplify √75 + √12. Give your answer in the form a√3.", m: 2, L: 3, g: true, a: "√75 = 5√3 and √12 = 2√3 (M1)\n= 7√3 (A1)" },
+          { l: "b", q: "Rationalise the denominator and simplify: 6 / √3", m: 2, L: 3, g: true, a: "6√3 / 3 (M1)\n= 2√3 (A1)" }] },
+    { p: [{ l: "a", q: "Simplify x⁵ × x⁻²", m: 1, L: 1, a: "x³" },
+          { l: "b", q: "Simplify (2a³)⁴", m: 2, L: 2, a: "16a¹² (B1 for 16, B1 for a¹²)" },
+          { l: "c", q: "Work out the value of 27^(2/3) without a calculator.", m: 2, L: 2, g: true, a: "∛27 = 3 (M1)\n3² = 9 (A1)" },
+          { l: "d", q: "Work out the value of 16^(−1/2) without a calculator.", m: 1, L: 2, a: "1/4" }] },
+    { p: [{ l: "a", q: "Write 0.000 060 5 in standard form.", m: 1, L: 1, a: "6.05 × 10⁻⁵" },
+          { l: "b", q: "Work out (4 × 10⁵) × (6 × 10³). Give your answer in standard form.", m: 2, L: 3, g: true, a: "24 × 10⁸ (M1)\n= 2.4 × 10⁹ (A1)" }] },
+    { q: "Expand and simplify:", p: [{ l: "a", q: "3(2x − 5) − 2(x − 4)", m: 2, L: 3, g: true, a: "6x − 15 − 2x + 8 (M1)\n= 4x − 7 (A1)" },
+          { l: "b", q: "(x + 5)(x − 3)", m: 2, L: 3, g: true, a: "x² − 3x + 5x − 15 (M1)\n= x² + 2x − 15 (A1)" },
+          { l: "c", q: "(2x − 3)²", m: 2, L: 3, g: true, a: "4x² − 6x − 6x + 9 (M1)\n= 4x² − 12x + 9 (A1)" }] },
+    { q: "Make t the subject of the formula  v = u + at", m: 2, L: 3, g: true, a: "v − u = at (M1)\nt = (v − u) / a (A1)" },
+    { p: [{ l: "a", q: "Solve 5x − 7 = 2x + 11", m: 2, L: 3, g: true, a: "3x = 18 (M1)\nx = 6 (A1)" },
+          { l: "b", q: "Solve the inequality 3 − 2x < 11 and show your answer on the number line below.", m: 3, L: 3, g: true, html: mkNumLine(-6, 4), a: "−2x < 8 (M1)\nx > −4 (A1; the sign must flip when dividing by −2)\nNumber line: open circle at −4 with an arrow to the right (B1)" }] },
+    { q: "Each interior angle of a regular polygon is 150°. Work out the number of sides of the polygon.", m: 3, L: 4, g: true, a: "Exterior angle = 180° − 150° = 30° (M1)\nNumber of sides = 360 ÷ 30 (M1)\n= 12 (A1)" },
+    { q: "A ladder 6.5 m long leans against a vertical wall. The foot of the ladder is 2.5 m from the bottom of the wall, on level ground. Work out how far up the wall the ladder reaches.", m: 3, L: 5, g: true, a: "h² + 2.5² = 6.5² (M1)\nh² = 42.25 − 6.25 = 36 (M1)\nh = 6 m (A1)" },
+    { p: [{ l: "a", q: "The bearing of B from A is 065°. Work out the bearing of A from B.", m: 2, L: 3, g: true, a: "065 + 180 (M1)\n= 245° (A1)" },
+          { l: "b", q: "A boat sails 5 km due north and then 12 km due east. How far is the boat from where it started?", m: 2, L: 3, g: true, a: "√(5² + 12²) = √169 (M1)\n= 13 km (A1)" }] },
+    { q: "f(x) = 3x − 2  and  g(x) = x² + 1", p: [{ l: "a", q: "Find f(4).", m: 1, L: 1, a: "10" },
+          { l: "b", q: "Find gf(x). Give your answer in its simplest form.", m: 2, L: 3, g: true, a: "gf(x) = (3x − 2)² + 1 (M1)\n= 9x² − 12x + 5 (A1)" },
+          { l: "c", q: "Solve f(x) = 13.", m: 1, L: 2, a: "3x − 2 = 13, so x = 5" }] },
+    { p: [{ l: "a", q: "Is the relation y² = x a function? Use the vertical line test to explain your answer.", m: 2, L: 3, a: "No, it is not a function (B1).\nA vertical line such as x = 4 cuts the graph twice, at y = 2 and y = −2, so one input has two outputs (B1)." },
+          { l: "b", q: "The domain of f(x) = 2x + 1 is {0, 1, 2, 3}. Write down the range.", m: 1, L: 1, a: "{1, 3, 5, 7}" }] }
+  ] }]
+};
+
+MOCK.sci = {
+  time: "1 hour", marks: 60,
+  instr: ["Answer all questions.", "Section A: shade one bubble for each question.", "Section B: write your answers in the spaces given. Show your working in calculations and give the unit.", "Take g = 10 N/kg."],
+  secs: [
+    { h: "Section A: multiple choice", note: "1 mark each. Shade one bubble.", qs: [
+      { q: "Which element is in Group VII?", m: 1, o: ["sodium", "chlorine", "neon", "magnesium"], a: "B" },
+      { q: "An atom has the electron arrangement 2, 8, 3. What is its valency?", m: 1, o: ["1", "2", "3", "5"], a: "C" },
+      { q: "Going down Group I, the reactivity of the metals…", m: 1, o: ["decreases", "increases", "stays the same", "increases, then decreases"], a: "B" },
+      { q: "Which pair of elements forms an ionic compound?", m: 1, o: ["carbon and oxygen", "hydrogen and chlorine", "nitrogen and hydrogen", "sodium and chlorine"], a: "D" },
+      { q: "What is the charge on a magnesium ion?", m: 1, o: ["+1", "+2", "−1", "−2"], a: "B" },
+      { q: "Which gas is given off during photosynthesis?", m: 1, o: ["oxygen", "carbon dioxide", "nitrogen", "hydrogen"], a: "A" },
+      { q: "In which layer of the leaf does most photosynthesis happen?", m: 1, o: ["upper epidermis", "spongy mesophyll", "palisade mesophyll", "xylem"], a: "C" },
+      { q: "Which mineral is needed to make chlorophyll?", m: 1, o: ["nitrate", "phosphate", "potassium", "magnesium"], a: "D" },
+      { q: "What is the unit of force?", m: 1, o: ["joule", "newton", "watt", "kilogram"], a: "B" },
+      { q: "How does heat travel through a vacuum?", m: 1, o: ["conduction", "convection", "radiation", "evaporation"], a: "C" }] },
+    { h: "Section B", note: "Answer all questions in the spaces given.", qs: [
+      { q: "Lithium, sodium and potassium are in Group I of the Periodic Table.", p: [
+        { l: "a(i)", q: "State one thing you would see when a small piece of sodium is added to water.", m: 1, L: 1, a: "Any one: fizzes / bubbles; moves around on the surface; melts into a ball; gets smaller and disappears." },
+        { l: "a(ii)", q: "Complete the word equation:  sodium + water → ____________ + ____________", m: 2, L: 1, a: "sodium hydroxide (1) + hydrogen (1)" },
+        { l: "a(iii)", q: "Explain why potassium is more reactive than sodium.", m: 2, L: 3, a: "Potassium's outer electron is further from the nucleus / it has more shells (1).\nSo the attraction is weaker and the outer electron is lost more easily (1)." },
+        { l: "b(i)", q: "Chlorine, bromine and iodine are in Group VII. Describe how their colour and state change down the group.", m: 2, L: 2, a: "Colour gets darker (pale green → orange-brown → grey-black) (1).\nState changes from gas → liquid → solid (1)." },
+        { l: "b(ii)", q: "Chlorine water is added to potassium bromide solution. Describe what you would see and explain why it happens.", m: 3, L: 4, a: "The solution turns orange / brown (1).\nChlorine is more reactive than bromine (1).\nSo chlorine displaces bromine from the solution (1). (Accept: chlorine + potassium bromide → potassium chloride + bromine.)" }] },
+      { p: [
+        { l: "a", q: "Draw a dot-and-cross diagram to show the bonding in a molecule of water, H₂O. Show the outer electrons only.", m: 2, box: 150, a: "Oxygen shares one pair of electrons with each hydrogen atom (1).\nTwo lone pairs on oxygen, so oxygen has 8 outer electrons in total (1)." },
+        { l: "b(i)", q: "Describe how a sodium atom and a chlorine atom form ions when they react.", m: 3, L: 4, a: "Sodium loses one electron to form Na⁺ (1).\nChlorine gains one electron to form Cl⁻ (1).\nBoth ions now have a full outer shell / the same arrangement as a noble gas (1)." },
+        { l: "b(ii)", q: "Explain why sodium chloride has a high melting point.", m: 2, L: 3, a: "It is a giant ionic lattice (1).\nThe strong attraction between oppositely charged ions needs a lot of energy to overcome (1)." },
+        { l: "c", q: "Write the formula of the compound formed between magnesium and chlorine.", m: 1, L: 1, a: "MgCl₂" }] },
+      { p: [
+        { l: "a", q: "Write the word equation for photosynthesis.", m: 2, L: 2, a: "carbon dioxide + water → glucose + oxygen (1 for reactants, 1 for products). Light and chlorophyll may be shown over the arrow." },
+        { l: "b", q: "A student counted the bubbles of gas given off by a pondweed at different light intensities. The temperature was kept the same.", m: 0, html: '<table class="mk-tbl"><tr><th>Light intensity (units)</th><td>0</td><td>10</td><td>20</td><td>30</td><td>40</td><td>50</td></tr><tr><th>Bubbles per minute</th><td>0</td><td>12</td><td>24</td><td>33</td><td>36</td><td>36</td></tr></table>' },
+        { l: "b(i)", q: "Describe the results.", m: 2, L: 3, a: "As the light intensity increases, the number of bubbles (rate of photosynthesis) increases (1).\nAbove about 40 units it levels off at 36 bubbles per minute (1)." },
+        { l: "b(ii)", q: "Suggest which factor limits the rate of photosynthesis above 40 units.", m: 1, L: 1, a: "Carbon dioxide concentration or temperature (not light)." },
+        { l: "c", q: "Explain how palisade cells are adapted for photosynthesis.", m: 2, L: 3, a: "Any two: contain many chloroplasts; are near the upper surface of the leaf, so get the most light; are tall and tightly packed." }] },
+      { p: [
+        { l: "a", q: "Name the tissue that carries water up the stem of a plant.", m: 1, L: 1, a: "Xylem" },
+        { l: "b", q: "Give two conditions that increase the rate of transpiration.", m: 2, L: 2, a: "Any two: higher temperature; more wind / air movement; brighter light; lower humidity." },
+        { l: "c", q: "Nitrate ions are at a lower concentration in the soil than inside root hair cells. Explain how the root hair cells still take them in.", m: 2, L: 3, a: "By active transport (1).\nThis uses energy from respiration to move ions against the concentration gradient (1)." },
+        { l: "d", q: "Explain how burning fossil fuels and cutting down forests change the amount of carbon dioxide in the air.", m: 3, L: 4, a: "Burning fossil fuels (combustion) releases carbon that was stored for millions of years as CO₂ (1).\nFewer trees means less photosynthesis, so less CO₂ is removed from the air (1).\nSo the amount of CO₂ in the air increases (1)." }] },
+      { p: [
+        { l: "a", q: "A rectangular block measures 5 cm × 4 cm × 2 cm and has a mass of 120 g. Calculate its density. Give the unit.", m: 3, L: 4, g: true, a: "Volume = 5 × 4 × 2 = 40 cm³ (1)\nDensity = 120 ÷ 40 (1)\n= 3 g/cm³ (1, with the unit)" },
+        { l: "b(i)", q: "A stone is lowered into a measuring cylinder. The water level rises from 50 cm³ to 68 cm³. What is the volume of the stone?", m: 1, L: 1, a: "18 cm³" },
+        { l: "b(ii)", q: "The stone has a mass of 45 g. Calculate its density.", m: 2, L: 3, g: true, a: "45 ÷ 18 (1)\n= 2.5 g/cm³ (1)" },
+        { l: "c", q: "Water has a density of 1 g/cm³. Will the block in (a) float or sink in water? Give a reason.", m: 1, L: 2, a: "Sinks, because its density (3 g/cm³) is greater than the density of water." }] },
+      { p: [
+        { l: "a", q: "A box is pushed to the right with a force of 50 N. Friction of 20 N acts to the left. Calculate the resultant force and give its direction.", m: 2, L: 2, g: true, a: "50 − 20 = 30 N (1)\nto the right (1)" },
+        { l: "b", q: "A ball of mass 0.5 kg is held 20 m above the ground. Calculate its gravitational potential energy.", m: 2, L: 3, g: true, a: "GPE = mgh = 0.5 × 10 × 20 (1)\n= 100 J (1)" },
+        { l: "c", q: "The ball is dropped. Ignoring air resistance, what is its kinetic energy just before it hits the ground? Give a reason.", m: 1, L: 2, a: "100 J, because energy is conserved: all the GPE is transferred to kinetic energy." }] },
+      { p: [
+        { l: "a", q: "Explain why metals are good conductors of heat.", m: 2, L: 3, a: "Metals have free (delocalised) electrons (1).\nThey move through the metal and carry energy quickly to cooler parts (1)." },
+        { l: "b", q: "Explain how a radiator heats the air in a room.", m: 3, L: 4, a: "Air near the radiator is heated, expands and becomes less dense (1).\nThe warm air rises and cooler, denser air sinks to take its place (1).\nThis sets up a convection current that carries heat around the room (1)." }] }
+    ] }
+  ]
+};
+
+MOCK.dl = {
+  time: "50 minutes", marks: 40,
+  instr: ["Answer all questions.", "Show your working in number conversions.", "In code, indentation matters. Write each line carefully."],
+  secs: [
+    { h: "Section A: number systems", qs: [
+      { p: [
+        { l: "a", q: "Convert the binary number 10110110 to decimal. Show your working.", m: 2, L: 3, g: true, a: "128 + 32 + 16 + 4 + 2 (1)\n= 182 (1)" },
+        { l: "b", q: "Convert the decimal number 75 to binary. Show your working.", m: 2, L: 4, g: true, a: "Repeated division by 2 or place values 64 + 8 + 2 + 1 (1)\n= 1001011 (1)" },
+        { l: "c", q: "Convert the hexadecimal number 2F to decimal.", m: 2, L: 3, g: true, a: "2 × 16 + 15 (1)\n= 47 (1)" },
+        { l: "d", q: "Convert the octal number 17 to decimal.", m: 1, L: 2, g: true, a: "1 × 8 + 7 = 15" },
+        { l: "e", q: "What is the base of the hexadecimal number system, and which hexadecimal digit stands for 12?", m: 2, L: 2, a: "Base 16 (1); C (1)" },
+        { l: "f", q: "Give one use of hexadecimal numbers in computing.", m: 1, L: 1, a: "Any one: colour codes in HTML/CSS (e.g. #FF0000); MAC addresses; memory addresses; error codes." },
+        { l: "g", q: "Explain why computers store data in binary.", m: 2, L: 3, a: "The circuits (transistors) have two states, on and off (1).\nTwo states are easy to store and detect reliably, so they represent 1 and 0 (1)." }] }] },
+    { h: "Section B: programming with Python", qs: [
+      { p: [
+        { l: "a", q: "What is a variable?", m: 1, L: 2, a: "A named place in memory that stores a value, which can change while the program runs." },
+        { l: "b", q: "Explain the difference between = and == in Python.", m: 2, L: 2, a: "= assigns a value to a variable (1).\n== compares two values and gives True or False (1)." },
+        { l: "c", q: "Give the data type of each value:  7    3.5    \"7\"    True", m: 2, L: 2, a: "int, float, str, bool. All four correct = 2 marks; two or three correct = 1 mark." }] },
+      { q: "Write down the result of each expression.", p: [
+        { l: "a", q: "17 // 5", m: 1, L: 1, a: "3" },
+        { l: "b", q: "17 % 5", m: 1, L: 1, a: "2" },
+        { l: "c", q: "2 ** 3 + 4 * 2", m: 1, L: 1, a: "16" },
+        { l: "d", q: "10 > 3 and 4 == 5", m: 1, L: 1, a: "False" }] },
+      { q: "Look at this program.", code: 'x = 7\nif x % 2 == 0:\n    print("even")\nelif x > 5:\n    print("big odd")\nelse:\n    print("small odd")', p: [
+        { l: "a", q: "What is the output?", m: 1, L: 1, a: "big odd" },
+        { l: "b", q: "What is the output if the first line is changed to x = 3?", m: 1, L: 1, a: "small odd" },
+        { l: "c", q: "Give a value of x that makes the program print even.", m: 1, L: 1, a: "Any even whole number, e.g. 4." }] },
+      { p: [
+        { l: "a", q: "What is the output of this program?", code: "total = 0\nfor i in range(1, 6):\n    total = total + i\nprint(total)", m: 1, L: 1, a: "15" },
+        { l: "b", q: "List the numbers that range(1, 6) produces.", m: 1, L: 1, a: "1, 2, 3, 4, 5" },
+        { l: "c", q: "What is the output of this program?", code: "for n in range(10, 0, -3):\n    print(n)", m: 2, L: 2, a: "10, 7, 4, 1 on separate lines.\n2 marks all correct; 1 mark for 10, 7, 4 (missing 1) or one extra value." }] },
+      { q: "This program should ask for the user's age and say whether they can join a club (age 13 or over). It has three errors. Write the corrected program.", code: 'age = input("Enter your age: ")\nif age >= 13\n    print("You can join the club")\nelse:\nprint("Sorry, too young")', m: 3, L: 6, a: "1 mark each:\n• age = int(input(\"Enter your age: \")) — input gives a string, so it must be converted to a number\n• a colon after if age >= 13\n• the print under else must be indented" },
+      { q: "Write a program that asks the user for a whole number and prints its multiplication table from 1 to 10, like this:\n7 x 1 = 7\n7 x 2 = 14 … and so on, up to 7 x 10 = 70", m: 5, L: 8, a: "Example:\nn = int(input(\"Enter a number: \"))\nfor i in range(1, 11):\n    print(n, \"x\", i, \"=\", n * i)\n\n1 mark each: input converted with int; a for loop; range(1, 11) so 1 to 10 is included; n * i calculated; print inside the loop with correct indentation and syntax." },
+      { q: "Write a program that asks the user for a password. If the password is python123 it prints Access granted, otherwise it prints Access denied.", m: 4, L: 7, a: "Example:\npw = input(\"Password: \")\nif pw == \"python123\":\n    print(\"Access granted\")\nelse:\n    print(\"Access denied\")\n\n1 mark each: input; if with == and the password in quotes; both messages printed; else and indentation correct." }
+    ] }
+  ]
+};
+
+/* ===== Mock papers (part 2): English, Humanities, Global Perspectives =====
+   All passages and sources were written for this site. Historical sources are invented, but based on real events,
+   and the paper says so. GP has no mark scheme. */
+var MOCK = MOCK || {};
+MOCK.eng = {
+  time: "1 hour 10 minutes, plus 10 minutes' reading time", marks: 50,
+  instr: ["Use the 10 minutes' reading time to read the article in Section A carefully.", "Answer all questions in Section A.", "In Section B, answer ONE question: either 15 or 16.", "Spelling, punctuation and grammar are marked in Section B."],
+  secs: [
+    { h: "Section A: reading comprehension", note: "Read the article, then answer questions 1–14. The paragraphs are numbered.",
+      src: [{ title: "Fixing it together", sub: "A feature article about a neighbourhood repair café", num: true, p: [
+        "On the first Saturday of every month, the community hall on Lake Road smells of solder, sawdust and strong tea. By ten o'clock a queue has already formed outside: a woman cradling a table fan, a boy with a bicycle wheel, an elderly man holding a radio as if it were a sleeping cat. They have all come to the Lake Road Repair Café, where volunteers fix broken things for free, as long as the owner stays to watch and learn.",
+        "The idea is simple. Instead of throwing away a toaster because of one loose wire, people bring it to someone who knows how to mend it. The first repair cafés opened in the Netherlands in 2009, and today there are thousands around the world. The Lake Road café was started three years ago by Meera Iyer, a retired science teacher, who was tired of seeing perfectly good machines piled up next to the bins.",
+        "“Most things aren't really broken,” she tells me, wiping her hands on her apron. “They're just waiting for someone patient. A fuse, a belt, a button that has slipped. Ten minutes of attention and they have another ten years of life.”",
+        "The numbers support her. Last year the café's volunteers looked at 612 items and repaired 431 of them, roughly seven out of every ten. Lamps and kettles are the most common visitors, followed closely by clothes with torn seams and zips that refuse to close. Each fixed item is one less object in a landfill site, and one less new product that has to be made, packed and shipped across the world.",
+        "Yet the café is about more than rubbish. At the electronics table, sixteen-year-old Kabir is showing a grandmother how to test a plug with a small meter. Two years ago he arrived as a customer with a dead games console; now he is one of the most popular volunteers. “I used to think you needed a degree to fix anything,” he says. “Actually, you just need a screwdriver and someone to tell you it's okay to make mistakes.”",
+        "Not everyone is convinced. Some manufacturers argue that opening a device can be dangerous, and that repairs should be left to trained technicians. Meera does not completely disagree: the café refuses to touch microwaves and gas appliances, and every volunteer is trained in basic safety. But she points out that many companies make repair difficult on purpose, gluing parts together or refusing to sell spare parts. “If a phone is designed to be thrown away,” she says, “then we are all paying for that design, whether we notice it or not.”",
+        "As the afternoon ends, the woman with the table fan switches it on. The blades turn, slowly at first, and then with a confident hum. A few people clap. She laughs, a little embarrassed, and then asks if she can come back next month: not with something broken, but to help."] }],
+      qs: [
+        { q: "Look at paragraph 1. Give two items that people have brought to the café.", m: 2, L: 2, a: "Any two: a table fan; a bicycle wheel; a radio. (1 each)" },
+        { q: "Look at paragraph 1. What must owners agree to do if they want something fixed?", m: 1, L: 1, a: "Stay to watch (and learn)." },
+        { q: "Look at paragraph 2. In which country did the first repair cafés open?", m: 1, L: 1, a: "The Netherlands." },
+        { q: "Give one word from paragraph 3 that means “calm and willing to wait”.", m: 1, L: 1, a: "patient" },
+        { q: "Look at paragraph 4. Roughly what fraction of the items brought last year were repaired?", m: 1, L: 1, a: "About seven out of ten (431 out of 612). Accept 70%." },
+        { q: "Look at paragraph 4. Give two ways that repairing things helps the environment.", m: 2, L: 2, a: "Less goes to landfill (1); fewer new products need to be made, packed and shipped (1)." },
+        { q: "“an elderly man holding a radio as if it were a sleeping cat” (paragraph 1). Explain what this comparison suggests about how the man feels about his radio.", m: 2, L: 3, a: "It is a simile (or explains the comparison) (1).\nIt suggests he holds it gently / carefully, as if it is precious, loved or alive to him (1)." },
+        { q: "Look at paragraph 5. Explain, in your own words, how Kabir has changed since his first visit.", m: 2, L: 3, a: "He came as a customer who thought you needed qualifications to fix things (1).\nNow he is a confident, popular volunteer who teaches others (1)." },
+        { q: "Look at paragraph 6. Give two quotations that show Meera thinks companies are partly to blame for things being thrown away. Explain how each quotation shows this.", m: 4, L: 7, a: "1 mark for each relevant quotation, 1 for each explanation. For example:\n• “make repair difficult on purpose”: suggests companies choose to stop people fixing things.\n• “gluing parts together or refusing to sell spare parts”: gives specific ways companies block repairs.\n• “designed to be thrown away”: suggests products are made to break or be replaced, so everyone pays." },
+        { q: "Look at paragraph 6. Give one reason some manufacturers disagree with repair cafés, and one thing the café does to stay safe.", m: 2, L: 2, a: "Reason: opening devices can be dangerous / repairs should be left to trained technicians (1).\nSafety: refuses to repair microwaves and gas appliances, or trains every volunteer in basic safety (1)." },
+        { q: "Give one word from paragraph 7 that shows the fan's sound was steady and sure.", m: 1, L: 1, a: "confident" },
+        { q: "Give two features that show this text is a feature article.", m: 2, L: 2, a: "Any two, with a pointer to where: headline; quotations from people interviewed (Meera, Kabir); statistics (612 / 431); the writer present at the scene (“she tells me”); a descriptive opening that sets the scene." },
+        { q: "What is the main purpose of the article? Give a reason for your answer.", m: 2, L: 3, a: "To inform readers about repair cafés (and to encourage them to repair things / visit) (1).\nReason, e.g. it explains how the café works and gives facts, or it presents it positively with success stories (1)." },
+        { q: "Why do you think the writer ends the article with the woman asking to come back to help?", m: 2, L: 3, a: "It shows the café builds a community / turns customers into helpers, like Kabir (1).\nIt gives a hopeful, uplifting ending that leaves the reader with a positive feeling about the idea (1)." }] },
+    { h: "Section B: letter writing", m: 25, note: "Answer ONE question: either 15 or 16. Write about 200–250 words.",
+      qs: [
+        { q: "Formal letter\nYour school is thinking about holding a monthly repair café in the school hall, like the one in the article. Write a letter to your principal, Ms Rao, supporting the idea.\nIn your letter you should:\n• explain why a repair café would be useful for students and the local community\n• suggest how it could be run safely\n• say how you and your classmates could help.", m: 25, a: "letter" },
+        { q: "Informal letter\nYou have just spent a Saturday volunteering at a repair café for the first time. Write a letter to a friend who lives in another city, telling them about the day.\nIn your letter you should:\n• describe something you fixed or watched being fixed\n• tell them about a person you met\n• explain why your friend should try it too.", m: 25, a: "letter" },
+        { fill: 3, m: 0 }] }
+  ],
+  scheme: { letter: "Marked out of 25, as in your English Answer Notes:\n• Content and purpose (5): covers all three bullet points; right tone for the reader (formal for Ms Rao; friendly for the friend).\n• Structure and paragraphs (7): correct layout (formal: addresses, date, subject line, “Dear Ms Rao” … “Yours sincerely”; informal: address, date, “Dear …” … friendly sign-off); clear opening, a paragraph for each point, and a closing paragraph.\n• Grammar and punctuation (7): accurate sentences, full stops, commas, apostrophes and question marks.\n• Vocabulary and language (3): varied, precise words and linking words; persuasive devices in the formal letter, lively description in the informal one.\n• Spelling (3).\nVery short answers (under about 120 words) are capped. A formal letter signed “Yours faithfully” to a named person, or an informal letter with no greeting or sign-off, loses structure marks.\n\nIdeas for 15: saves money for families; less waste and landfill; teaches practical skills and confidence; brings old and young together; safety: only simple items, no microwaves or gas, adult supervision, safety training, a sign-in sheet; students could advertise, organise a rota, welcome visitors, fix clothes or bikes.\nIdeas for 16: what was fixed and how it felt when it worked; a person met (e.g. a skilled older volunteer or a grateful visitor); why the friend would enjoy it: learning, helping, meeting people; questions to the friend and a friendly ending." }
+};
+
+/* a simple ink cartoon for the Humanities paper (drawn for this site) */
+function mkCartoon() {
+  var fig = function (x, y, s) {
+    var hx = x, hy = y - 28 * s, sx = x + 17 * s, sy = y - 37 * s;
+    return '<g stroke="#2d2a32" stroke-width="' + (2.2 * s).toFixed(1) + '" fill="none" stroke-linecap="round">' +
+      '<line x1="' + hx + '" y1="' + hy + '" x2="' + sx + '" y2="' + sy + '"/>' +
+      '<circle cx="' + (sx + 8 * s) + '" cy="' + (sy - 1 * s) + '" r="' + 5.5 * s + '" fill="#fff"/>' +
+      '<path d="M' + (hx - 6 * s) + " " + (hy - 2 * s) + " L" + (hx + 6 * s) + " " + (hy - 3 * s) + " L" + (hx + 4 * s) + " " + (y - 12 * s) + " L" + (hx - 7 * s) + " " + (y - 12 * s) + 'Z" fill="#fff"/>' +
+      '<line x1="' + (hx - 3 * s) + '" y1="' + (y - 12 * s) + '" x2="' + (hx - 5 * s) + '" y2="' + y + '"/><line x1="' + (hx + 2 * s) + '" y1="' + (y - 12 * s) + '" x2="' + (hx + 6 * s) + '" y2="' + y + '"/>' +
+      '<line x1="' + sx + '" y1="' + sy + '" x2="' + (sx + 6 * s) + '" y2="' + (y - 3 * s) + '"/>' +
+      '<ellipse cx="' + (sx + 10 * s) + '" cy="' + (y - 1 * s) + '" rx="' + 6 * s + '" ry="' + 2.5 * s + '" fill="#fff"/></g>';
+  };
+  var s = '<svg viewBox="0 0 560 310" width="560" height="310" style="display:block;margin:0 auto" font-family="Schoolbell, Patrick Hand, cursive">' +
+    '<rect x="2" y="2" width="556" height="306" rx="6" fill="#fff" stroke="#2d2a32" stroke-width="2.5"/>' +
+    '<path d="M250 150 q12 -6 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0" fill="none" stroke="#7a8db0" stroke-width="2"/>' +
+    '<path d="M280 166 q12 -6 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0" fill="none" stroke="#7a8db0" stroke-width="2"/>' +
+    '<path d="M14 262 C160 250 330 210 546 178" fill="none" stroke="#2d2a32" stroke-width="1.6" stroke-dasharray="6 6"/>' +
+    /* the official */
+    '<g stroke="#2d2a32" stroke-width="2.6" fill="#fff" stroke-linecap="round">' +
+    '<rect x="72" y="196" width="18" height="62"/><rect x="100" y="196" width="18" height="62"/>' +
+    '<path d="M58 118 L132 118 L138 200 L52 200 Z"/>' +
+    '<circle cx="95" cy="96" r="21"/>' +
+    '<path d="M70 86 Q95 50 120 86 Z" fill="#e9e3d2"/><line x1="64" y1="86" x2="126" y2="86"/>' +
+    '<line x1="132" y1="132" x2="158" y2="150"/><line x1="160" y1="56" x2="160" y2="262" stroke-width="3"/>' +
+    '<rect x="128" y="22" width="122" height="40" rx="3"/>' +
+    '<line x1="58" y1="132" x2="44" y2="176"/></g>' +
+    '<text x="189" y="49" font-size="22" text-anchor="middle" fill="#2d2a32">SALT TAX</text>' +
+    '<circle cx="88" cy="96" r="2" fill="#2d2a32"/><circle cx="103" cy="96" r="2" fill="#2d2a32"/>' +
+    '<path d="M86 108 q4 -4 8 0 t8 0" fill="none" stroke="#2d2a32" stroke-width="2"/>' +
+    '<path d="M122 92 q4 7 0 10 q-4 -3 0 -10z M127 104 q3 6 0 8 q-3 -2 0 -8z M66 98 q4 7 0 10 q-4 -3 0 -10z" fill="#7a8db0"/>' +
+    fig(214, 252, 1.5) + fig(282, 240, 1.3) + fig(342, 228, 1.12) + fig(394, 217, 0.96) + fig(440, 207, 0.82) + fig(478, 199, 0.7) + fig(510, 192, 0.58) +
+    '<circle cx="533" cy="186" r="2" fill="#2d2a32"/><circle cx="541" cy="183" r="2" fill="#2d2a32"/><circle cx="549" cy="180" r="2" fill="#2d2a32"/>' +
+    '<text x="280" y="295" font-size="22" text-anchor="middle" fill="#2d2a32">“One handful at a time.”</text></svg>';
+  return s;
+}
+
+MOCK.hum = {
+  time: "1 hour 45 minutes", marks: 32,
+  instr: ["Answer all four questions.", "Read all the sources before you start. Use the sources and your own knowledge.", "Spend about 20 minutes on questions 1–3 each, and 35 minutes on question 4."],
+  notice: "All the sources in this paper were written for practice. They are based on real events of 1930–31, but they are not real documents or real quotations.",
+  secs: [
+    { h: "Sources and questions", note: "Background: in March 1930 Gandhi set out from Sabarmati Ashram on a 24-day march to Dandi on the Gujarat coast, where he broke the salt law by making salt. This began the Civil Disobedience Movement. Thousands were arrested. In March 1931 the Gandhi–Irwin Pact ended the campaign, and Gandhi went to the Second Round Table Conference in London.",
+      src: [
+        { lab: "Source A", prov: "From a letter written by a young volunteer who walked on the march, April 1930.", p: ["We have walked for more than three weeks, and my feet are a map of every road in Gujarat. In every village people came out with water, flowers and songs. When we first explained that we were marching for salt, some of the old men laughed at us. By the evening they were asking how they could join. Gandhiji says that if we stay peaceful, the government's own unfairness will be plain for the whole world to see. I believe him. A tax on salt is a tax on the poorest man's food, and everyone understands that."] },
+        { lab: "Source B", prov: "From a report by a British district officer to his superiors, May 1930.", p: ["The so-called salt march has drawn large crowds, though in my judgement many came only out of curiosity, as they would for a wedding or a fair. The making of salt on the beaches is of no real importance; the quantities produced are tiny and the salt is often dirty. A more serious matter is that several village headmen have resigned their posts, and that in some places the respect for government authority has clearly weakened. This must be firmly corrected before it spreads."] },
+        { lab: "Source C", prov: "A cartoon in the style of an Indian nationalist newspaper, April 1930 (drawn for this paper).", svg: true },
+        { lab: "Source D", prov: "From the memoirs of an Indian police constable, written in 1955.", p: ["In May 1930 I was one of the men ordered to stop the volunteers at the Dharasana salt works. They came towards us in rows and did not raise a hand, even when they were struck down. Others stepped forward to take their place. I had joined the police to keep order, but that day I felt that order was on their side, not ours. That evening many of us did not eat, and nobody spoke of what we had done."] },
+        { lab: "Source E", prov: "From a statement issued by the Government of India's press office, May 1930.", p: ["Large bodies of men attempted to raid the government salt works at Dharasana. The police acted with great patience and used only the force necessary to protect government property. The volunteers deliberately provoked the police in the hope of gaining sympathy in the newspapers. Order has been fully maintained, and the salt works remain secure."] },
+        { lab: "Source F", prov: "From an editorial in a British newspaper, March 1931, about the Gandhi–Irwin Pact.", p: ["Mr Gandhi has called off his campaign and agreed to come to London. In return he has gained remarkably little. The salt law stands; people living on the coast may now collect salt for their own use, but the tax itself has not been removed. The boycott has tired many merchants, who are glad to return to trade. Yet it must be admitted that the Viceroy has met Mr Gandhi as an equal, and the Congress can no longer be ignored."] }],
+      qs: [
+        { q: "Study Sources A and B. How far do these two sources agree about the support for the Salt March? Explain your answer using details of the sources.", m: 7, L: 18, a: "humA" },
+        { q: "Study Source C. What is the message of the cartoonist? Why was this cartoon published in April 1930? Explain your answer using details of the cartoon and your own knowledge.", m: 8, L: 18, a: "humB" },
+        { q: "Study Sources D and E. Are you surprised by what Source D says? Explain your answer using both sources and your own knowledge.", m: 8, L: 18, a: "humC" },
+        { q: "How far do Sources A–F provide convincing evidence that the Salt March was a success for the national movement? Use the sources to explain your answer.", m: 9, L: 26, a: "humD" }] }],
+  scheme: {
+    humA: "Levels (7 marks):\nL4 (7): overall judgement on how far they agree, comparing their big messages.\nL3 (5–6): explains agreement AND disagreement, with details from both.\nL2 (2–4): explains agreement OR disagreement with details from both (2 if no judgement).\nL1 (1): no valid comparison, one source only, or compares provenance only.\n\nAgree: both say large crowds came (A: “in every village people came out”; B: “drawn large crowds”). Both suggest attitudes were changing (A: old men “asking how they could join”; B: headmen resigned, respect for authority “weakened”).\nDisagree: A shows real enthusiasm; B says many came “only out of curiosity”. A sees salt as a powerful symbol; B says salt-making is “of no real importance”.\nBig message: A says support was genuine and growing; B tries to play the march down but admits it is a threat. Overall: they agree there was wide support but disagree on how serious it was.",
+    humB: "Levels (8 marks):\nL5 (7–8): explains the cartoonist's point of view and the big message with details and context.\nL4 (5–6): explains the big message with details and/or context.\nL3 (3–4): valid sub-messages with details, no context.\nL2 (2): a plausible inference only.  L1 (1): describes the surface of the cartoon.\n\nBig message: the salt tax cannot survive mass, peaceful law-breaking; ordinary Indians together are stronger than the British government.\nDetails: the worried, sweating official clinging to the “SALT TAX” sign; the endless line of villagers each picking up salt; the caption “One handful at a time” (each small act adds up).\nWhy April 1930: Gandhi reached Dandi on 6 April 1930 and broke the salt law; people all along the coast began making salt. A nationalist paper would publish it to encourage more people to join and to show the government was losing control.",
+    humC: "Levels (8 marks):\nL6 (7–8): compares both sources and evaluates at least one (purpose, provenance, context) to reach a clear judgement.\nL5 (6): explains the views of both and says why it is or isn't surprising.\nL4 (5): uses agreement/difference of the sources as the reason.\nL3 (3–4): evaluates Source D only, or finds something surprising inside it.\nL2 (2): compares without a judgement.  L1 (1): assertion from provenance only.\n\nSurprising: D is by a policeman, part of the British system, yet he sympathises with the volunteers and feels guilty. E (the government) says the police used only necessary force and that order was maintained, so D contradicts the official version.\nNot surprising: D was written in 1955, after independence, when it was safe and even patriotic to show sympathy; he may want to excuse his own part. E has a clear purpose: to defend the government and blame the volunteers. Reports of the Dharasana beatings (May 1930) shocked people around the world, which supports D.\nJudgement: e.g. surprising at first given who wrote it, but less surprising once its date and the purpose of E are considered.",
+    humD: "Levels (9 marks):\nL4 (6–9): uses the sources to support AND reject the statement (higher marks for more sources used well and evaluated).\nL3 (3–5): uses the sources to support OR reject.\nL2 (2): uses the sources but doesn't test the statement.  L1 (1): writes about the topic only.\n\nSupport: A (villagers join; the world will see the unfairness), B (headmen resign, authority weakened), C (mass participation, worried official), D (even a policeman felt order was “on their side”), F (the Viceroy met Gandhi “as an equal”; Congress “can no longer be ignored”).\nReject: B (crowds came from curiosity; salt-making unimportant), E (government says order maintained and works secure), F (salt law stands; the tax was not removed; merchants tired; campaign called off).\nEvaluate: A is a volunteer's letter, so enthusiastic; B and E are official British views with a reason to play it down; D is written with hindsight; F is a British paper yet admits Congress gained status, which makes that point more convincing."
+  }
+};
+
+MOCK.gp = {
+  time: "50 minutes", marks: 35, noScheme: true,
+  instr: ["Answer all questions.", "Read the sources carefully before you answer.", "Use evidence from the sources in your answers."],
+  notice: "The sources were written for this practice paper. The people, places and figures in them are invented.",
+  secs: [
+    { h: "Sources", src: [
+      { lab: "Source 1", prov: "From a blog written by Anaya, a 15-year-old student, after a beach clean-up.", p: ["Last Sunday, thirty of us from our school spent two hours cleaning a 1 km stretch of Sandbar Beach. We collected 48 kg of rubbish, and more than half of it was plastic bottles, wrappers and straws. I think the government is not doing nearly enough to stop this. Shops still hand out plastic bags for free, which is ridiculous. In my view, every school should run a clean-up at least once a term, because once you have picked up a hundred bottle caps, you never look at plastic the same way again."] },
+      { lab: "Source 2", prov: "From a speech by the mayor of a coastal city to local business owners.", p: ["Our city's fishing and tourism depend on a clean sea, and today that sea is filling with plastic. This is not only our problem: rubbish from our rivers reaches the ocean and travels across the world. Much of it comes from packaging that is used for minutes and then thrown away, and from streets where bins overflow because collection is too slow. Our fishermen report nets full of plastic, and last year hotel bookings fell after photos of a dirty beach spread online.", "From next year, the city will charge for plastic bags, add 200 new bins and collect rubbish twice a week in market areas. I believe a city that respects nature also respects its own future. A survey by the city council found that 7 out of 10 residents support a bag charge. If we act now, cleaner beaches will bring back visitors, and visitors will bring back jobs."] },
+      { lab: "Source 3", prov: "Information about the causes of plastic pollution in one coastal city (written for this paper).", list: [
+        "Cheap packaging: about 40% of the plastic found on beaches is food and drink packaging designed to be used once.",
+        "Poor waste collection: in some areas rubbish is collected only once a week, so bins overflow and wind carries plastic into drains and rivers.",
+        "Consumer habits: many people say they forget to carry reusable bags and bottles.",
+        "Little recycling: only a small share of plastic is recycled, partly because there are few recycling centres."] },
+      { lab: "Source 4", prov: "Summary of a research study (written for this paper).", p: ["A shop owner wanted to know whether people would pay for reusable bags. On one weekday morning she asked 40 shoppers at her own supermarket, “Would you be happy to pay ₹10 for a strong reusable bag to help the planet?” 30 shoppers (75%) said yes. She concluded that most people in the country would support a charge for bags."] }],
+      qs: [
+        { p: [
+          { l: "a(i)", q: "Identify one opinion in Source 1.", m: 1, L: 1 },
+          { l: "a(ii)", q: "Explain why it is an opinion.", m: 2, L: 3 },
+          { l: "b", q: "Identify one fact in Source 1 and explain how it could be checked.", m: 2, L: 3 }] },
+        { q: "Analyse the perspective of the mayor in Source 2. In your answer, consider the issue and its nature (local, national or global), the mayor's perspective, the causes and consequences the mayor identifies, the solutions suggested, and the values, evidence and reasoning used.", m: 6, L: 16 },
+        { q: "Look at Source 3. Which do you think is the most significant cause of plastic pollution? Explain your answer, using at least three reasons and evidence from the sources.", m: 8, L: 20 },
+        { q: "Claim: “Most students at your school use at least one single-use plastic item every day.”\nExplain how you would test this claim. Describe the research method you would use, who you would collect information from and how, and what you would do with the results.", m: 8, L: 20 },
+        { q: "Look at Source 4. Evaluate the research. How far can the shop owner's conclusion be trusted? Explain the strengths and weaknesses of the research and how it could be improved.", m: 8, L: 20 }] }]
+};
+
+/* ===== Mock papers (part 3): Hindi, Spanish, French =====
+   Listening sections come with a transcript at the back: a helper reads it aloud twice. */
+var MOCK = MOCK || {};
+MOCK.hin = {
+  time: "1 hour", marks: 33,
+  instr: ["सभी प्रश्नों के उत्तर दीजिए। (Answer all questions.)", "Section A is listening: ask someone to read the transcript at the back of this booklet aloud. They read each part twice.", "Write your answers in Hindi unless the question says otherwise."],
+  secs: [
+    { h: "Section A: सुनकर उत्तर दीजिए (listening)", note: "Exercise 1: सुनिए और सही चित्र चुनिए। (Listen and choose the correct picture.) 1 mark each.", qs: [
+      { q: "राहुल ने आज नाश्ते में क्या खाया?", m: 1, o: ["🍎", "🥭", "🍌"], pic: true, a: "C (केला)" },
+      { q: "नेहा स्कूल कैसे जाती है?", m: 1, o: ["🚌", "🚗", "🚲"], pic: true, a: "C (साइकिल)" },
+      { q: "आज मौसम कैसा है?", m: 1, o: ["☔", "☀️", "❄️"], pic: true, a: "A (बारिश)" },
+      { q: "अमित शाम को कौन-सा खेल खेलता है?", m: 1, o: ["⚽", "🏏", "🏸"], pic: true, a: "B (क्रिकेट)" }] },
+    { note: "Exercise 2: रिया की बातें सुनिए और सही उत्तर चुनिए। (Listen to Riya and choose the correct answer.) 1 mark each.", qs: [
+      { q: "रिया सुबह कितने बजे उठती है?", m: 1, o: ["पाँच बजे", "छह बजे", "सात बजे"], ka: true, a: "ख (छह बजे)" },
+      { q: "उठकर रिया सबसे पहले क्या करती है?", m: 1, o: ["योग", "नाश्ता", "पढ़ाई"], ka: true, a: "क (योग)" },
+      { q: "रिया का भाई कितने साल का है?", m: 1, o: ["बारह साल", "चौदह साल", "सोलह साल"], ka: true, a: "क (बारह साल)" },
+      { q: "रविवार को रिया का परिवार कहाँ जाता है?", m: 1, o: ["बाज़ार", "दादी के घर", "नानी के घर"], ka: true, a: "ग (नानी के घर)" }] },
+    { h: "Section B: पढ़कर उत्तर दीजिए (reading)", note: "गद्यांश पढ़िए और प्रश्नों के उत्तर दीजिए।",
+      src: [{ title: "मेरा सबसे अच्छा दोस्त", p: ["अमन मेरा सबसे अच्छा दोस्त है। हम दोनों एक ही कक्षा में पढ़ते हैं और एक ही गली में रहते हैं। अमन बहुत मेहनती और ईमानदार है। उसे गणित बहुत पसंद है, जबकि मुझे चित्रकारी अच्छी लगती है। जब मुझे गणित के सवाल समझ नहीं आते, तो अमन धैर्य से मुझे समझाता है। बदले में मैं उसे चित्र बनाना सिखाता हूँ।", "पिछले महीने हमारे विद्यालय में खेल-दिवस था। अमन ने दौड़ में पहला स्थान पाया। मैं बहुत खुश था और मैंने ज़ोर-ज़ोर से तालियाँ बजाईं। शाम को हम दोनों पार्क गए और आइसक्रीम खाई। मुझे लगता है कि सच्चा दोस्त वही होता है जो सुख-दुख में साथ दे।"] }],
+      qs: [
+        { q: "अमन और लेखक कहाँ रहते हैं?", m: 1, L: 1, a: "एक ही गली में।" },
+        { q: "अमन के दो गुण लिखिए।", m: 2, L: 2, a: "मेहनती, ईमानदार (धैर्यवान भी मान्य)। 1 अंक प्रत्येक।" },
+        { q: "लेखक को क्या करना अच्छा लगता है?", m: 1, L: 1, a: "चित्रकारी (चित्र बनाना)।" },
+        { q: "अमन लेखक की मदद कैसे करता है, और लेखक बदले में क्या करता है?", m: 2, L: 2, a: "अमन धैर्य से गणित के सवाल समझाता है (1); लेखक उसे चित्र बनाना सिखाता है (1)।" },
+        { q: "खेल-दिवस पर क्या हुआ? दो बातें लिखिए।", m: 2, L: 2, a: "अमन ने दौड़ में पहला स्थान पाया (1); लेखक ने ज़ोर-ज़ोर से तालियाँ बजाईं / शाम को पार्क में आइसक्रीम खाई (1)।" },
+        { q: "विलोम शब्द लिखिए:  (क) सुख  (ख) पहला", m: 2, L: 1, a: "(क) दुख  (ख) आख़िरी / अंतिम" }] },
+    { h: "Section C: रचनात्मक लेखन (writing)", qs: [
+      { q: "डायरी लेखन\nआपने रविवार को अपने परिवार के साथ एक मेले में दिन बिताया। उस दिन के बारे में अपनी डायरी में लिखिए। (लगभग 80–100 शब्द)\n• आप मेले में किसके साथ गए?\n• आपने वहाँ क्या-क्या देखा और किया?\n• आपको कैसा लगा?", m: 7, L: 14, a: "प्रारूप (2): दिनांक, दिन, समय, “प्रिय डायरी”, अंत में नाम/हस्ताक्षर।\nविषय-वस्तु (3): तीनों बिंदु, अपनी भावनाएँ।\nभाषा (2): सही वाक्य, भूतकाल का सही प्रयोग, वर्तनी।" },
+      { q: "अनौपचारिक पत्र\nअपने मित्र को पत्र लिखकर बताइए कि आप अपनी छुट्टियाँ कैसे बिता रहे हैं। (लगभग 80–100 शब्द)\n• आप रोज़ क्या करते हैं?\n• आप किसके साथ समय बिताते हैं?\n• मित्र को अपने घर आने का निमंत्रण दीजिए।", m: 8, L: 16, a: "प्रारूप (3): पता और दिनांक, संबोधन (प्रिय मित्र …), अभिवादन (नमस्ते / सप्रेम नमस्कार), समापन (तुम्हारा मित्र / तुम्हारी सहेली) और नाम।\nविषय-वस्तु (3): तीनों बिंदु।\nभाषा (2): सही वाक्य, क्रिया और लिंग का सही प्रयोग, वर्तनी।" }] }],
+  tr: { h: "Listening transcript (for the helper)", note: "Read each item aloud twice, at a steady speed, with a short pause between readings. Give the student a few seconds after each item to answer.", items: [
+    ["Exercise 1, question 1", "राहुल: मुझे सुबह नाश्ते में फल खाना पसंद है। कल मैंने सेब खाया था, लेकिन आज मैंने केला खाया।"],
+    ["Exercise 1, question 2", "नेहा: मेरा स्कूल घर से ज़्यादा दूर नहीं है। मैं बस से नहीं जाती, मैं रोज़ साइकिल से स्कूल जाती हूँ।"],
+    ["Exercise 1, question 3", "आज सुबह से बारिश हो रही है, इसलिए मैं छाता लेकर घर से निकली।"],
+    ["Exercise 1, question 4", "अमित: मुझे फ़ुटबॉल देखना अच्छा लगता है, पर शाम को मैं अपने दोस्तों के साथ क्रिकेट खेलता हूँ।"],
+    ["Exercise 2 (questions 5–8)", "मेरा नाम रिया है। मैं चौदह साल की हूँ। मैं सुबह छह बजे उठती हूँ। उठकर मैं सबसे पहले योग करती हूँ और फिर नहाती हूँ। मेरे परिवार में चार लोग हैं: मम्मी, पापा, मेरा छोटा भाई और मैं। मेरा भाई मुझसे दो साल छोटा है। रविवार को हम सब मिलकर नानी के घर जाते हैं। मुझे नानी के हाथ का बना खाना बहुत पसंद है।"]] }
+};
+
+/* Spanish and French share one plan: Listening 14, Reading 21, Writing 15, Speaking 10 */
+function mkLang(L) {
+  return {
+    time: "1 hour for Papers 1, 2 and 4. Paper 3 (speaking) is done separately with a partner.", marks: 60,
+    instr: ["Answer all questions.", "Paper 1 is listening: ask someone to read the transcript at the back aloud. They read each item twice.", "Answer Papers 1 and 2 in English unless told otherwise. Answer Paper 4 in " + L.lang + ".", "Paper 3 (speaking) is at the end: a partner uses the examiner's card."],
+    secs: [
+      { h: "Paper 1: listening", note: "Exercise 1: listen and choose the correct answer. 1 mark each.", qs: L.l1 },
+      { note: "Exercise 2: listen to " + L.who + " talking about the summer holidays. Answer in English.", qs: L.l2 },
+      { h: "Paper 2: reading", note: "Exercise 1: read the advice. Is each sentence true (T) or false (F)? 1 mark each.", src: [{ title: L.tipsT, list: L.tips }], qs: L.r1 },
+      { note: "Exercise 2: read " + L.pen + "'s email and answer the questions in English.", src: [{ title: L.mailT, p: L.mail }], qs: L.r2 },
+      { h: "Paper 4: writing", qs: L.w },
+      { h: "Paper 3: speaking", m: 10, note: "Do this with a partner after the written papers. Your partner reads the examiner's card; you look only at the candidate's card.", html: L.speak, qs: [] }],
+    tr: { h: "Paper 1 transcript (for the helper)", note: "Read each item aloud twice, clearly and a little slower than normal, with a pause between readings.", items: L.tr },
+    scheme: { w2: L.w2ms, speak: L.speakMs }
+  };
+}
+function mkTF(arr) { return arr.map(function (x) { return { q: x[0], m: 1, o: ["True", "False"], a: x[1] ? "True" : "False" }; }); }
+function mkSpeak(cand, exam, conv) {
+  return '<div class="mk-card"><b>Candidate\'s card: role play</b>' + cand + '</div><div class="mk-card"><b>Examiner\'s card: role play</b>' + exam + '</div><div class="mk-card"><b>Examiner: conversation questions</b> (ask four or five; about 3 minutes)<ol>' + conv.map(function (c) { return "<li>" + c + "</li>"; }).join("") + "</ol></div>";
+}
+var MK_L2_COMMON = function (place) {
+  return [
+    { q: "Where is the speaker going next summer, and who with?", m: 2, L: 1, a: place + " (1); with her cousins (1)" },
+    { q: "How will they travel, and why?", m: 2, L: 1, a: "By train (1); it is more comfortable than the coach / bus (1)" },
+    { q: "Where will they stay, and for how long?", m: 2, L: 1, a: "In a hotel near the beach (1); for a week (1)" },
+    { q: "What will they do in the mornings?", m: 1, L: 1, a: "Visit museums" },
+    { q: "Why does she sometimes not get on with her cousin?", m: 1, L: 1, a: "He is a bit selfish" }];
+};
+var MK_R2_COMMON = function (city, foods) {
+  return [
+    { q: "How old is he, and where does he live?", m: 2, L: 1, a: "14 (1); " + city + " (1)" },
+    { q: "Who does he live with? Give everyone.", m: 2, L: 1, a: "Parents, older sister, grandmother. All three = 2; two = 1" },
+    { q: "What pets does the family have?", m: 1, L: 1, a: "A dog (Toby) and two cats" },
+    { q: "Give two reasons why he gets on well with his grandmother.", m: 2, L: 2, a: "She is fun / funny (1); she tells him stories about when she was young (1)" },
+    { q: "Why does he sometimes argue with his sister?", m: 1, L: 1, a: "She spends hours in the bathroom in the morning" },
+    { q: "What rule do his parents have?", m: 1, L: 1, a: "He must do his homework before playing video games" },
+    { q: "Name two foods the family eats a lot of.", m: 1, L: 1, a: "Any two: " + foods },
+    { q: "Which food does he hate?", m: 1, L: 1, a: "Spinach" },
+    { q: "Where is he going this summer? Give two things the family will do there.", m: 3, L: 2, a: "Mexico (1); visit the pyramids (1); try the local / typical food (1)" },
+    { q: "What would he like to do in the future?", m: 1, L: 1, a: "Live abroad / learn more languages" }];
+};
+var MK_L1_Q = ["What does the speaker usually have for breakfast?", "Where does the speaker eat lunch?", "What is the speaker's favourite dish?", "Why doesn't the speaker eat meat?", "How much water should you drink a day?", "At what time does the speaker have dinner?"];
+var MK_SPEAK_MS = "Role play (4): 1 mark for each task communicated clearly in the language; minor errors are fine if the meaning is clear.\nConversation (6): communication 3 (answers the questions, gives opinions and reasons, uses a past or future tense); language 3 (range of vocabulary and structures, accuracy, pronunciation).";
+var MK_W2_MS = "Content (5): all four points covered and developed; 1 mark off for each point missing.\nLanguage (5): 5 = wide range of vocabulary, future tense used correctly, mostly accurate; 3 = simple but clear, some errors; 1 = very limited, errors make it hard to understand.";
+
+MOCK.spa = mkLang({
+  lang: "Spanish", who: "Lucía", pen: "Pablo",
+  l1: [
+    { q: MK_L1_Q[0], m: 1, o: ["cereal with milk", "toast", "fruit"], a: "A" },
+    { q: MK_L1_Q[1], m: 1, o: ["at home", "in the school canteen", "in a restaurant"], a: "B" },
+    { q: MK_L1_Q[2], m: 1, o: ["pizza", "Spanish omelette", "seafood paella"], a: "C" },
+    { q: MK_L1_Q[3], m: 1, o: ["she is vegetarian", "she is allergic", "she doesn't like the taste"], a: "A" },
+    { q: MK_L1_Q[4], m: 1, o: ["one litre", "two litres", "three litres"], a: "B" },
+    { q: MK_L1_Q[5], m: 1, o: ["7 pm", "8 pm", "9 pm"], a: "C" }],
+  l2: MK_L2_COMMON("Barcelona"),
+  tipsT: "Consejos para una vida sana",
+  tips: ["Come cinco porciones de fruta y verdura al día.", "Debes desayunar bien: es la comida más importante del día.", "No tomes demasiados dulces ni bebidas con azúcar.", "Hay que hacer ejercicio una hora al día.", "Es importante dormir ocho horas cada noche.", "Tienes que beber mucha agua, sobre todo cuando hace calor."],
+  r1: mkTF([["You should eat three portions of fruit and vegetables a day.", false], ["Breakfast is the most important meal of the day.", true], ["It is fine to have lots of sugary drinks.", false], ["You should exercise for an hour a day.", true], ["You should sleep six hours a night.", false], ["You should drink a lot of water, especially when it is hot.", true]]),
+  mailT: "Un correo de Pablo",
+  mail: ["¡Hola! Me llamo Pablo y tengo catorce años. Vivo en Sevilla con mis padres, mi hermana mayor, Carmen, y mi abuela. Tenemos un perro que se llama Toby y dos gatos. Me llevo muy bien con mi abuela porque es muy divertida y me cuenta historias de su juventud. Normalmente me llevo bien con Carmen, pero a veces discutimos porque pasa horas en el baño por la mañana. Mis padres son estrictos: tengo que hacer los deberes antes de jugar a los videojuegos.", "En casa comemos mucha comida mediterránea: pescado, verduras y aceite de oliva. Mi madre dice que hay que comer de todo, pero yo odio las espinacas.", "Este verano voy a ir a México con mi familia. Visitaremos las pirámides y probaremos la comida típica. Mi hermana quiere ir a la playa, pero yo prefiero ver los monumentos. En el futuro me gustaría vivir en el extranjero y aprender más idiomas. ¿Y tú? ¿Qué vas a hacer en las vacaciones?", "Un abrazo,\nPablo"],
+  r2: MK_R2_COMMON("Seville", "fish, vegetables, olive oil"),
+  w: [
+    { q: "Escribe cinco frases sobre lo que comes y bebes en un día normal. (Write five sentences in Spanish about what you eat and drink on a normal day.)", m: 5, L: 7, a: "1 mark for each clear, relevant sentence with a verb. Spelling errors are fine if the meaning is clear." },
+    { q: "Escribe un correo a tu amigo/a español(a) sobre tus próximas vacaciones (80–90 palabras). Menciona:\n• adónde vas a ir y con quién\n• cómo vas a viajar\n• qué vas a hacer allí\n• con quién te llevas bien en tu familia y por qué", m: 10, L: 14, a: "w2" }],
+  w2ms: MK_W2_MS, speakMs: MK_SPEAK_MS,
+  speak: mkSpeak("<p>You are in a café in Spain. Your partner is the waiter. Speak in Spanish.</p><ol><li>Greet the waiter and ask for a table for two.</li><li>Order something to eat.</li><li>Order a drink.</li><li>Ask how much it costs.</li></ol><p class=\"mk-small\">Marking: role play 4 marks, conversation 6 marks. See the mark scheme.</p>",
+    "<ol><li>¡Buenos días! ¿Qué desea?</li><li>Muy bien, aquí tiene la mesa. ¿Qué va a comer?</li><li>¿Y para beber?</li><li>Son doce euros.</li></ol>",
+    ["¿Qué desayunas normalmente?", "¿Qué hay que hacer para llevar una vida sana?", "¿Te llevas bien con tu familia? ¿Por qué?", "¿Qué vas a hacer en las próximas vacaciones?", "¿Adónde te gustaría ir en el futuro? ¿Por qué?"]),
+  tr: [
+    ["Exercise 1, question 1", "Para el desayuno, normalmente tomo cereales con leche."],
+    ["Exercise 1, question 2", "A mediodía no como en casa. Como en el comedor del colegio con mis amigos."],
+    ["Exercise 1, question 3", "Me gusta la pizza, pero mi plato favorito es la paella de mariscos."],
+    ["Exercise 1, question 4", "No como carne porque soy vegetariana."],
+    ["Exercise 1, question 5", "Para estar sano, hay que beber dos litros de agua al día."],
+    ["Exercise 1, question 6", "Ceno a las nueve de la noche con mi familia."],
+    ["Exercise 2 (Lucía)", "El verano que viene voy a ir a Barcelona con mis primos. Vamos a viajar en tren porque es más cómodo que el autobús. Nos quedaremos en un hotel cerca de la playa durante una semana. Por la mañana visitaremos museos y por la tarde nadaremos en el mar. Me llevo muy bien con mi prima Marta, pero a veces me llevo mal con mi primo Diego porque es un poco egoísta. Creo que serán unas vacaciones estupendas."]]
+});
+
+MOCK.fre = mkLang({
+  lang: "French", who: "Chloé", pen: "Théo",
+  l1: [
+    { q: MK_L1_Q[0], m: 1, o: ["cereal with milk", "bread and jam", "fruit"], a: "A" },
+    { q: MK_L1_Q[1], m: 1, o: ["at home", "in the school canteen", "in a café"], a: "B" },
+    { q: MK_L1_Q[2], m: 1, o: ["pizza", "a cheese omelette", "roast chicken with chips"], a: "C" },
+    { q: MK_L1_Q[3], m: 1, o: ["she is vegetarian", "she is allergic", "she doesn't like the taste"], a: "A" },
+    { q: MK_L1_Q[4], m: 1, o: ["one litre", "two litres", "three litres"], a: "B" },
+    { q: MK_L1_Q[5], m: 1, o: ["7 pm", "8 pm", "9 pm"], a: "B" }],
+  l2: MK_L2_COMMON("Nice"),
+  tipsT: "Conseils pour une vie saine",
+  tips: ["Mange cinq portions de fruits et légumes par jour.", "Tu dois bien prendre ton petit-déjeuner : c'est le repas le plus important de la journée.", "Ne mange pas trop de sucreries et ne bois pas trop de boissons sucrées.", "Il faut faire une heure d'exercice par jour.", "Il est important de dormir huit heures chaque nuit.", "Tu dois boire beaucoup d'eau, surtout quand il fait chaud."],
+  r1: mkTF([["You should eat three portions of fruit and vegetables a day.", false], ["Breakfast is the most important meal of the day.", true], ["It is fine to have lots of sugary drinks.", false], ["You should exercise for an hour a day.", true], ["You should sleep six hours a night.", false], ["You should drink a lot of water, especially when it is hot.", true]]),
+  mailT: "Un e-mail de Théo",
+  mail: ["Salut ! Je m'appelle Théo et j'ai quatorze ans. J'habite à Lyon avec mes parents, ma sœur aînée, Camille, et ma grand-mère. Nous avons un chien qui s'appelle Toby et deux chats. Je m'entends très bien avec ma grand-mère parce qu'elle est très drôle et elle me raconte des histoires de sa jeunesse. D'habitude, je m'entends bien avec Camille, mais parfois nous nous disputons parce qu'elle passe des heures dans la salle de bains le matin. Mes parents sont stricts : je dois faire mes devoirs avant de jouer aux jeux vidéo.", "À la maison, nous mangeons beaucoup de poisson, de légumes et de fruits. Ma mère dit qu'il faut manger de tout, mais je déteste les épinards.", "Cet été, je vais aller au Mexique avec ma famille. Nous visiterons les pyramides et nous goûterons la cuisine typique. Ma sœur veut aller à la plage, mais moi, je préfère voir les monuments. À l'avenir, j'aimerais habiter à l'étranger et apprendre d'autres langues. Et toi ? Qu'est-ce que tu vas faire pendant les vacances ?", "Bises,\nThéo"],
+  r2: MK_R2_COMMON("Lyon", "fish, vegetables, fruit"),
+  w: [
+    { q: "Écris cinq phrases sur ce que tu manges et bois pendant une journée normale. (Write five sentences in French about what you eat and drink on a normal day.)", m: 5, L: 7, a: "1 mark for each clear, relevant sentence with a verb. Spelling errors are fine if the meaning is clear." },
+    { q: "Écris un e-mail à ton ami(e) français(e) au sujet de tes prochaines vacances (80–90 mots). Mentionne :\n• où tu vas aller et avec qui\n• comment tu vas voyager\n• ce que tu vas faire là-bas\n• avec qui tu t'entends bien dans ta famille et pourquoi", m: 10, L: 14, a: "w2" }],
+  w2ms: MK_W2_MS, speakMs: MK_SPEAK_MS,
+  speak: mkSpeak("<p>You are in a café in France. Your partner is the waiter. Speak in French.</p><ol><li>Greet the waiter and ask for a table for two.</li><li>Order something to eat.</li><li>Order a drink.</li><li>Ask how much it costs.</li></ol><p class=\"mk-small\">Marking: role play 4 marks, conversation 6 marks. See the mark scheme.</p>",
+    "<ol><li>Bonjour ! Vous désirez ?</li><li>Très bien, voici votre table. Qu'est-ce que vous voulez manger ?</li><li>Et comme boisson ?</li><li>Ça fait douze euros.</li></ol>",
+    ["Qu'est-ce que tu manges d'habitude au petit-déjeuner ?", "Qu'est-ce qu'il faut faire pour être en bonne santé ?", "Tu t'entends bien avec ta famille ? Pourquoi ?", "Qu'est-ce que tu vas faire pendant les prochaines vacances ?", "Où est-ce que tu aimerais aller à l'avenir ? Pourquoi ?"]),
+  tr: [
+    ["Exercise 1, question 1", "Au petit-déjeuner, je prends des céréales avec du lait."],
+    ["Exercise 1, question 2", "À midi, je ne mange pas à la maison. Je mange à la cantine du collège avec mes amis."],
+    ["Exercise 1, question 3", "J'aime la pizza, mais mon plat préféré, c'est le poulet rôti avec des frites."],
+    ["Exercise 1, question 4", "Je ne mange pas de viande parce que je suis végétarienne."],
+    ["Exercise 1, question 5", "Pour être en bonne santé, il faut boire deux litres d'eau par jour."],
+    ["Exercise 1, question 6", "Je dîne à vingt heures avec ma famille."],
+    ["Exercise 2 (Chloé)", "L'été prochain, je vais aller à Nice avec mes cousins. Nous allons voyager en train parce que c'est plus confortable que le car. Nous logerons dans un hôtel près de la plage pendant une semaine. Le matin, nous visiterons des musées et l'après-midi, nous nagerons dans la mer. Je m'entends très bien avec ma cousine Léa, mais parfois je m'entends mal avec mon cousin Hugo parce qu'il est un peu égoïste. Je pense que ce seront des vacances géniales."]]
+});
+
 /* ===== Profiles: the built-in syllabus is the default; visitors can add their own (stored only in their browser) ===== */
 var PROFILE_REG_KEY = "ecc.profiles", BASE_KEY = "ecc.nov2026.v1";
 var RULES = { id: "default", name: "November 2026 exams", start: "2026-11-01", end: "2026-11-30", restWeekdays: [4], dailyMax: 90, custom: false, label: "November 2026 · IST" };
@@ -5512,8 +5948,10 @@ function pgResources() {
   h += '<div class="row wrap" style="margin-bottom:14px"><div class="seg" style="flex-wrap:wrap">' + EXAM_ORDER.map(function (x) { return '<button data-act="resSubj" data-s="' + x.id + '" class="' + (x.id === s.id ? "on" : "") + '">' + esc(x.short) + "</button>"; }).join("") + '</div><div class="grow"></div><input class="input" style="max-width:260px" placeholder="Search topics and notes" id="res-q" data-on="resQ" value="' + esc(UI.resQ) + '" aria-label="Search notes"></div>';
   if (RULES.custom) { var miss = TOPICS.filter(function (t) { return t.subj === s.id && !hasMaterials(t.id); }).length; if (miss) h += '<div class="notice" style="margin-bottom:12px"><div class="grow">' + miss + " topic" + (miss > 1 ? "s" : "") + " in " + esc(s.name) + " don't have notes yet. Pip can write them with AI (notes, questions and flashcards)." + aiNeedsNote() + '</div><button class="btn sm primary" data-act="aiSubject" data-s="' + s.id + '"' + (AI.ready && !AI.busySubj ? "" : " disabled") + ">" + (AI.busySubj === s.id ? "Writing… " + esc(AI.prog || "") : "✨ Make them all") + "</button></div>"; }
   /* one PDF with every topic of this subject */
-  if (s.units.some(function (u) { return u.topics.some(function (t) { return t.n; }); })) h += '<div class="card flat book-card" style="margin-bottom:14px"><div class="row wrap" style="gap:12px">' + doodle("book", 46) + '<div class="grow"><h3>' + esc(s.name) + ': complete notes</h3><p class="small muted">One PDF with every topic in the syllabus: notes, definitions, formulas, a worked example for every type of question, practice questions with answers, your own notes and the Answer Notes.</p></div><div class="row wrap" style="gap:8px"><button class="btn primary" data-act="bookPdf"' + (BK.busy ? " disabled" : "") + ">" + (BK.busy === s.id ? "Making the PDF… page " + esc(BK.prog || "") : ic("download") + "Download PDF") + '</button><button class="btn" data-act="bookPrint">Print</button></div></div></div>';
-  if (QUIZ.some(function (q) { return q.subj === s.id; })) h += '<div class="card flat book-card" style="margin-bottom:14px"><div class="row wrap" style="gap:12px">' + doodle("pencil", 46) + '<div class="grow"><h3>' + esc(s.name) + ': practice worksheet</h3><p class="small muted">Printable worksheet for every topic: a worked example, then practice questions with lines, boxes or squared space to write in, and an answer key at the back.' + (s.id === "eng" ? " Plus a letter-writing booklet: 24 formal and informal prompts with ruled pages and two model letters." : "") + '</p></div><div class="row wrap" style="gap:8px"><button class="btn primary" data-act="wsPdf" data-k="ws">' + ic("download") + 'Worksheet PDF</button><button class="btn" data-act="wsPrint" data-k="ws">Print</button>' + (s.id === "eng" ? '<button class="btn primary" data-act="wsPdf" data-k="letters">' + ic("download") + 'Letter prompts PDF</button><button class="btn" data-act="wsPrint" data-k="letters">Print</button>' : "") + "</div></div></div>";
+  if (s.units.some(function (u) { return u.topics.some(function (t) { return t.n; }); })) h += pxCard("book", doodle("book", 46), esc(s.name) + ": complete notes", "One PDF with every topic in the syllabus: notes, definitions, formulas, a worked example for every type of question, practice questions with answers, your own notes and the Answer Notes.");
+  if (QUIZ.some(function (q) { return q.subj === s.id; })) h += pxCard("ws", doodle("pencil", 46), esc(s.name) + ": practice worksheet", "Printable worksheet for every topic: a worked example, then practice questions with lines, boxes or squared space to write in, and an answer key at the back.");
+  if (s.id === "eng") h += pxCard("letters", doodle("pencil", 46), "English: letter-writing booklet", "24 formal and informal letter prompts, each with ruled pages to write on, plus two model letters and a checklist for each kind of letter.");
+  if (mkHas(s.id)) { var MM = MOCK[s.id]; h += pxCard("mock", doodle("checklist", 46), esc(s.name) + ": mock paper", "A full practice paper in the exam's format: " + MM.marks + " marks, " + esc(mkTime(s)) + ". " + (s.id === "eng" ? "Reading comprehension and letter writing. " : "") + (MM.noScheme ? "No mark scheme: check your answers against the rubrics in Answer Notes." : "The mark scheme is at the back; you can leave it out in the preview.") + (MM.tr ? " The listening transcript is at the back for someone to read aloud." : "")); }
   h += '<div class="row small muted" style="margin-bottom:12px;gap:14px"><span>' + revCount + " of " + tot + " topics marked revised</span><span style=\"width:160px\">" + bar(pct(revCount, tot), s.color) + "</span></div>";
   var shown = 0;
   s.units.forEach(function (u) {
@@ -5532,7 +5970,7 @@ function topicNotes(t) {
   h += notesHTML(t);
   if (!n) return h + "</div></div></div>";
   h += '<div class="note-sec"><h4>My notes</h4><textarea class="input" id="note-' + t.id + '" placeholder="Write your own notes, mnemonics or questions for your teacher…">' + esc(note ? note.text : "") + '</textarea><div class="row wrap" style="margin-top:8px"><button class="btn sm primary" data-act="saveNote" data-tid="' + t.id + '">Save notes</button>' + (note && note.text ? '<button class="btn sm ghost" data-act="clearNote" data-tid="' + t.id + '">Clear</button><span class="tiny faint">Saved ' + new Date(note.at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) + "</span>" : "") + "</div></div>";
-  h += '<div class="row wrap"><button class="btn sm ' + (rv ? "" : "primary") + '" data-act="toggleRevised" data-tid="' + t.id + '">' + ic("check") + (rv ? "Revised · undo" : "Mark as revised") + '</button><button class="btn sm" data-act="quizTopic" data-tid="' + t.id + '">Practise this topic</button><button class="btn sm" data-act="flashSubj" data-s="' + t.subj + '">Flashcards</button>' + (QUIZ.some(function (q) { return q.t === t.id; }) || (typeof GUIDE !== "undefined" && GUIDE[t.id]) ? '<button class="btn sm" data-act="wsPrint" data-k="ws" data-t="' + t.id + '">Print worksheet</button>' : "") + "</div>";
+  h += '<div class="row wrap"><button class="btn sm ' + (rv ? "" : "primary") + '" data-act="toggleRevised" data-tid="' + t.id + '">' + ic("check") + (rv ? "Revised · undo" : "Mark as revised") + '</button><button class="btn sm" data-act="quizTopic" data-tid="' + t.id + '">Practise this topic</button><button class="btn sm" data-act="flashSubj" data-s="' + t.subj + '">Flashcards</button>' + (QUIZ.some(function (q) { return q.t === t.id; }) || (typeof GUIDE !== "undefined" && GUIDE[t.id]) ? '<button class="btn sm" data-act="pxOpen" data-k="ws" data-t="' + t.id + '">' + ic("eye") + 'Topic worksheet</button>' : "") + "</div>";
   return h + "</div></div></div>";
 }
 
@@ -6220,10 +6658,12 @@ function pipHandle(raw) {
   /* theme */
   if (/\b(dark|chalk ?board|night)\b.*\b(mode|theme)?/.test(s) && /\b(mode|theme|dark|chalkboard)\b/.test(s) && !/\b(light|paper)\b/.test(s)) { S.settings.theme = "dark"; save(); applyTheme(); render(); pipSay("Chalkboard mode on. 🖍️"); return; }
   if (/\b(light|paper|day)\b\s*(mode|theme)\b/.test(s)) { S.settings.theme = "light"; save(); applyTheme(); render(); pipSay("Back to paper! 📄"); return; }
-  /* mock papers were removed: point to quizzes instead */
+  /* mock papers: printable PDFs in Study Resources */
   if (/\bmocks?\b/.test(s)) {
-    if (restMsg) return pipSay(restMsg);
-    return pipSay("Mock papers aren't part of the site any more. I can quiz you instead: try <b>quiz me on " + esc(subj ? subj.short.toLowerCase() : "surds") + "</b>.", subj ? [["Quiz me on " + subj.short, "quiz me on " + subj.short.toLowerCase()]] : []);
+    var ms = subj && mkHas(subj.id) ? subj : null;
+    if (ms) { UI.resSubj = ms.id; go("resources"); return pipSay("Here's the " + esc(ms.short) + " mock paper. Tap <b>Preview</b> on the mock paper card, then download, print or share it. Do it in one sitting with a timer: " + esc(mkTime(ms)) + "."); }
+    if (!RULES.custom) { go("resources"); return pipSay("Every subject has a printable mock paper in <b>Study Resources</b>. Pick a subject, then tap <b>Preview</b> on its mock paper card."); }
+    return pipSay("Mock papers are only made for the built-in syllabus. I can quiz you instead: try <b>quiz me on " + esc(subj ? subj.short.toLowerCase() : "surds") + "</b>.", subj ? [["Quiz me on " + subj.short, "quiz me on " + subj.short.toLowerCase()]] : []);
   }
   /* mark topic */
   var mk = s.match(/\b(?:mark|set)\s+(.+?)\s+(?:as\s+)?(done|complete|completed|finished|learning|needs revision|revision|revise|not started)\b/);
@@ -6891,7 +7331,7 @@ function pgNotes() {
   var list = anList(), sid = UI.notesSubj && list.some(function (n) { return n.subj === UI.notesSubj; }) ? UI.notesSubj : list[0].subj, N = anGet(sid), s = anSubj(sid);
   UI.notesSubj = sid;
   var canPrint = !aiInFrame();
-  var h = head("Answer Notes", "How to write each type of question, step by step, with how the marks are given", (canPrint ? '<button class="btn" data-act="notesPrint">' + ic("download") + "Print</button>" : "") + '<button class="btn primary" data-act="notesPdf">' + ic("download") + "Save as PDF</button>");
+  var h = head("Answer Notes", "How to write each type of question, step by step, with how the marks are given", '<div class="row wrap px-btns" style="gap:8px">' + pxButtons("an") + "</div>");
   h += '<div class="seg an-subjs" role="tablist" aria-label="Subject">' + list.map(function (n) { var x = anSubj(n.subj); return '<button role="tab" aria-selected="' + (n.subj === sid) + '" class="' + (n.subj === sid ? "on" : "") + '" style="--c:' + x.color + '" data-act="notesSubj" data-s="' + n.subj + '"><span class="dot" style="background:' + x.color + '"></span>' + esc(x.short) + "</button>"; }).join("") + "</div>";
   h += '<div class="an-intro card" style="--c:' + s.color + '"><div class="row between wrap" style="gap:8px"><h2 style="margin:0">' + esc(s.name) + '</h2><span class="chip ' + (N.from === "class" ? "good" : "") + '">' + (N.from === "class" ? "From your class notes" : N.from === "mixed" ? N.types.filter(function (t) { return t.src === "ms"; }).length + " of " + N.types.length + " types use your mark scheme so far" : "Starter notes, to be changed as we go") + "</span></div>" + (N.intro ? '<p class="muted" style="margin:6px 0 0">' + esc(N.intro) + "</p>" : "") +
     '<div class="row wrap an-jump" style="margin-top:10px">' + N.types.map(function (t) { return '<a class="chip" href="#an-' + sid + "-" + t.code + '" data-act="anJump" data-id="an-' + sid + "-" + t.code + '"><b>' + esc(t.code) + "</b>&nbsp;" + esc(t.name) + "</a>"; }).join("") + "</div></div>";
@@ -7262,6 +7702,274 @@ ACT.wsPdf = async function (el) {
   BK.busy = null; el.disabled = false; el.innerHTML = lab;
 };
 ACT.wsPrint = function (el) { var kind = el.getAttribute("data-k"), tid = el.getAttribute("data-t") || null, sid = tid ? TOPIC[tid].subj : UI.resSubj, J = wsJob(kind, sid, tid); wsPrint(J.blocks, J.color, J.footer); };
+
+/* ===== Mock papers: turns MOCK data into printable pages =====
+   Cover page, sections with sources and questions, answer space, a transcript for listening papers,
+   then the mark scheme on fresh pages (left out for GP, and optional everywhere else). */
+function mkCSS() {
+  return ".mk-cover{padding-top:40px}.mk-cover h1{font-family:'Schoolbell','Patrick Hand',cursive;font-size:46px;line-height:1.08;margin:0}.mk-cover h1 span{background:linear-gradient(transparent 55%,var(--c) 55%,var(--c) 90%,transparent 90%);padding:0 8px}" +
+    ".mk-cover .mk-sub{font-family:'Schoolbell',cursive;font-size:24px;margin:6px 0 0;color:#5d5766}.mk-facts{display:flex;gap:0;margin:22px 0 14px;border:2.5px solid #2d2a32;border-radius:12px 9px 14px 8px;background:#fff;overflow:hidden}.mk-facts div{flex:1;padding:8px 14px;border-left:2px solid #2d2a32}.mk-facts div:first-child{border-left:0}.mk-facts small{display:block;color:#6d6775;font-size:13px}.mk-facts b{font-family:'Schoolbell',cursive;font-weight:400;font-size:21px}" +
+    ".mk-instr{background:#fff;border:2px dashed var(--c);border-radius:14px 10px 16px 9px;padding:8px 16px 8px 34px;margin:10px 0}.mk-instr li{margin:2px 0}.mk-notice{font-size:14px;color:#5d5766;border-left:4px solid var(--c);padding:2px 0 2px 10px;margin:10px 0}" +
+    ".mk-marks{width:100%;border-collapse:collapse;margin:12px 0;background:#fff}.mk-marks td,.mk-marks th{border:2px solid #2d2a32;padding:5px 10px;text-align:left}.mk-marks td:last-child,.mk-marks th:last-child{width:90px;text-align:center}.mk-marks th{font-family:'Schoolbell',cursive;font-weight:400;font-size:17px}" +
+    ".mk-sec{font-family:'Schoolbell',cursive;font-size:25px;margin:6px 0 2px;padding:2px 12px;background:var(--c);color:#fff;border-radius:10px 7px 12px 6px;display:flex;justify-content:space-between}.mk-sec small{font-size:17px}.mk-note{color:#4d4756;margin:2px 0 6px;font-style:italic}" +
+    ".mk-src{background:#fff;border:2px solid #2d2a32;border-radius:12px 9px 13px 8px;padding:8px 16px;margin:6px 0 0}.mk-src.cont{border-top:0;border-radius:0 0 13px 8px;margin-top:-2px;padding-top:2px}.mk-src.open{border-bottom:0;border-radius:12px 9px 0 0;padding-bottom:4px}.mk-src.mid{border-top:0;border-bottom:0;border-radius:0;margin-top:0;padding-top:0;padding-bottom:4px}" +
+    ".mk-src h3{font-family:'Schoolbell',cursive;font-weight:400;font-size:22px;margin:0}.mk-src .prov{color:#5d5766;font-size:14.5px;margin:1px 0 4px}.mk-lab{display:inline-block;font-family:'Schoolbell',cursive;font-size:16px;padding:0 10px;border:2px solid #2d2a32;border-radius:999px;background:var(--c);color:#fff;margin-right:8px}" +
+    ".mk-p{margin:0 0 6px;position:relative;text-align:left}.mk-p i{position:absolute;left:-30px;font-style:normal;color:#8a8492;font-family:'Schoolbell',cursive}.mk-src.num{padding-left:40px}.mk-src ul{margin:2px 0;padding-left:20px}.mk-src li{margin:3px 0}" +
+    ".mk-part{display:grid;grid-template-columns:30px 44px 1fr;gap:4px;margin:6px 0 3px}.mk-part>b{font-family:'Schoolbell',cursive;font-weight:400;font-size:19px;color:#5d5766}.mk-part>i{font-style:normal;color:#5d5766}.mk-part .mk,.ws-q .mk{float:right;color:#4d4756;margin-left:10px;font-weight:600}" +
+    ".mk-code{font-family:'Courier New',monospace;font-size:14px;line-height:1.35;background:#fff;border:2px solid #2d2a32;border-radius:8px;padding:6px 12px;margin:5px 0 4px 34px;white-space:pre}" +
+    ".mk-box{margin:4px 0 6px 78px;border:2px solid #9eb0c9;border-radius:8px;background:#fff}.mk-tbl{border-collapse:collapse;margin:6px 0 4px 78px;background:#fff}.mk-tbl td,.mk-tbl th{border:1.5px solid #2d2a32;padding:3px 10px;text-align:center;font-size:14.5px}.mk-tbl th{text-align:left;font-weight:600}" +
+    ".mk-opts{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;margin:4px 0 2px 78px}.ws-q .mk-opts{margin-left:0}.mk-opts div{display:flex;gap:8px;align-items:center}.mk-opts i{flex:none;width:19px;height:19px;border:2px solid #2d2a32;border-radius:50%;font-style:normal;font-size:11px;line-height:15px;text-align:center}.mk-opts.pic{grid-template-columns:repeat(3,110px)}.mk-opts.pic span{font-size:46px;line-height:1.1}" +
+    ".mk-end{text-align:center;font-family:'Schoolbell',cursive;font-size:20px;color:#6d6775;margin:14px 0}.mk-card{background:#fff;border:2.5px solid #2d2a32;border-radius:12px 9px 14px 8px;padding:8px 16px;margin:8px 0}.mk-card>b{font-family:'Schoolbell',cursive;font-weight:400;font-size:20px}.mk-card ol{margin:4px 0;padding-left:22px}.mk-card p{margin:4px 0}.mk-small{font-size:13.5px;color:#6d6775}" +
+    ".mk-tr{display:grid;grid-template-columns:150px 1fr;gap:8px;margin:6px 0;padding:6px 0;border-bottom:1.5px dashed #c9c2d4}.mk-tr b{font-family:'Schoolbell',cursive;font-weight:400;font-size:16px;color:#5d5766}" +
+    ".mk-ms{display:grid;grid-template-columns:58px 1fr 34px;gap:2px 8px;margin:4px 0;padding-bottom:4px;border-bottom:1.5px dashed #ddd6e4;font-size:14.5px}.mk-ms b{font-family:'Schoolbell',cursive;font-weight:400;font-size:16px;color:#5d5766}.mk-ms em{font-style:normal;color:#6d6775;text-align:right}";
+}
+function mkHas(sid) { return typeof MOCK !== "undefined" && !!MOCK[sid] && !(typeof RULES !== "undefined" && RULES.custom); }
+function mkMarks(list) { return list.reduce(function (t, q) { return t + (q.p ? mkMarks(q.p) : q.m || 0); }, 0); }
+function mkTime(s) { var M = MOCK[s.id]; return M.time.split(/[.,]/)[0]; }
+function mkOpts(o, pic, ka) {
+  var L = ka ? ["क", "ख", "ग", "घ"] : ["A", "B", "C", "D", "E"];
+  return '<div class="mk-opts' + (pic ? " pic" : "") + '">' + o.map(function (x, j) { return "<div><i>" + L[j] + "</i><span>" + esc(x) + "</span></div>"; }).join("") + "</div>";
+}
+function mkSrc(B, src) {
+  if (src.svg) { B.push('<div class="mk-src"><div><span class="mk-lab">' + esc(src.lab) + "</span></div>" + '<div class="prov">' + esc(src.prov) + "</div>" + mkCartoon() + "</div>"); return; }
+  var head = (src.lab ? '<div><span class="mk-lab">' + esc(src.lab) + "</span></div>" : "") + (src.title ? "<h3>" + esc(src.title) + "</h3>" : "") + (src.sub || src.prov ? '<div class="prov">' + esc(src.sub || src.prov) + "</div>" : "");
+  var parts = [];
+  if (src.list) parts.push("<ul>" + src.list.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>");
+  (src.p || []).forEach(function (p, i) { parts.push('<div class="mk-p bk-pre">' + (src.num ? "<i>" + (i + 1) + "</i>" : "") + esc(p) + "</div>"); });
+  /* one block per paragraph, so long passages can run across pages; the box is drawn in pieces that join up */
+  var n = parts.length, cls = "mk-src" + (src.num ? " num" : "");
+  if (n <= 1) { B.push('<div class="' + cls + '">' + head + (parts[0] || "") + "</div>"); return; }
+  parts.forEach(function (p, i) { B.push('<div class="' + cls + (i === 0 ? " open" : i === n - 1 ? " cont" : " mid") + '">' + (i === 0 ? head : "") + p + "</div>"); });
+}
+function mockBlocks(sid, withMs) {
+  var M = MOCK[sid], s = SUBJ[sid], B = [], K = [], n = 0, ms = withMs !== false && !M.noScheme;
+  var secMarks = [], cur = null;
+  M.secs.forEach(function (sec) { var m = sec.m != null ? sec.m : mkMarks(sec.qs); if (sec.h) { cur = { h: sec.h, m: m }; secMarks.push(cur); } else if (cur) cur.m += m; });
+  /* cover */
+  var d = new Date(s.exam + "T00:00:00");
+  B.push('<div class="mk-cover"><h1><span>' + esc(s.name) + '</span></h1><div class="mk-sub">Mock paper · ' + d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" }) + " is the real exam</div>" +
+    '<div class="mk-facts"><div><small>Time</small><b>' + esc(M.time) + '</b></div><div style="flex:0 0 120px"><small>Total marks</small><b>' + M.marks + "</b></div></div>" +
+    '<div class="ws-head"><span>Name:</span><span class="sm">Class:</span><span class="sm">Date:</span></div>' +
+    '<div class="bk-h">Instructions</div><ul class="mk-instr">' + M.instr.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" +
+    (M.notice ? '<div class="mk-notice">' + esc(M.notice) + "</div>" : "") +
+    (secMarks.length > 1 ? '<table class="mk-marks"><tr><th>Section</th><th>Marks</th></tr>' + secMarks.map(function (x) { return "<tr><td>" + esc(x.h) + "</td><td>____ / " + x.m + "</td></tr>"; }).join("") + "<tr><td><b>Total</b></td><td>____ / " + M.marks + "</td></tr></table>" : '<table class="mk-marks"><tr><td><b>Total</b></td><td>____ / ' + M.marks + "</td></tr></table>") +
+    '<div class="mk-notice">' + (ms ? "The mark scheme is at the back. Don't look at it until you have finished." : M.noScheme ? "There is no mark scheme for this paper. Check your answers against the rubrics in your Answer Notes." : "This copy has no mark scheme.") + "</div></div>");
+  B.push(""); /* so the next forced page break is honoured */
+  /* put() adds a block; hold() keeps a heading or question stem to be joined to whatever comes next,
+     so a heading never sits alone at the bottom of a page */
+  var held = "", brkNext = "\u0001";
+  var put = function (x) { var br = brkNext || (x.charAt(0) === "\u0001" ? "\u0001" : ""); if (x.charAt(0) === "\u0001") x = x.slice(1); B.push(br + held + x); held = ""; brkNext = ""; };
+  var hold = function (x) { if (x.charAt(0) === "\u0001") { x = x.slice(1); if (!held) brkNext = "\u0001"; } held += x; };
+  var mkTag = function (m) { return m ? '<span class="mk">[' + m + "]</span>" : ""; };
+  var after = function (x) { /* code, tables, options, boxes and answer lines */
+    if (x.code) put('<div class="mk-code">' + esc(x.code) + "</div>");
+    if (x.html) put(x.html);
+    if (x.box) put('<div class="mk-box" style="height:' + x.box + 'px"></div>');
+    if (x.L) wsLines(x.L, x.g).forEach(function (l) { put(l); });
+    if (held) put("");
+  };
+  var lastFill = false;
+  M.secs.forEach(function (sec) {
+    if (sec.h) hold('<div class="mk-sec"><span>' + esc(sec.h) + "</span><small>" + (function () { var c = secMarks.filter(function (x) { return x.h === sec.h; })[0]; return c ? c.m : ""; })() + " marks</small></div>" + (sec.note ? '<div class="mk-note">' + esc(sec.note) + "</div>" : ""));
+    else if (sec.note) hold('<div class="mk-note">' + esc(sec.note) + "</div>");
+    if (sec.html) put(sec.html);
+    var srcLen = 0;
+    (sec.src || []).forEach(function (x) { var S = []; mkSrc(S, x); S.forEach(put); srcLen += (x.p || []).join("").length + (x.list || []).join("").length + (x.svg ? 1200 : 0); });
+    sec.qs.forEach(function (q, qi) {
+      var brk = srcLen > 1800 && qi === 0 ? "\u0001" : "";
+      lastFill = false;
+      if (q.fill) {
+        put(brk + '<div class="lt-cont">Write your answer here. Question number: ______</div><div class="ws-lines ws-fill"></div>');
+        for (var f = 1; f < q.fill; f++) put("\u0001" + '<div class="lt-cont">' + (f === q.fill - 1 ? "Answer (continued). This is the last page of the paper." : "Answer (continued)") + '</div><div class="ws-lines ws-fill"></div>');
+        lastFill = true; return;
+      }
+      n++;
+      var stem = q.q ? '<span class="bk-pre">' + esc(q.q) + "</span>" + (q.p ? "" : mkTag(q.m)) : "";
+      if (!q.p) {
+        hold(brk + '<div class="ws-q"><b>' + n + ".</b><div>" + stem + (q.o ? mkOpts(q.o, q.pic, q.ka) : "") + "</div></div>");
+        after(q);
+        K.push({ n: String(n), a: q.a, m: q.m });
+        return;
+      }
+      if (q.q) { hold(brk + '<div class="ws-q"><b>' + n + ".</b><div>" + stem + "</div></div>"); brk = ""; if (q.code) hold('<div class="mk-code">' + esc(q.code) + "</div>"); if (q.html) hold(q.html); }
+      q.p.forEach(function (p, pi) {
+        hold((pi === 0 ? brk : "") + '<div class="mk-part"><b>' + (pi === 0 && !q.q ? n + "." : "") + "</b><i>(" + esc(p.l) + ")</i><div><span class=\"bk-pre\">" + esc(p.q) + "</span>" + mkTag(p.m) + (p.o ? mkOpts(p.o, p.pic, p.ka) : "") + "</div></div>");
+        after(p);
+        if (p.a) K.push({ n: n + "(" + p.l + ")", a: p.a, m: p.m });
+      });
+    });
+  });
+  if (held) put("");
+  if (!lastFill) B.push('<div class="mk-end">End of paper</div>');
+  /* listening transcript */
+  if (M.tr) {
+    B.push('\u0001<h1 class="ws-key-h">' + esc(M.tr.h) + '</h1><p class="ws-intro">' + esc(M.tr.note) + "</p>");
+    M.tr.items.forEach(function (t) { B.push('<div class="mk-tr"><b>' + esc(t[0]) + '</b><div class="bk-pre">' + esc(t[1]) + "</div></div>"); });
+  }
+  /* mark scheme */
+  if (ms) {
+    B.push('\u0001<h1 class="ws-key-h">Mark scheme</h1><p class="ws-intro">Mark your paper, add up your score on the cover, then look at the Answer Notes for anything you lost marks on.</p>');
+    var sch = M.scheme || {}, seen = {};
+    K.forEach(function (k) {
+      if (!k.a) return;
+      var txt = sch[k.a] || k.a; if (sch[k.a] && seen[k.a]) txt = "See the marking notes for question " + seen[k.a] + "."; if (sch[k.a] && !seen[k.a]) seen[k.a] = k.n;
+      B.push('<div class="mk-ms"><b>' + esc(k.n) + '</b><div class="bk-pre">' + esc(txt) + "</div><em>[" + k.m + "]</em></div>");
+    });
+    if (sch.speak) B.push('<div class="mk-ms"><b>Paper 3</b><div class="bk-pre">' + esc(sch.speak) + "</div><em>[10]</em></div>");
+  }
+  return B;
+}
+
+/* ===== PDF preview, download, print and share for every printable =====
+   A "job" describes one PDF (complete notes, Answer Notes, worksheets, the letter booklet, mock papers).
+   Preview lays the real pages out on screen, so what you see is exactly what downloads or prints. */
+ICON.eye = '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>';
+ICON.share = '<circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.7l7.4-4.3M8.3 13.3l7.4 4.3"/>';
+ICON.print = '<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>';
+var PX = { busy: null, job: null, blob: null, ms: true };
+function pxSafe(t) { return String(t).replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60); }
+function pxJob(k, sid, tid, ms) {
+  if (k === "ws" || k === "letters") { var W = wsJob(k, sid, tid); W.title = k === "letters" ? "English: letter-writing booklet" : SUBJ[sid].name + (tid ? ": " + TOPIC[tid].t + " worksheet" : ": practice worksheet"); W.k = k; W.sid = sid; W.tid = tid; return W; }
+  if (k === "an") { var a = anSubj(sid); return { k: k, sid: sid, blocks: anBlocks(sid), color: a.color, footer: a.name + " · Answer Notes", file: pxSafe(a.short) + "-answer-notes.pdf", title: a.name + ": Answer Notes" }; }
+  var s = SUBJ[sid];
+  if (k === "book") return { k: k, sid: sid, blocks: bkBlocks(sid), color: s.color, footer: s.name + " · Complete notes", file: pxSafe(s.short) + "-complete-notes.pdf", title: s.name + ": complete notes" };
+  if (k === "mock") { var withMs = ms !== false && !MOCK[sid].noScheme; return { k: k, sid: sid, ms: withMs, blocks: mockBlocks(sid, withMs), color: s.color, footer: s.name + " · Mock paper", file: pxSafe(s.short) + "-mock-paper" + (withMs || MOCK[sid].noScheme ? "" : "-no-answers") + ".pdf", title: s.name + ": mock paper" }; }
+  return null;
+}
+function pxFromEl(el) {
+  var k = el.getAttribute("data-k"), tid = el.getAttribute("data-t") || null;
+  var sid = el.getAttribute("data-s") || (tid ? TOPIC[tid].subj : k === "an" ? UI.notesSubj || "hum" : UI.resSubj);
+  return pxJob(k, sid, tid, k === "mock" ? PX.ms : undefined);
+}
+function pxHost(J, visible) { var h = wsHost(J.color, visible); var st = document.createElement("style"); st.textContent = mkCSS(); h.appendChild(st); return h; }
+function pxLayout(J, host) { var pages = anPaginate(J.blocks, host, J.footer); wsFill(host); return pages; }
+async function pxPDF(J, onStep) {
+  try { if (!window.html2canvas) await loadScript(AN_LIBS.h2c); if (!(window.jspdf && window.jspdf.jsPDF)) await loadScript(AN_LIBS.jspdf); }
+  catch (e) { throw { message: "Making a PDF needs an internet connection the first time. Connect and try again" + (aiInFrame() ? "." : ", or use Print.") }; }
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) { }
+  var host = pxHost(J, false), pages = pxLayout(J, host), doc = new window.jspdf.jsPDF({ unit: "pt", format: "a4", compress: true });
+  try {
+    for (var i = 0; i < pages.length; i++) {
+      if (onStep) onStep(i + 1, pages.length);
+      var c = await window.html2canvas(pages[i], { scale: 1.6, backgroundColor: "#fffdf6", logging: false });
+      if (i) doc.addPage();
+      doc.addImage(c.toDataURL("image/jpeg", 0.82), "JPEG", 0, 0, 595.28, 841.89);
+      c.width = c.height = 0;
+    }
+  } finally { host.remove(); }
+  return doc.output("blob");
+}
+function pxPrint(J) {
+  if (aiInFrame()) { toast("Printing isn't available in this view. Use Download PDF, then print the file.", "info"); return; }
+  var host = pxHost(J, true); host.className = "an-print";
+  pxLayout(J, host);
+  document.body.classList.add("an-printing");
+  var done = function () { document.body.classList.remove("an-printing"); host.remove(); window.removeEventListener("afterprint", done); };
+  window.addEventListener("afterprint", done);
+  setTimeout(function () { try { window.print(); } catch (e) { toast("Printing isn't available here. Use Download PDF.", "bad"); } setTimeout(function () { if (document.body.classList.contains("an-printing")) done(); }, 60000); }, 300);
+}
+/* the PDF for a job, reusing the one already made while the preview is open */
+async function pxBlob(J, btn) {
+  if (PX.blob && PX.job === J) return PX.blob;
+  var lab = btn ? btn.innerHTML : "";
+  PX.busy = J.file; pxBusyUI(true);
+  try {
+    var blob = await pxPDF(J, function (i, n) { if (btn) btn.textContent = "Page " + i + " / " + n + "…"; });
+    if (PX.job === J) PX.blob = blob;
+    return blob;
+  } finally { PX.busy = null; pxBusyUI(false); if (btn) btn.innerHTML = lab; }
+}
+function pxBusyUI(on) { document.querySelectorAll("[data-act=pxSave],[data-act=pxShare],[data-act=pxMs]").forEach(function (b) { b.disabled = on; }); }
+async function pxSave(J, btn) {
+  if (PX.busy) return;
+  try {
+    var blob = await pxBlob(J, btn), r = await saveFile(J.file, blob);
+    if (r === "saved") toast(J.title + " saved as a PDF.", "good"); else if (r === "declined") toast("Save was cancelled.", "info");
+  } catch (e) { toast((e && e.message) || "Couldn't make the PDF.", "bad"); }
+}
+/* Share: send the PDF itself with the phone's or computer's share sheet. Making the PDF takes a few seconds,
+   and some browsers only allow sharing straight after a tap, so if the first try is refused the button
+   turns into "Send PDF" for a second tap. Where sharing files isn't possible, the PDF downloads instead. */
+async function pxShare(J, btn) {
+  if (PX.busy) return;
+  var blob;
+  try { blob = await pxBlob(J, btn); } catch (e) { toast((e && e.message) || "Couldn't make the PDF.", "bad"); return; }
+  var file = null; try { file = new File([blob], J.file, { type: "application/pdf" }); } catch (e) { }
+  var can = file && navigator.share && navigator.canShare && (function () { try { return navigator.canShare({ files: [file] }); } catch (e) { return false; } })();
+  if (can) {
+    try { await navigator.share({ files: [file], title: J.title, text: J.title + " (from November Exam Command Centre)" }); return; }
+    catch (e) {
+      if (e && e.name === "AbortError") return;
+      if (e && e.name === "NotAllowedError" && !PX.retry && !aiInFrame() && PX.job === J) { PX.retry = true; pxShareReady(); toast("Your PDF is ready. Tap Send PDF to share it.", "info"); return; }
+    }
+  }
+  PX.retry = false;
+  try { var r = await saveFile(J.file, blob); if (r === "saved") toast("Sharing files isn't available " + (aiInFrame() ? "in this view" : "in this browser") + ", so the PDF was downloaded. Send it from your downloads.", "info"); }
+  catch (e) { toast((e && e.message) || "Couldn't save the PDF.", "bad"); }
+}
+function pxShareReady() { var b = $("#px-view [data-act=pxShare]"); if (b) { b.classList.add("primary"); b.innerHTML = ic("share") + "Send PDF"; b.setAttribute("aria-label", "Send PDF"); } }
+
+/* ---- the preview window ---- */
+function pxOpen(J) {
+  pxClose(true);
+  PX.job = J; PX.blob = null; PX.retry = false;
+  var v = document.createElement("div"); v.id = "px-view"; v.className = "px-view"; v.setAttribute("role", "dialog"); v.setAttribute("aria-modal", "true"); v.setAttribute("aria-label", "Preview: " + J.title);
+  var msToggle = J.k === "mock" && !MOCK[J.sid].noScheme ? '<label class="px-ms"><input type="checkbox" data-act="pxMs"' + (J.ms ? " checked" : "") + "> Mark scheme</label>" : "";
+  v.innerHTML = '<div class="px-bar"><div class="px-t"><b>' + esc(J.title) + '</b><span class="px-n">Laying out pages…</span></div><div class="px-acts">' + msToggle +
+    '<button class="btn primary" data-act="pxSave" title="Download PDF" aria-label="Download PDF">' + ic("download") + '<span>Download PDF</span></button>' +
+    (aiInFrame() ? "" : '<button class="btn" data-act="pxPrint" title="Print" aria-label="Print">' + ic("print") + "<span>Print</span></button>") +
+    '<button class="btn" data-act="pxShare" title="Share" aria-label="Share">' + ic("share") + "<span>Share</span></button>" +
+    '<button class="btn icon px-x" data-act="pxClose" aria-label="Close preview">' + ic("x") + "</button></div></div>" +
+    '<div class="px-scroll" tabindex="-1"><div class="px-pages"></div></div>';
+  document.body.appendChild(v); document.body.classList.add("px-open");
+  setTimeout(function () { pxFill(J); var x = $("#px-view .px-x"); if (x) x.focus(); }, 30);
+}
+function pxFill(J) {
+  var v = $("#px-view"); if (!v || PX.job !== J) return;
+  var box = $(".px-pages", v), host = pxHost(J, true); host.className = "px-lay";
+  var pages = pxLayout(J, host);
+  box.style.setProperty("--c", J.color);
+  host.querySelectorAll("style").forEach(function (st) { box.appendChild(st); });
+  pages.forEach(function (p) { var w = document.createElement("div"); w.className = "px-pg"; w.appendChild(p); box.appendChild(w); });
+  host.remove();
+  $(".px-n", v).textContent = pages.length + (pages.length === 1 ? " page" : " pages");
+  pxScale();
+}
+function pxScale() {
+  var v = $("#px-view"); if (!v) return;
+  var sc = $(".px-scroll", v), s = Math.min(1, (sc.clientWidth - 28) / AN_PG.w);
+  v.querySelectorAll(".px-pg").forEach(function (w) { w.style.width = AN_PG.w * s + "px"; w.style.height = AN_PG.h * s + "px"; w.firstChild.style.transform = "scale(" + s + ")"; });
+}
+function pxClose(quiet) {
+  var v = $("#px-view"); if (!v) return;
+  v.remove(); document.body.classList.remove("px-open"); PX.job = null; PX.blob = null; PX.retry = false;
+}
+window.addEventListener("resize", function () { if ($("#px-view")) pxScale(); });
+document.addEventListener("keydown", function (e) { if (e.key === "Escape" && $("#px-view") && !$("#modal")) { e.stopImmediatePropagation(); pxClose(); } }, true);
+
+ACT.pxOpen = function (el) { var J = pxFromEl(el); if (J) pxOpen(J); };
+ACT.pxClose = function () { pxClose(); };
+ACT.pxSave = function (el) { var J = el.closest("#px-view") ? PX.job : pxFromEl(el); if (J) pxSave(J, el); };
+ACT.pxShare = function (el) { var J = el.closest("#px-view") ? PX.job : pxFromEl(el); if (J) pxShare(J, el); };
+ACT.pxPrint = function (el) { var J = el.closest("#px-view") ? PX.job : pxFromEl(el); if (J) pxPrint(J); };
+ACT.pxMs = function (el) {
+  if (PX.busy || !PX.job) return;
+  PX.ms = !!el.checked; var J = pxJob("mock", PX.job.sid, null, PX.ms);
+  PX.job = J; PX.blob = null; PX.retry = false;
+  var v = $("#px-view"); $(".px-pages", v).innerHTML = ""; pxFill(J);
+  var b = $("[data-act=pxShare]", v); if (b) { b.classList.remove("primary"); b.innerHTML = ic("share") + "<span>Share</span>"; }
+};
+/* the four buttons used on cards around the site */
+function pxButtons(k, extra, opts) {
+  var a = ' data-k="' + k + '"' + (extra || ""), o = opts || {};
+  return '<button class="btn ' + (o.sm ? "sm " : "") + 'primary" data-act="pxOpen"' + a + ">" + ic("eye") + "Preview</button>" +
+    '<button class="btn ' + (o.sm ? "sm" : "") + '" data-act="pxSave"' + a + ">" + ic("download") + (o.short ? "PDF" : "Download PDF") + "</button>" +
+    (aiInFrame() || o.noPrint ? "" : '<button class="btn ' + (o.sm ? "sm" : "") + '" data-act="pxPrint"' + a + ">" + ic("print") + "Print</button>") +
+    '<button class="btn ' + (o.sm ? "sm" : "") + '" data-act="pxShare"' + a + ">" + ic("share") + "Share</button>";
+}
+function pxCard(k, art, title, text) {
+  return '<div class="card flat book-card" style="margin-bottom:14px"><div class="row wrap" style="gap:12px">' + art + '<div class="grow" style="min-width:220px"><h3>' + title + '</h3><p class="small muted">' + text + '</p></div><div class="row wrap px-btns" style="gap:8px">' + pxButtons(k) + "</div></div></div>";
+}
 
 /* ===== Checking AI-written questions before a student ever sees them =====
    An AI can mark the wrong option as correct, "think aloud" inside an explanation, or send the same question twice.
