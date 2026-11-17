@@ -7243,9 +7243,10 @@ async function syncPushProfile(id) {
       if (res.json && res.needPush) t.set(ref, { json: res.json, updatedAt: Date.now(), by: SYNC_DEV });
     });
   });
-  if (res && res.changedLocal) applyLocal(id, res.json, res.lj, res.obj);
+  if (res && res.changedLocal) { applyLocal(id, res.json, res.lj, res.obj); if (id === RULES.id && res.json !== res.lj) syncToastIn(); }
   if (res && res.json) baseSet(id, res.json);
 }
+function syncToastIn() { if (Date.now() - (SYNC.lastToast || 0) > 8000) { SYNC.lastToast = Date.now(); toast("Updated with changes from your other device. ☁️", "info"); } }
 function syncTopFields() { return Object.assign({ reg: JSON.stringify(REG), updatedAt: Date.now(), device: navigator.userAgent.slice(0, 80), name: SYNC.user.name || "" }, syncGroqFields()); }
 async function syncPushActive() {
   if (!SYNC.user || !SYNC.fb) return;
@@ -7282,7 +7283,7 @@ function syncIncoming(id, cj) {
   if (cj === baseGet(id) || SYNC.pushing) { if (SYNC.pushing && cj !== baseGet(id)) SYNC.again = true; return; }
   var res = mergeProfile(id, cj);
   baseSet(id, cj);
-  if (res.changedLocal) { applyLocal(id, res.json, res.lj, res.obj); if (id === RULES.id && !res.needPush) toast("Updated with changes from your other device. ☁️", "info"); }
+  if (res.changedLocal) { applyLocal(id, res.json, res.lj, res.obj); if (id === RULES.id && !res.needPush) syncToastIn(); }
   if (res.needPush) { if (id === RULES.id) syncSoon(600); else syncPushProfile(id).catch(function () { }); }
   else syncDone();
 }
@@ -7321,9 +7322,24 @@ function syncTouched() {
 }
 /* send right away when the page is hidden or closed (phones rarely warn before closing a tab), and when back online */
 function syncFlush() { if (SYNC.user && syncMeta().dirty) syncPushActive(); }
-document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") syncFlush(); else if (SYNC.user && !SYNC.busy) syncFlush(); });
+/* coming back to the site: fetch the latest from the cloud, not just send. Phones drop the live connection
+   while the site sits in the background, so changes made on another device in the meantime would otherwise
+   not show until the page was reloaded. The fetch reads the cloud copy, merges it in, and only writes back
+   if this device has something new. */
+function syncCatchUp(force) {
+  if (!SYNC.user || !SYNC.fb || SYNC.busy) return;
+  var now = Date.now(); if (!force && now - (SYNC.lastCatch || 0) < 4000) return;
+  SYNC.lastCatch = now;
+  syncListen(); /* re-open the live connection in case it was dropped */
+  syncPushActive();
+}
+document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") syncFlush(); else syncCatchUp(); });
 window.addEventListener("pagehide", syncFlush);
-window.addEventListener("online", syncFlush);
+window.addEventListener("pageshow", function (e) { if (e.persisted) syncCatchUp(true); });
+window.addEventListener("focus", function () { syncCatchUp(); });
+window.addEventListener("online", function () { syncCatchUp(true); });
+/* and a quiet check every 2 minutes while the site is on screen */
+setInterval(function () { if (document.visibilityState === "visible") syncCatchUp(); }, 120000);
 function syncCard() {
   var st = SYNC.status, m = syncMeta(), h = '<div class="card span-12" id="sync-card"><div class="card-h"><h2>Sign in with Google</h2>' + (st === "in" ? '<span class="chip good">Syncing</span>' : "") + "</div>";
   if (st === "unconfigured") return h + '<p class="small muted">Google sign-in isn\'t set up on this copy of the site yet. (Site owner: see “Google sign-in setup” in the README.)</p></div>';
@@ -7333,11 +7349,13 @@ function syncCard() {
   var u = SYNC.user || {};
   return h + '<div class="row wrap" style="gap:12px">' + (u.photo ? '<img src="' + esc(u.photo) + '" alt="" width="40" height="40" style="border-radius:50%;border:2px solid var(--ink)" referrerpolicy="no-referrer">' : "") + '<div class="grow"><div><b style="font-family:var(--display);font-weight:400;font-size:19px">' + esc(u.name || "Signed in") + '</b></div><div class="small muted">' + esc(u.email) + " · " + (m.lastSync ? "last synced " + new Date(m.lastSync).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "not synced yet") + (SYNC.why ? " · " + esc(SYNC.why) : "") + '</div></div><button class="btn sm" data-act="syncNow">Sync now</button><button class="btn sm ghost" data-act="syncOut">Sign out</button></div><p class="tiny muted" style="margin-top:8px">Changes save to your Google account automatically a few seconds after you make them. All your syllabuses and your AI model choice are included.</p>' + syncKeyRow() + '</div>';
 }
-function syncUI() { var c = $("#sync-card"); if (c) c.outerHTML = syncCard(); var b = $("#side-sync"); if (b) b.innerHTML = SYNC.status === "in" ? '<span class="tiny muted">☁️ Synced to ' + esc((SYNC.user && SYNC.user.email) || "Google") + "</span>" : ""; }
+function syncUI() { var c = $("#sync-card"); if (c) c.outerHTML = syncCard(); var b = $("#side-sync"); if (b) b.innerHTML = SYNC.status === "in" ? '<button class="link-btn tiny muted side-sync-btn" data-act="syncNow" title="Sync now">☁️ ' + (SYNC.why ? "Sync problem: tap to retry" : "Synced " + syncAgo()) + "</button>" : ""; }
+function syncAgo() { var t = syncMeta().lastSync; if (!t) return "to " + esc((SYNC.user && SYNC.user.email) || "Google"); var s = Math.round((Date.now() - t) / 1000); return s < 60 ? "just now" : s < 3600 ? Math.round(s / 60) + " min ago" : "at " + new Date(t).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); }
+setInterval(function () { if (SYNC.status === "in" && $("#side-sync")) syncUI(); }, 30000);
 if (typeof ACT !== "undefined") {
   ACT.syncIn = function () { syncSignIn(); };
   ACT.syncOut = function () { confirmBox("Sign out of Google?", "Your progress stays on this device and in your Google account. Sign in again any time to keep syncing.", "Sign out", function () { syncSignOut().then(render); }); };
-  ACT.syncNow = function () { SYNC.why = ""; syncAll(null).then(function () { toast("Synced. ☁️", "good"); }, function (e) { SYNC.why = syncErr(e); syncUI(); toast(SYNC.why, "bad"); }); };
+  ACT.syncNow = function () { if (!SYNC.user) return; SYNC.why = ""; syncListen(); syncAll(null).then(function () { toast("Synced. ☁️", "good"); }, function (e) { SYNC.why = syncErr(e); syncUI(); toast(SYNC.why, "bad"); }); };
   ACT.syncRetry = function () { SYNC.status = "loading"; syncUI(); syncInit(); };
 }
 
