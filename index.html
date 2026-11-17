@@ -1477,6 +1477,7 @@ body.px-open .toasts { z-index: 400; }
   .px-bar { padding: 8px 10px; }
 }
 @media (prefers-reduced-motion: reduce) { .px-view { animation: none; } }
+.fb-over { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 8px; padding-top: 8px; border-top: 1.5px dashed rgba(0,0,0,.14); }
 
 </style>
 <script>
@@ -5061,17 +5062,41 @@ function normAns(s) {
   s = String(s || "").toLowerCase().trim();
   s = s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+/g, function (m) { return "^" + m.split("").map(function (c) { return SUP[c]; }).join(""); });
   s = s.replace(/[₀-₉]/g, function (c) { return SUB[c]; });
-  s = s.replace(/[−–—]/g, "-").replace(/×|\*/g, "x").replace(/°/g, "").replace(/[\s,]+/g, "").replace(/\.$/, "").replace(/^x=/, "");
+  s = s.replace(/[−–—]/g, "-").replace(/×|\*/g, "x").replace(/°/g, "").replace(/[\s,]+/g, "").replace(/\.$/, "");
+  s = s.replace(/^[{\[]|[}\]]$/g, "");
+  s = s.replace(/^(?:[a-zα-ωρ]{1,3}|f\([a-z0-9]+\)|[a-z]{1,2}\([a-z]\))=(?=.)/, ""); /* "x = 6", "t = …", "f(4) = 10" */
   s = s.replace(/sqrt|root/g, "√");
   return s;
 }
+/* units that may follow a number: g, cm^3, g/cm^3, m/s^2, km/h, n, j, °c, % … */
+var UNIT_ONE = "(?:(?:k|m|c|μ|u|n|d)?(?:g|m|s|l|j|w|n|pa|v|hz|mol|ohm|Ω)|mins?|hrs?|hours?|secs?|seconds?|minutes?|days?|years?|h|c|k|degrees?|deg|%|rs|₹|\\$|units?|sides?|kmh|kph|mph|percent)(?:\\^?-?[0-9])?";
+var UNIT_RE = new RegExp("^(?:" + UNIT_ONE + ")+$");
+function stripUnit(s) {
+  var m = /^(-?[0-9]*\.?[0-9]+(?:e-?[0-9]+|x10\^-?[0-9]+)?)(.*)$/.exec(s);
+  if (!m) return null;
+  var u = m[2].replace(/^(per)/, "/");
+  if (u && !u.split(/\/|per/).every(function (p) { return p && UNIT_RE.test(p); })) return null;
+  return { n: numOf(m[1]), u: u.replace(/\^/g, "") };
+}
+function numOf(s) {
+  if (s == null) return NaN; s = String(s);
+  var sf = /^(-?[0-9]*\.?[0-9]+)x10\^(-?[0-9]+)$/.exec(s); if (sf) return Number(sf[1]) * Math.pow(10, Number(sf[2]));
+  var fr = /^(-?[0-9]+)\/([0-9]+)$/.exec(s); if (fr && Number(fr[2])) return Number(fr[1]) / Number(fr[2]);
+  return s === "" ? NaN : Number(s);
+}
 function checkShort(given, accepted) {
   var g = normAns(given); if (!g) return false;
+  var gNum = numOf(g), gU = stripUnit(g), gFrac = /^-?[0-9]+\/[0-9]+$/.test(g);
   for (var i = 0; i < accepted.length; i++) {
     var a = normAns(accepted[i]);
     if (g === a) return true;
-    var gn = Number(g), an = Number(a);
-    if (g !== "" && !isNaN(gn) && !isNaN(an) && Math.abs(gn - an) < 1e-9) return true;
+    var aNum = numOf(a), aU = stripUnit(a);
+    if (!isNaN(gNum) && !isNaN(aNum) && Math.abs(gNum - aNum) < 1e-9 * Math.max(1, Math.abs(aNum))) return true;
+    /* same number, with a unit on one or both sides ("2.7 g/cm³", "2.7g/cm^3", "2.7"); units must agree when both are given */
+    var gv = gU ? gU.n : gNum, av = aU ? aU.n : aNum;
+    if (!isNaN(gv) && !isNaN(av) && Math.abs(gv - av) < 1e-9 * Math.max(1, Math.abs(av)) && (!gU || !aU || !gU.u || !aU.u || gU.u === aU.u)) return true;
+    /* a fraction that rounds to a decimal answer: 1/3 for 0.333 */
+    if (gFrac && !isNaN(av)) { var dp = (String(a).split(".")[1] || "").replace(/[^0-9].*$/, "").length; if (dp >= 2 && Math.abs(Number(gNum.toFixed(dp)) - av) < 1e-9) return true; }
   }
   return false;
 }
@@ -5412,7 +5437,8 @@ function qFeedback(q, a) {
   var st = qState(q, a);
   if (q.y === "mcq" || q.y === "short") {
     var ans = q.y === "mcq" ? q.o[q.a] : q.a[0];
-    return '<div class="feedback ' + (a.ok ? "good" : "bad") + '" role="status"><div class="fb-h">' + penMark(st, 22) + (a.ok ? "<b>Correct.</b>" : '<b>Not quite.</b><span>The answer is <b class="fb-ans">' + esc(ans) + "</b></span>") + "</div>" + (q.x ? '<div class="fb-x">' + esc(q.x) + "</div>" : "") + "</div>";
+    return '<div class="feedback ' + (a.ok ? "good" : "bad") + '" role="status"><div class="fb-h">' + penMark(st, 22) + (a.ok ? "<b>Correct.</b>" + (a.over ? '<span class="small muted">You counted this one as right.</span>' : "") : '<b>Not quite.</b><span>The answer is <b class="fb-ans">' + esc(ans) + "</b></span>") + "</div>" + (q.x ? '<div class="fb-x">' + esc(q.x) + "</div>" : "") +
+      (!a.ok && q.y === "short" && a.given ? '<div class="fb-over"><span class="small muted">Same answer written another way?</span><button class="btn sm" data-act="qOverride" data-q="' + q.id + '">Count it as right</button></div>' : "") + "</div>";
   }
   return '<div class="feedback ' + (st === "right" ? "good" : st === "part" ? "info" : "bad") + '" role="status"><div class="fb-h">' + penMark(st, 22) + "<b>You gave yourself " + a.got + " out of " + q.m + ".</b></div></div>";
 }
@@ -6372,6 +6398,20 @@ function boot() {
 function runAI(p, okMsg) {
   return Promise.resolve(p).then(function () { if (okMsg) toast(okMsg, "good"); }, function (e) { toast(e && e.code ? aiErrText(e).replace(/<[^>]+>/g, "") : "AI couldn't finish: " + ((e && e.message) || "error"), "bad"); }).then(function () { if (UI.focus) { refreshFocusMaterials(); drawFocus(); } render(); if (typeof pipDraw === "function") pipDraw(); });
 }
+
+/* "Count it as right": for typed answers the checker didn't recognise. Only the answer just marked changes;
+   the question's stats move one wrong to one right. Nothing else is touched. */
+ACT.qOverride = function (el) {
+  var id = el.getAttribute("data-q"), q = QBY[id]; if (!q) return;
+  var a = UI.focus && UI.focus.ans && UI.focus.ans[id] ? UI.focus.ans[id] : UI.quiz && UI.quiz.phase !== "done" && UI.quiz.ans && UI.quiz.ans[id] ? UI.quiz.ans[id] : null;
+  if (!a || a.ok) return;
+  a.ok = true; a.got = q.m || 1; a.over = true;
+  var key = q.ai ? "ai:" + q.t : q.id, st = S.quiz.qstats[key];
+  if (st && st.ok < st.seen) st.ok++;
+  save();
+  if (UI.focus && UI.focus.ans && UI.focus.ans[id] === a) drawFocus(); else render();
+  toast("Counted as right.", "good");
+};
 
 /* ===== Pip: a paper helper with legs. Rule-based (keyword and pattern matching), no AI. ===== */
 var PIP = { open: false, msgs: [], timer: null, greeted: false };
