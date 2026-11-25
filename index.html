@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" data-app-theme="light">
 <head>
+<script>/* site lock */(function(){try{var d=function(s){return s.split(",").map(function(n){return String.fromCharCode(n-7)}).join("")};
+var H=d("111,123,123,119,122,65,54,54,119,115,104,126,112,123,111,53,110,112,123,111,124,105,53,112,118,54"),A=d("119,115,104,126,112,123,111,53,110,112,123,111,124,105,53,112,118,131,115,118,106,104,115,111,118,122,123,131,56,57,62,53,55,53,55,53,56,131,106,115,104,124,107,108,53,104,112,131,106,115,104,124,107,108,53,122,112,123,108,131,106,115,104,124,107,108,53,106,118,116,131,106,115,104,124,107,108,124,122,108,121,106,118,117,123,108,117,123,53,106,118,116,131,104,117,123,111,121,118,119,112,106,53,106,118,116").split("|"),L=location,h=(L.hostname||"").toLowerCase();
+var okHost=function(x){x=(x||"").toLowerCase();return A.some(function(a){return x===a||x.slice(-a.length-1)==="."+a})};
+var par=[];try{if(L.ancestorOrigins)for(var i=0;i<L.ancestorOrigins.length;i++)par.push(new URL(L.ancestorOrigins[i]).hostname)}catch(e){}
+if(!par.length&&window.self!==window.top&&document.referrer){try{par.push(new URL(document.referrer).hostname)}catch(e){}}
+var fine=L.protocol==="file:"||(okHost(h)&&par.every(okHost))||(window.self!==window.top&&par.length>0&&par.every(okHost));
+if(!fine){window.__eccLocked=1;document.documentElement.innerHTML='<body style="font:18px system-ui;padding:40px;text-align:center">Taking you to the real site… <a href="'+H+'" target="_top">'+H+'</a></body>';
+try{window.top.location.href=H}catch(e){}L.replace(H)}}catch(e){}})();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Personal exam preparation command centre for the November 2026 examinations: timetable, syllabus tracker, notes, quizzes and flashcards.">
